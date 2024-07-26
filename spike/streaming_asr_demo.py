@@ -23,12 +23,13 @@ from typing import List
 from urllib.parse import urlparse
 import time
 import websockets
+import ssl
 
-appid = "xxx"    # 项目的 appid
-token = "xxx"    # 项目的 token
-cluster = "xxx"  # 请求的集群
-audio_path = ""  # 本地音频路径
-audio_format = "wav"   # wav 或者 mp3，根据实际音频格式设置
+appid = os.environ.get("HUOSHAN_APP_ID")
+token = os.environ.get("HUOSHAN_TOKEN")
+cluster = "volcengine_streaming_common"  # 请求的集群
+audio_path = "spike/output/test_submit.mp3"  # 本地音频路径
+audio_format = "mp3"   # wav 或者 mp3，根据实际音频格式设置
 
 PROTOCOL_VERSION = 0b0001
 DEFAULT_HEADER_SIZE = 0b0001
@@ -279,7 +280,8 @@ class AsrWsClient:
             header = self.token_auth()
         elif self.auth_method == "signature":
             header = self.signature_auth(full_client_request)
-        async with websockets.connect(self.ws_url, extra_headers=header, max_size=1000000000) as ws:
+        ssl_context = ssl._create_unverified_context()
+        async with websockets.connect(self.ws_url, extra_headers=header, max_size=1000000000, ssl=ssl_context) as ws:
             # 发送 full client request
             await ws.send(full_client_request)
             res = await ws.recv()
