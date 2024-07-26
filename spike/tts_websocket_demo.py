@@ -14,6 +14,8 @@ import uuid
 import json
 import gzip
 import copy
+import ssl
+import os
 
 MESSAGE_TYPES = {11: "audio-only server response", 12: "frontend server response", 15: "error message from server"}
 MESSAGE_TYPE_SPECIFIC_FLAGS = {0: "no sequence number", 1: "sequence number > 0",
@@ -21,10 +23,10 @@ MESSAGE_TYPE_SPECIFIC_FLAGS = {0: "no sequence number", 1: "sequence number > 0"
 MESSAGE_SERIALIZATION_METHODS = {0: "no serialization", 1: "JSON", 15: "custom type"}
 MESSAGE_COMPRESSIONS = {0: "no compression", 1: "gzip", 15: "custom compression method"}
 
-appid = "xxx"
-token = "xxx"
-cluster = "xxx"
-voice_type = "xxx"
+appid = os.environ.get("HUOSHAN_APP_ID")
+token = os.environ.get("HUOSHAN_TOKEN")
+cluster = "volcano_tts"
+voice_type = "BV001_streaming"
 host = "openspeech.bytedance.com"
 api_url = f"wss://{host}/api/v1/tts/ws_binary"
 
@@ -40,14 +42,14 @@ default_header = bytearray(b'\x11\x10\x11\x00')
 request_json = {
     "app": {
         "appid": appid,
-        "token": "access_token",
+        "token": token,
         "cluster": cluster
     },
     "user": {
         "uid": "388808087185088"
     },
     "audio": {
-        "voice_type": "xxx",
+        "voice_type": voice_type,
         "encoding": "mp3",
         "speed_ratio": 1.0,
         "volume_ratio": 1.0,
@@ -75,9 +77,10 @@ async def test_submit():
     print("\n------------------------ test 'submit' -------------------------")
     print("request json: ", submit_request_json)
     print("\nrequest bytes: ", full_client_request)
-    file_to_save = open("test_submit.mp3", "wb")
+    file_to_save = open("spike/output/test_submit.mp3", "wb")
     header = {"Authorization": f"Bearer; {token}"}
-    async with websockets.connect(api_url, extra_headers=header, ping_interval=None) as ws:
+    ssl_context = ssl._create_unverified_context()
+    async with websockets.connect(api_url, extra_headers=header, ping_interval=None, ssl=ssl_context) as ws:
         await ws.send(full_client_request)
         while True:
             res = await ws.recv()
@@ -85,29 +88,6 @@ async def test_submit():
             if done:
                 file_to_save.close()
                 break
-        print("\nclosing the connection...")
-
-
-async def test_query():
-    query_request_json = copy.deepcopy(request_json)
-    query_request_json["audio"]["voice_type"] = voice_type
-    query_request_json["request"]["reqid"] = str(uuid.uuid4())
-    query_request_json["request"]["operation"] = "query"
-    payload_bytes = str.encode(json.dumps(query_request_json))
-    payload_bytes = gzip.compress(payload_bytes)  # if no compression, comment this line
-    full_client_request = bytearray(default_header)
-    full_client_request.extend((len(payload_bytes)).to_bytes(4, 'big'))  # payload size(4 bytes)
-    full_client_request.extend(payload_bytes)  # payload
-    print("\n------------------------ test 'query' -------------------------")
-    print("request json: ", query_request_json)
-    print("\nrequest bytes: ", full_client_request)
-    file_to_save = open("test_query.mp3", "wb")
-    header = {"Authorization": f"Bearer; {token}"}
-    async with websockets.connect(api_url, extra_headers=header, ping_interval=None) as ws:
-        await ws.send(full_client_request)
-        res = await ws.recv()
-        parse_response(res, file_to_save)
-        file_to_save.close()
         print("\nclosing the connection...")
 
 
@@ -172,4 +152,3 @@ def parse_response(res, file):
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.run_until_complete(test_submit())
-    loop.run_until_complete(test_query())
