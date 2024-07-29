@@ -2,3 +2,4 @@
 .venv/*
 flagged/*
 .DS_Store
+backend/__pycache__/
