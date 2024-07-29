@@ -14,7 +14,7 @@ def predict(message, history):
     messages = [
         {"role": "system", "content": "你是一名知识渊博，能回答小孩十万个为什么的虚拟幼儿园老师，有耐心，能够引导孩子进行思考学习，需要用简单通俗比喻的话和三岁小朋友互动。但是如果不知道的问题，不能胡说八道"}
     ]
-    MAX_CONVERSATION_ROUND = 2
+    MAX_CONVERSATION_ROUND = 3
 
     history_openai_format = []
     for human, assistant in history[-MAX_CONVERSATION_ROUND:]:
