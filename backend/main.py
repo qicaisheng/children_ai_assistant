@@ -75,10 +75,3 @@ async def websocket_endpoint(websocket: WebSocket):
             print(output_text, end="")
             await websocket.send_json({"round": round, "output": output_text})
         print("")
-        # while True:
-        #     try:
-        #         output_text = next(stream_response)
-        #         print(output_text)
-        #     except StopIteration:
-        #         break
-        #     await websocket.send_text(output_text)
