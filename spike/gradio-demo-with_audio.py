@@ -2,6 +2,7 @@ from openai import OpenAI
 import gradio as gr
 import os
 import streaming_asr_demo as asr
+import tts_websocket_demo as tts
 
 client = OpenAI(
     api_key=os.environ.get("ARK_API_KEY"),
@@ -23,6 +24,7 @@ with gr.Blocks() as demo:
         editable=False,
         interactive=True
     )
+    output_audio = gr.Audio(autoplay=True)
 
     def user(user_message, history):
         return "", history + [[user_message, None]]
@@ -57,12 +59,23 @@ with gr.Blocks() as demo:
 
     def clear_audio(audio):
         return None
+    
+    async def speak(history):
+        print('-------speak start1-------')
+        print(history)
+        print('-------speak start2-------')
+        text = history[-1][1]
+        return await tts.speak(text)
 
     input_audio.stop_recording(fn=asr.recognize, inputs=input_audio, outputs=input_msg).then(
         user, inputs=[input_msg, chatbot], outputs=[input_msg, chatbot], queue=False
     ).then(
         bot, inputs=chatbot, outputs=chatbot
     ).then(
+        speak, inputs=chatbot, outputs=output_audio
+    ).then(
         clear_audio, inputs=input_audio, outputs=input_audio
     )
+
+    #chatbot.change(fn=speak, inputs=chatbot, outputs=output_audio)
 demo.launch()

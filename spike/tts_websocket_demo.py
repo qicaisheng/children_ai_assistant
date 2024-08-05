@@ -77,7 +77,8 @@ async def test_submit():
     print("\n------------------------ test 'submit' -------------------------")
     print("request json: ", submit_request_json)
     print("\nrequest bytes: ", full_client_request)
-    file_to_save = open("spike/output/test_submit.mp3", "wb")
+    output_audio_path = "spike/output/test_submit.mp3"
+    file_to_save = open(output_audio_path, "wb")
     header = {"Authorization": f"Bearer; {token}"}
     ssl_context = ssl._create_unverified_context()
     async with websockets.connect(api_url, extra_headers=header, ping_interval=None, ssl=ssl_context) as ws:
@@ -89,6 +90,37 @@ async def test_submit():
                 file_to_save.close()
                 break
         print("\nclosing the connection...")
+        return output_audio_path
+
+async def submit(text: str):
+    submit_request_json = copy.deepcopy(request_json)
+    submit_request_json["audio"]["voice_type"] = voice_type
+    submit_request_json["request"]["reqid"] = str(uuid.uuid4())
+    submit_request_json["request"]["text"] = text
+    submit_request_json["request"]["operation"] = "submit"
+    payload_bytes = str.encode(json.dumps(submit_request_json))
+    payload_bytes = gzip.compress(payload_bytes)  # if no compression, comment this line
+    full_client_request = bytearray(default_header)
+    full_client_request.extend((len(payload_bytes)).to_bytes(4, 'big'))  # payload size(4 bytes)
+    full_client_request.extend(payload_bytes)  # payload
+    print("\n------------------------ test 'submit' -------------------------")
+    print("request json: ", submit_request_json)
+    print("\nrequest bytes: ", full_client_request)
+    output_audio_path = "spike/output/test_submit1.mp3"
+    file_to_save = open(output_audio_path, "wb")
+    header = {"Authorization": f"Bearer; {token}"}
+    ssl_context = ssl._create_unverified_context()
+    async with websockets.connect(api_url, extra_headers=header, ping_interval=None, ssl=ssl_context) as ws:
+        await ws.send(full_client_request)
+        while True:
+            res = await ws.recv()
+            done = parse_response(res, file_to_save)
+            if done:
+                file_to_save.close()
+                break
+        print("\nclosing the connection...")
+        print(output_audio_path)
+        return output_audio_path
 
 
 def parse_response(res, file):
@@ -152,3 +184,6 @@ def parse_response(res, file):
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.run_until_complete(test_submit())
+
+async def speak(text: str):
+    return await submit(text)
