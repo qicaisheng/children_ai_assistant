@@ -354,6 +354,28 @@ def test_one():
     )
     print(result)
 
+def recognize(audio_path: str):
+    print('----------')
+    print(audio_path)
+    print('----------')
+
+    result = execute_one(
+    {
+        'id': str(uuid.uuid4()),
+        'path': audio_path
+    },
+    cluster=cluster,
+    appid=appid,
+    token=token,
+    format='wav',
+    )
+    print(result)
+    if result['result']['payload_msg']['code'] != 1000:
+        raise Exception('ASR Error')
+
+    print(result['result']['payload_msg']['result'][0]['text'])
+    return result['result']['payload_msg']['result'][0]['text']
+
 
 if __name__ == '__main__':
     test_one()
