@@ -10,7 +10,7 @@ client = OpenAI(
 
 with gr.Blocks() as demo:
     chatbot = gr.Chatbot()
-    msg = gr.Textbox()
+    input_msg = gr.Textbox()
     input_audio = gr.Audio(
         sources=["microphone"],
         type='filepath',
@@ -20,9 +20,9 @@ with gr.Blocks() as demo:
             skip_length=2,
             show_controls=False,
         ),
+        editable=False,
+        interactive=True
     )
-    clear = gr.ClearButton([msg, chatbot])
-
 
     def user(user_message, history):
         return "", history + [[user_message, None]]
@@ -51,11 +51,18 @@ with gr.Blocks() as demo:
                 history[-1][1] += chunk.choices[0].delta.content
                 yield history
 
-    msg.submit(user, [msg, chatbot], [msg, chatbot], queue=False).then(
-        bot, chatbot, chatbot
+    input_msg.submit(user, inputs=[input_msg, chatbot], outputs=[input_msg, chatbot], queue=False).then(
+        bot, inputs=chatbot, outputs=chatbot
     )
-    input_audio.preprocess
-    btn = gr.Button("语言识别")
-    btn.click(fn=asr.recognize, inputs=input_audio, outputs=msg)
 
+    def clear_audio(audio):
+        return None
+
+    input_audio.stop_recording(fn=asr.recognize, inputs=input_audio, outputs=input_msg).then(
+        user, inputs=[input_msg, chatbot], outputs=[input_msg, chatbot], queue=False
+    ).then(
+        bot, inputs=chatbot, outputs=chatbot
+    ).then(
+        clear_audio, inputs=input_audio, outputs=input_audio
+    )
 demo.launch()
