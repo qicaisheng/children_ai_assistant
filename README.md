@@ -7,3 +7,5 @@ This is the spike for Children AI Assistant which can tech 3 years old children 
 I am used doubao LLM API, volcengine ASR and TTS, Gradio for conversation UI.
 
 And now I have implemented the audio to audio conversation via Gradio.
+
+Besides, I use the python API framework fastapi to build a simple API server which provide a simple conversation page and can send and reply message via websocket.
