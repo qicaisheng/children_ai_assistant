@@ -9,8 +9,21 @@ client = OpenAI(
     base_url="https://ark.cn-beijing.volces.com/api/v3",
 )
 
+def click_js():
+    return """function audioRecord() {
+    var xPathRes = document.evaluate ('//*[contains(@class, "record")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null); 
+    xPathRes.singleNodeValue.click();}"""
+
+
+def action(btn):
+    """Changes button text on click"""
+    if btn == 'Speak': return 'Stop'
+    else: return 'Speak'
+
+
 with gr.Blocks() as demo:
     chatbot = gr.Chatbot()
+    input_audio_button = gr.Button("Speak")
     input_msg = gr.Textbox()
     input_audio = gr.Audio(
         label="输入音频",
@@ -23,8 +36,15 @@ with gr.Blocks() as demo:
             show_controls=False,
         ),
         editable=False,
-        interactive=True
+        interactive=True,
+        elem_id='input_audio_elem',
+        visible=False
     )
+    # input_audio_button.click(input_audio, )
+
+    input_audio_button.click(fn=action, inputs=input_audio_button, outputs=input_audio_button).\
+        then(fn=lambda: None, js=click_js())
+
     output_audio = gr.Audio(autoplay=True, label="输出音频")
 
     def user(user_message, history):
