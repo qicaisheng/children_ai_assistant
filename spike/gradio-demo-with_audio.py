@@ -13,6 +13,7 @@ with gr.Blocks() as demo:
     chatbot = gr.Chatbot()
     input_msg = gr.Textbox()
     input_audio = gr.Audio(
+        label="输入音频",
         sources=["microphone"],
         type='filepath',
         waveform_options=gr.WaveformOptions(
@@ -24,7 +25,7 @@ with gr.Blocks() as demo:
         editable=False,
         interactive=True
     )
-    output_audio = gr.Audio(autoplay=True)
+    output_audio = gr.Audio(autoplay=True, label="输出音频")
 
     def user(user_message, history):
         return "", history + [[user_message, None]]
