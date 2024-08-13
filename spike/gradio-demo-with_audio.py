@@ -28,9 +28,9 @@ def action(btn):
 with gr.Blocks() as demo1:
     introduction_msg = gr.Textbox(label="介绍", value="小朋友，我是你的幼儿园老师，有什么要问我的吗？可以按【按住说话】按钮开始说话")
 
-    chatbot = gr.Chatbot(visible=True)
+    chatbot = gr.Chatbot(visible=False)
     input_audio_button = gr.Button("按住说话")
-    input_msg = gr.Textbox(visible=True)
+    input_msg = gr.Textbox(visible=False)
     input_audio = gr.Audio(
         label="输入音频",
         sources=["microphone"],
@@ -101,15 +101,17 @@ with gr.Blocks() as demo1:
         text = history[-1][1]
         return await tts.speak(text)
 
-    # input_audio.stop_recording(fn=asr.recognize, inputs=input_audio, outputs=input_msg).then(
-    #     user, inputs=[input_msg, chatbot], outputs=[input_msg, chatbot], queue=False
-    # ).then(
-    #     bot, inputs=chatbot, outputs=chatbot
-    # ).then(
-    #     speak, inputs=chatbot, outputs=output_audio
-    # ).then(
-    #     clear_audio, inputs=input_audio, outputs=input_audio
-    # )
+    input_audio.stop_recording(fn=asr.recognize, inputs=input_audio, outputs=input_msg).then(
+        user, inputs=[input_msg, chatbot], outputs=[input_msg, chatbot], queue=False
+    ).then(
+        bot, inputs=chatbot, outputs=chatbot
+    ).then(
+        speak, inputs=chatbot, outputs=output_audio
+    ).then(
+        update_summary
+    ).then(
+        clear_audio, inputs=input_audio, outputs=input_audio
+    )
 
 with gr.Blocks() as demo2:
     refresh_btm = gr.Button("刷新")
