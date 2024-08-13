@@ -1,3 +1,9 @@
+---
+title: children_ai_assistant
+app_file: spike/gradio-demo-with_audio.py
+sdk: gradio
+sdk_version: 4.39.0
+---
 # children_ai_assistant
 
 ## Introduction
