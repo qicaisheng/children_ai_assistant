@@ -6,6 +6,7 @@ import tts_websocket_demo as tts
 import database
 from conversation_history_summarization import generate_new_summary
 from system_template import KINDERGARTEN
+import gradio_parents_tab
 
 client = OpenAI(
     api_key=os.environ.get("ARK_API_KEY"),
@@ -25,7 +26,7 @@ def action(btn):
     else: return '按住说话'
 
 
-with gr.Blocks() as demo1:
+with gr.Blocks() as childrend_page:
     introduction_msg = gr.Textbox(label="介绍", value="小朋友，我是你的幼儿园老师，有什么要问我的吗？可以按【按住说话】按钮开始说话")
 
     chatbot = gr.Chatbot(visible=True, value=database.chat_history)
@@ -132,5 +133,5 @@ with gr.Blocks() as demo2:
 
 
 
-demo = gr.TabbedInterface([demo1, demo2], ["小朋友语音对话页面", "家长管理页面"])
-demo.launch(share=True)
+demo = gr.TabbedInterface([childrend_page, gradio_parents_tab.page], ["小朋友语音对话页面", "家长管理页面"])
+demo.launch()
