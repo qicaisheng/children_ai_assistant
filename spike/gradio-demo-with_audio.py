@@ -46,10 +46,6 @@ with gr.Blocks() as demo1:
         elem_id='input_audio_elem',
         visible=True
     )
-
-    input_audio_button.click(fn=action, inputs=input_audio_button, outputs=input_audio_button).\
-        then(fn=lambda: None, js=click_js())
-
     output_audio = gr.Audio(autoplay=True, label="输出音频")
 
     def user(user_message, history):
@@ -94,6 +90,11 @@ with gr.Blocks() as demo1:
     def clear_audio(audio):
         return None
     
+    input_audio_button.click(fn=action, inputs=input_audio_button, outputs=input_audio_button).\
+        then(clear_audio, inputs=input_audio, outputs=input_audio).\
+        then(fn=lambda: None, js=click_js())
+
+
     async def speak(history):
         print('-------speak start1-------')
         print(history)
