@@ -3,13 +3,12 @@ import gradio as gr
 import os
 import streaming_asr_demo as asr
 import tts_websocket_demo as tts
+import database
 
 client = OpenAI(
     api_key=os.environ.get("ARK_API_KEY"),
     base_url="https://ark.cn-beijing.volces.com/api/v3",
 )
-
-chat_history = []
 
 
 def click_js():
@@ -25,9 +24,9 @@ def action(btn):
 
 
 with gr.Blocks() as demo1:
-    chatbot = gr.Chatbot(visible=False)
+    chatbot = gr.Chatbot(visible=True)
     input_audio_button = gr.Button("Speak")
-    input_msg = gr.Textbox(visible=False)
+    input_msg = gr.Textbox(visible=True)
     input_audio = gr.Audio(
         label="输入音频",
         sources=["microphone"],
@@ -75,10 +74,9 @@ with gr.Blocks() as demo1:
             if chunk.choices[0].delta.content is not None:
                 history[-1][1] += chunk.choices[0].delta.content
                 yield history
-        global chat_history
-        chat_history = history
+        database.chat_history = history
         print('-------')
-        print(chat_history)
+        print(database.chat_history)
         print('-------')
 
     input_msg.submit(user, inputs=[input_msg, chatbot], outputs=[input_msg, chatbot], queue=False).then(
@@ -95,29 +93,29 @@ with gr.Blocks() as demo1:
         text = history[-1][1]
         return await tts.speak(text)
 
-    input_audio.stop_recording(fn=asr.recognize, inputs=input_audio, outputs=input_msg).then(
-        user, inputs=[input_msg, chatbot], outputs=[input_msg, chatbot], queue=False
-    ).then(
-        bot, inputs=chatbot, outputs=chatbot
-    ).then(
-        speak, inputs=chatbot, outputs=output_audio
-    ).then(
-        clear_audio, inputs=input_audio, outputs=input_audio
-    )
+    # input_audio.stop_recording(fn=asr.recognize, inputs=input_audio, outputs=input_msg).then(
+    #     user, inputs=[input_msg, chatbot], outputs=[input_msg, chatbot], queue=False
+    # ).then(
+    #     bot, inputs=chatbot, outputs=chatbot
+    # ).then(
+    #     speak, inputs=chatbot, outputs=output_audio
+    # ).then(
+    #     clear_audio, inputs=input_audio, outputs=input_audio
+    # )
 
 with gr.Blocks() as demo2:
     refresh_btm = gr.Button("Refresh")
     
-    chatbot2 = gr.Chatbot(value=chat_history)
+    chatbot2 = gr.Chatbot(value=database.chat_history)
 
     summary_btm = gr.Button("Summary")
 
-    refresh_btm.click(lambda: chat_history, outputs=chatbot2)
+    refresh_btm.click(lambda: database.chat_history, outputs=chatbot2)
 
     def summary():
         print("summary")
 
-    refresh_btm.click(summary, outputs=chatbot2)
+    summary_btm.click(summary, outputs=chatbot2)
 
 
 
