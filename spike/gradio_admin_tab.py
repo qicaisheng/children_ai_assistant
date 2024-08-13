@@ -1,32 +1,17 @@
-import json
 import gradio as gr
-from datetime import date, timedelta
-import os
-import datetime
 import pandas as pd
-import requests
-
-from typing import List
-saved_prompts = {}
-file_path = "saved_prompts.json"
-
-# 加载已有的 prompts
-if os.path.exists(file_path):
-    with open(file_path, "r", encoding="utf-8") as f:
-        saved_prompts = json.load(f)
+from database import saved_roles_templates
 
 
 person_list = []
 
 def save_prompt(name, prompt):
-    global saved_prompts
-    if name:
-        saved_prompts[name] = prompt
-        # 保存到文件
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(saved_prompts, f, ensure_ascii=False, indent=4)
-        return f"Prompt saved for {name}"
-    return "Error: Name cannot be empty"
+    if name is None:
+        raise gr.Error("Name cannot be empty")
+    else:
+        saved_roles_templates[name] = prompt
+        print(saved_roles_templates)
+        return saved_roles_templates[name]
 
 def create_prompt(
     char_name, char_gender, char_species, char_birthday, char_job, char_residence,
@@ -63,7 +48,7 @@ def create_prompt(
     relation_prompt = "以下人物是你的社会关系，是你熟知的人。注意当谈及其他人物要考虑人物所处的时代。"
     for person in person_list:
         relation_prompt = relation_prompt + f"姓名： {person['姓名']} 性别： {person['性别']} 物种： {person['物种']} 经历 {person['经历']} "
-    return prompt + relation_prompt
+    return char_name, prompt + relation_prompt
 
 
 def add_person(name, gender, species, experience):
@@ -140,7 +125,7 @@ with gr.Blocks() as page:
                     query_button = gr.Button("查询Prompt")
                 prompt_output = gr.Textbox("### propmt 详情显示区域", lines=10)
                 save_button = gr.Button("保存Prompt")
-                alert_success = gr.Markdown(visible=False)            
+                alert_success = gr.Markdown(visible=True)            
             
         generate_button.click(
             create_prompt, 
@@ -150,18 +135,16 @@ with gr.Blocks() as page:
                 speech_style, self_proclaim, experience, character_description, opening_line,
                 user_name, user_nickname, user_description, user_attitude,
             ], 
-            outputs=prompt_output
+            outputs=[prompt_name, prompt_output]
         )
 
-    def handle_save(name, prompt):
-        save_message = save_prompt(name, prompt)
-        print(save_message)
-        return  gr.update(visible=True)
+
     def query_prompt(name):
-        return saved_prompts.get(name, "No prompt found for this name")
+        return saved_roles_templates.get(name, "No prompt found for this name")
+
 
     save_button.click(
-        handle_save, 
+        save_prompt, 
         inputs=[prompt_name, prompt_output], 
         outputs= alert_success
     )
