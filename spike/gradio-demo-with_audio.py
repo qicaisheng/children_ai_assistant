@@ -44,7 +44,7 @@ with gr.Blocks() as demo1:
         editable=False,
         interactive=True,
         elem_id='input_audio_elem',
-        visible=False
+        visible=True
     )
 
     input_audio_button.click(fn=action, inputs=input_audio_button, outputs=input_audio_button).\
