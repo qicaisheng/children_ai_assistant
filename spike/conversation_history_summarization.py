@@ -2,7 +2,7 @@ from open_ai_client import client
 import os
 
 
-_DEFAULT_SUMMARIZER_TEMPLATE = """基于给定当前总结和新的对话生成新的总结，其中User代表小朋友
+_DEFAULT_SUMMARIZER_TEMPLATE = """基于给定当前总结和新的对话生成新的总结，其中User代表小朋友，Assistant代表老师
 
 例子
 当前总结:
