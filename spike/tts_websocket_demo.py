@@ -16,6 +16,7 @@ import gzip
 import copy
 import ssl
 import os
+import tempfile
 
 MESSAGE_TYPES = {11: "audio-only server response", 12: "frontend server response", 15: "error message from server"}
 MESSAGE_TYPE_SPECIFIC_FLAGS = {0: "no sequence number", 1: "sequence number > 0",
@@ -77,7 +78,9 @@ async def test_submit():
     print("\n------------------------ test 'submit' -------------------------")
     print("request json: ", submit_request_json)
     print("\nrequest bytes: ", full_client_request)
-    output_audio_path = "spike/output/test_submit.mp3"
+    _, output_audio_path = tempfile.mkstemp()
+    # output_audio_path = "spike/output/test_submit.mp3"
+    print(output_audio_path)
     file_to_save = open(output_audio_path, "wb")
     header = {"Authorization": f"Bearer; {token}"}
     ssl_context = ssl._create_unverified_context()
@@ -106,7 +109,9 @@ async def submit(text: str):
     print("\n------------------------ test 'submit' -------------------------")
     print("request json: ", submit_request_json)
     print("\nrequest bytes: ", full_client_request)
-    output_audio_path = "spike/output/test_submit1.mp3"
+    _, output_audio_path = tempfile.mkstemp()
+    # output_audio_path = "spike/output/test_submit.mp3"
+    print(output_audio_path)
     file_to_save = open(output_audio_path, "wb")
     header = {"Authorization": f"Bearer; {token}"}
     ssl_context = ssl._create_unverified_context()
