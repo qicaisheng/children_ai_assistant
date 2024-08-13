@@ -7,6 +7,7 @@ import database
 from conversation_history_summarization import generate_new_summary
 from system_template import KINDERGARTEN
 import gradio_parents_tab
+import gradio_admin_tab
 
 client = OpenAI(
     api_key=os.environ.get("ARK_API_KEY"),
@@ -133,5 +134,5 @@ with gr.Blocks() as demo2:
 
 
 
-demo = gr.TabbedInterface([childrend_page, gradio_parents_tab.page], ["小朋友语音对话页面", "家长管理页面"])
-demo.launch()
+demo = gr.TabbedInterface([childrend_page, gradio_parents_tab.page, gradio_admin_tab.page], ["小朋友语音对话页面", "家长管理页面", "系统管理页面"])
+demo.launch(share=True)
