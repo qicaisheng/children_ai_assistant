@@ -38,6 +38,8 @@ def generate_new_summary(current_summary: str, new_conversation_history: list):
         ]    
     )
     new_summary = completion.choices[0].message.content
+    print("summary request: " + content)
+    print("summary response: " + new_summary)
     return new_summary
 
 

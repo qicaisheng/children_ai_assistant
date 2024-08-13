@@ -4,6 +4,7 @@ import os
 import streaming_asr_demo as asr
 import tts_websocket_demo as tts
 import database
+from conversation_history_summarization import generate_new_summary
 
 client = OpenAI(
     api_key=os.environ.get("ARK_API_KEY"),
@@ -19,13 +20,15 @@ def click_js():
 
 def action(btn):
     """Changes button text on click"""
-    if btn == 'Speak': return 'Stop'
-    else: return 'Speak'
+    if btn == '按住说话': return '停止'
+    else: return '按住说话'
 
 
 with gr.Blocks() as demo1:
+    introduction_msg = gr.Textbox(label="介绍", value="小朋友，我是你的幼儿园老师，有什么要问我的吗？可以按【按住说话】按钮开始说话")
+
     chatbot = gr.Chatbot(visible=True)
-    input_audio_button = gr.Button("Speak")
+    input_audio_button = gr.Button("按住说话")
     input_msg = gr.Textbox(visible=True)
     input_audio = gr.Audio(
         label="输入音频",
@@ -75,13 +78,17 @@ with gr.Blocks() as demo1:
                 history[-1][1] += chunk.choices[0].delta.content
                 yield history
         database.chat_history = history
-        print('-------')
         print(database.chat_history)
-        print('-------')
+
+    def update_summary():
+        summary = generate_new_summary(database.summary, database.chat_history[-1:])
+        database.summary = summary
+
 
     input_msg.submit(user, inputs=[input_msg, chatbot], outputs=[input_msg, chatbot], queue=False).then(
         bot, inputs=chatbot, outputs=chatbot
-    )
+    ).then(update_summary)
+
 
     def clear_audio(audio):
         return None
@@ -104,18 +111,20 @@ with gr.Blocks() as demo1:
     # )
 
 with gr.Blocks() as demo2:
-    refresh_btm = gr.Button("Refresh")
+    refresh_btm = gr.Button("刷新")
     
-    chatbot2 = gr.Chatbot(value=database.chat_history)
+    chatbot2 = gr.Chatbot(value=database.chat_history, label="小朋友对话记录")
 
-    summary_btm = gr.Button("Summary")
+    summary_btm = gr.Button("查看对话总结")
+    summary_msg = gr.Textbox(label="小朋友对话总结")
+
 
     refresh_btm.click(lambda: database.chat_history, outputs=chatbot2)
 
     def summary():
-        print("summary")
+        return database.summary
 
-    summary_btm.click(summary, outputs=chatbot2)
+    summary_btm.click(summary, outputs=summary_msg)
 
 
 
