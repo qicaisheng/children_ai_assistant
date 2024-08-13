@@ -119,5 +119,5 @@ with gr.Blocks() as demo2:
 
 
 
-demo = gr.TabbedInterface([demo1, demo2], ["语音对话", "对话历史"])
+demo = gr.TabbedInterface([demo1, demo2], ["小朋友语音对话页面", "家长管理页面"])
 demo.launch()
