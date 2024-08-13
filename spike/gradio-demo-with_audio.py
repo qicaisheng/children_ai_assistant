@@ -28,7 +28,7 @@ def action(btn):
 with gr.Blocks() as demo1:
     introduction_msg = gr.Textbox(label="介绍", value="小朋友，我是你的幼儿园老师，有什么要问我的吗？可以按【按住说话】按钮开始说话")
 
-    chatbot = gr.Chatbot(visible=True)
+    chatbot = gr.Chatbot(visible=True, value=database.chat_history)
     input_audio_button = gr.Button("按住说话")
     input_msg = gr.Textbox(visible=True)
     input_audio = gr.Audio(
