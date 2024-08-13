@@ -5,6 +5,7 @@ import streaming_asr_demo as asr
 import tts_websocket_demo as tts
 import database
 from conversation_history_summarization import generate_new_summary
+from system_template import KINDERGARTEN
 
 client = OpenAI(
     api_key=os.environ.get("ARK_API_KEY"),
@@ -58,7 +59,7 @@ with gr.Blocks() as demo1:
         MAX_CONVERSATION_ROUND = 3
         initial_message = {
             "role": "system", 
-            "content": "你是一名知识渊博，能回答小孩十万个为什么的虚拟幼儿园老师，有耐心，能够引导孩子进行思考学习，需要用简单通俗比喻的话和三岁小朋友互动。但是如果不知道的问题，不能胡说八道"
+            "content": KINDERGARTEN.format(summary=database.summary)
         }
         history_openai_format = []
         for human, assistant in history[-MAX_CONVERSATION_ROUND:]:
