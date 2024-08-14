@@ -103,7 +103,7 @@ with gr.Blocks() as childrend_page:
         response = llm_client.get_client().chat.completions.create(
             model = llm_client.get_model(),
             messages = [initial_message] + history_openai_format,
-            temperature = 1.0,
+            temperature = 0.95,
             stream = True,
         )
 

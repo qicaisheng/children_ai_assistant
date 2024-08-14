@@ -30,7 +30,7 @@ _mapping = {
 
 selected_llm = LLM_MODEL.DEEPSEEK
 
-def get_client():
+def get_client() -> OpenAI:
     _client = _mapping.get(str(selected_llm)).get('client')
     print(f"LLM: {selected_llm}")
     return _client;
