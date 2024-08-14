@@ -49,4 +49,8 @@ def get_saved_roles():
     return saved_roles
 
 
+def get_introduction(role):
+    return introductions.get(role, introductions["default"].format(name=role))
+
+
 get_saved_roles()
