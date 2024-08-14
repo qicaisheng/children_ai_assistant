@@ -50,7 +50,7 @@ with gr.Blocks() as childrend_page:
 
     introduction_msg = gr.Textbox(label="介绍", value=database.get_introduction(role=role))
 
-    chatbot = gr.Chatbot(value=database.chat_history.get(role, []))
+    chatbot = gr.Chatbot(value=database.get_history(role=role))
     input_audio_button = gr.Button("按住说话")
     input_msg = gr.Textbox()
     input_audio = gr.Audio(
@@ -82,8 +82,9 @@ with gr.Blocks() as childrend_page:
         print("当前选择角色：" + role)
 
     roles_dropdown.change(change_role, inputs=roles_dropdown).\
-        then(lambda role: gr.update(value=database.get_introduction(role=role)), inputs=roles_dropdown, outputs=introduction_msg).\
-        then(lambda: None, outputs=chatbot)
+        then(lambda: database.get_introduction(role=role), outputs=introduction_msg).\
+            then(lambda: database.get_history(role=role), outputs=chatbot)
+        # then(lambda role: gr.update(value=database.get_introduction(role=role)), inputs=roles_dropdown, outputs=introduction_msg).\
 
     def user(user_message, history):
         return "", history + [[user_message, None]]

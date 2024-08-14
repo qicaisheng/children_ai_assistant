@@ -76,5 +76,9 @@ def get_introduction(role):
     return introductions.get(role, introductions["default"].format(name=role))
 
 
+def get_history(role):
+    return chat_history.get(role, [])
+
+
 def get_summary(role):
     return summary.get(role, "")
