@@ -1,4 +1,4 @@
-from open_ai_client import client
+from spike.llm_client import client
 import os
 
 

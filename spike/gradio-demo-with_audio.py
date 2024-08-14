@@ -8,7 +8,7 @@ from conversation_history_summarization import generate_new_summary
 from system_template import get_system_prompt
 import gradio_parents_tab
 import gradio_admin_tab
-from open_ai_client import client
+from spike.llm_client import client
 
 
 def click_js():
