@@ -4,18 +4,21 @@ import database
 
 
 with gr.Blocks() as page:
-    refresh_btn = gr.Button("刷新对话历史")
-    chatbots = {}
+    with gr.Row():
+        with gr.Column():
+            refresh_btn = gr.Button("刷新对话历史")
+            chatbots = {}
 
-    @gr.render(triggers=[refresh_btn.click])
-    def render_chatbots():
-        if len(database.chat_history) == 0:
-            gr.Markdown("暂时还没有对话记录")
-        for _role, _history in database.chat_history.items():
-            chatbots[_role] = gr.Chatbot(value=_history, label=f"小朋友和{_role}的对话记录")
+            @gr.render(triggers=[refresh_btn.click])
+            def render_chatbots():
+                if len(database.chat_history) == 0:
+                    gr.Markdown("暂时还没有对话记录")
+                for _role, _history in database.chat_history.items():
+                    chatbots[_role] = gr.Chatbot(value=_history, label=f"小朋友和{_role}的对话记录")
 
-    summary_btn = gr.Button("刷新对话总结")
-    summary_msg = gr.Markdown(label="小朋友对话总结")
+        with gr.Column():
+            summary_btn = gr.Button("刷新对话总结")
+            summary_msg = gr.Markdown(label="小朋友对话总结")
 
 
     def summary():
