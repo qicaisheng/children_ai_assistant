@@ -8,11 +8,7 @@ from conversation_history_summarization import generate_new_summary
 from system_template import get_system_prompt
 import gradio_parents_tab
 import gradio_admin_tab
-
-client = OpenAI(
-    api_key=os.environ.get("ARK_API_KEY"),
-    base_url="https://ark.cn-beijing.volces.com/api/v3",
-)
+from open_ai_client import client
 
 
 def click_js():

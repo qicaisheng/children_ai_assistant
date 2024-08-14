@@ -90,6 +90,7 @@ def get_supported_voices():
     return list(supported_voices.keys())
 
 def get_voice_name(role):
+    print("role_voice_mapping", role_voice_mapping)
     _voice_name = role_voice_mapping.get(role, role_voice_mapping.get("default"))
     print("role: " + role + "voice_name: " + _voice_name)
     return _voice_name

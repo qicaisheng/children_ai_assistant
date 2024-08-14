@@ -134,6 +134,7 @@ with gr.Blocks() as page:
                 save_role_voice_btn = gr.Button("保存角色配音")
 
                 def save_role_voice_mapping(role, voice_type):
+                    print("save_role_voice_mapping, role: " + role + " voice_type, " + voice_type)
                     database.role_voice_mapping[role] = voice_type
 
                 save_role_voice_btn.click(fn=save_role_voice_mapping, inputs=[roles_dropdown, voices_dropdown])
