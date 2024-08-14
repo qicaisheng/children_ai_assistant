@@ -5,7 +5,7 @@ import streaming_asr_demo as asr
 import tts_websocket_demo as tts
 import database
 from conversation_history_summarization import generate_new_summary
-from system_template import KINDERGARTEN, get_system_prompt
+from system_template import get_system_prompt
 import gradio_parents_tab
 import gradio_admin_tab
 
@@ -50,7 +50,7 @@ with gr.Blocks() as childrend_page:
 
     introduction_msg = gr.Textbox(label="介绍", value=database.get_introduction(role=role))
 
-    chatbot = gr.Chatbot(value=database.chat_history)
+    chatbot = gr.Chatbot(value=database.chat_history.get(role, []))
     input_audio_button = gr.Button("按住说话")
     input_msg = gr.Textbox()
     input_audio = gr.Audio(
@@ -111,11 +111,11 @@ with gr.Blocks() as childrend_page:
             if chunk.choices[0].delta.content is not None:
                 history[-1][1] += chunk.choices[0].delta.content
                 yield history
-        database.chat_history = history
-        print(database.chat_history)
+        database.chat_history[role] = history
+        print(database.chat_history[role])
 
     def update_summary():
-        summary = generate_new_summary(database.get_summary(role=role), database.chat_history[-1:])
+        summary = generate_new_summary(database.get_summary(role=role), database.chat_history.get(role)[-1:])
         database.summary[role] = summary
 
 
