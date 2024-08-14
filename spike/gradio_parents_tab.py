@@ -14,13 +14,15 @@ with gr.Blocks() as page:
     def refresh_chatbots():
         print(database.chat_history)
 
-    summary_btm = gr.Button("查看对话总结")
+    summary_btn = gr.Button("查看对话总结")
     summary_msg = gr.Markdown(label="小朋友对话总结")
 
 
     # refresh_btm.click(lambda : refresh_chatbots())
 
     def summary():
+        if len(database.summary) == 0:
+            return "暂时还没有对话记录"
         summary = ""
         for _role, _summary in database.summary.items():
             summary += f"""## 跟{_role}对话总结：
@@ -28,4 +30,4 @@ with gr.Blocks() as page:
             """
         return summary
 
-    summary_btm.click(summary, outputs=summary_msg)
+    summary_btn.click(summary, outputs=summary_msg)
