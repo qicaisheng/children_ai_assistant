@@ -27,29 +27,18 @@ def action(btn):
     else: return '按住说话'
 
 
-STAGE_INIT = "INIT"
-STAGE_SETTING_ROLE = "STAGE_SETTING_ROLE"
-STAGE_CONVERSATION = "STAGE_CONVERSATION"
-stage = STAGE_INIT
-
-def is_conversation_stage():
-    return stage==STAGE_CONVERSATION
-
-def is_not_init_stage():
-    return stage!=STAGE_INIT
-
 
 with gr.Blocks() as childrend_page:
-    set_roles_btn = gr.Button("设置角色")
+    refresh_roles_btn = gr.Button("刷新角色")
     roles_dropdown = gr.Dropdown(
-        choices=database.get_saved_roles(), label="选择角色", info="选择对应的角色就可以跟TA开始对话了", interactive=True, visible=is_not_init_stage()
+        choices=database.get_saved_roles(), label="选择角色", info="选择对应的角色就可以跟TA开始对话了", interactive=True
     ),
 
-    introduction_msg = gr.Textbox(label="介绍", value="小朋友，我是你的幼儿园老师，有什么要问我的吗？可以按【按住说话】按钮开始说话", visible=is_conversation_stage())
+    introduction_msg = gr.Textbox(label="介绍", value="小朋友，我是你的幼儿园老师，有什么要问我的吗？可以按【按住说话】按钮开始说话")
 
-    chatbot = gr.Chatbot(value=database.chat_history, visible=is_conversation_stage())
-    input_audio_button = gr.Button("按住说话", visible=is_conversation_stage())
-    input_msg = gr.Textbox(visible=is_conversation_stage())
+    chatbot = gr.Chatbot(value=database.chat_history)
+    input_audio_button = gr.Button("按住说话")
+    input_msg = gr.Textbox()
     input_audio = gr.Audio(
         label="输入音频",
         sources=["microphone"],
@@ -62,19 +51,15 @@ with gr.Blocks() as childrend_page:
         ),
         editable=False,
         interactive=True,
-        elem_id='input_audio_elem',
-        visible=is_conversation_stage()
+        elem_id='input_audio_elem'
     )
-    output_audio = gr.Audio(autoplay=True, label="输出音频", visible=is_conversation_stage())
+    output_audio = gr.Audio(autoplay=True, label="输出音频")
 
 
     def refresh_roles_ropdown():
-        global stage
-        stage = STAGE_SETTING_ROLE
-        print(stage)
         return gr.Dropdown(choices=database.get_saved_roles())
-    set_roles_btn.click(refresh_roles_ropdown, outputs=roles_dropdown)
-
+    
+    refresh_roles_btn.click(refresh_roles_ropdown, outputs=roles_dropdown)
 
     def user(user_message, history):
         return "", history + [[user_message, None]]
