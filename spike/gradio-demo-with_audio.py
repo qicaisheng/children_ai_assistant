@@ -8,7 +8,7 @@ from conversation_history_summarization import generate_new_summary
 from system_template import get_system_prompt
 import gradio_parents_tab
 import gradio_admin_tab
-from spike.llm_client import client
+from spike.llm_client import doubao_client
 
 
 def click_js():
@@ -100,7 +100,7 @@ with gr.Blocks() as childrend_page:
             history_openai_format.append({"role": "user", "content": human})
             if assistant != None:
                 history_openai_format.append({"role": "assistant", "content": assistant})
-        response = client.chat.completions.create(
+        response = doubao_client.chat.completions.create(
             model = os.environ.get("MODEL_ENDPOINT_ID"),
             messages = [initial_message] + history_openai_format,
             temperature = 1.0,
