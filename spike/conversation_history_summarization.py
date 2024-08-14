@@ -2,7 +2,7 @@ from open_ai_client import client
 import os
 
 
-_DEFAULT_SUMMARIZER_TEMPLATE = """基于给定当前总结和新的对话生成新的总结，其中User代表小朋友，Assistant代表老师
+_DEFAULT_SUMMARIZER_TEMPLATE = """基于给定当前总结和新的对话生成新的总结，其中User代表小朋友，Assistant代表{role}
 
 例子
 当前总结:
@@ -25,12 +25,12 @@ Assistant: 因为人工智能将帮助人类发挥他们的全部潜力。
 新的总结:"""
 
 
-def generate_new_summary(current_summary: str, new_conversation_history: list):
+def generate_new_summary(current_summary: str, new_conversation_history: list, current_role: str):
     new_liens = ""
     for human, assistant in new_conversation_history:
         new_liens += "User: " + human + "\n"
         new_liens += "Assistant: " + assistant + "\n"
-    content = _DEFAULT_SUMMARIZER_TEMPLATE.format(summary=current_summary, new_lines=new_liens)
+    content = _DEFAULT_SUMMARIZER_TEMPLATE.format(summary=current_summary, new_lines=new_liens, role=current_role)
     completion = client.chat.completions.create(
         model=os.environ.get("MODEL_ENDPOINT_ID"),
         messages=[

@@ -116,7 +116,7 @@ with gr.Blocks() as childrend_page:
         print(database.chat_history[role])
 
     def update_summary():
-        summary = generate_new_summary(database.get_summary(role=role), database.chat_history.get(role)[-1:])
+        summary = generate_new_summary(database.get_summary(role=role), database.chat_history.get(role)[-1:], current_role=role)
         database.summary[role] = summary
 
 
