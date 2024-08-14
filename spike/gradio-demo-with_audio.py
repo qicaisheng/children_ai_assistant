@@ -113,7 +113,10 @@ with gr.Blocks() as childrend_page:
                 history[-1][1] += chunk.choices[0].delta.content
                 yield history
         database.chat_history[role] = history
+        print("------------当前角色对话历史-----------------")
         print(database.chat_history[role])
+        print("------------------------------------------")
+
 
     def update_summary():
         summary = generate_new_summary(database.get_summary(role=role), database.chat_history.get(role)[-1:], current_role=role)

@@ -65,7 +65,7 @@ introductions = {
 
 def get_saved_roles():
     saved_roles = list(saved_roles_templates.keys())
-    print(saved_roles)
+    print("当前的角色:", saved_roles)
     return saved_roles
 
 def get_saved_role_template(role):
