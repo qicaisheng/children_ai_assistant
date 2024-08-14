@@ -27,12 +27,26 @@ def action(btn):
     else: return '按住说话'
 
 
+STAGE_INIT = "INIT"
+STAGE_SETTING_ROLE = "STAGE_SETTING_ROLE"
+STAGE_CONVERSATION = "STAGE_CONVERSATION"
+stage = STAGE_INIT
+ROLE_INIT = "幼儿园老师"
+role = ROLE_INIT
+
+def is_conversation_stage():
+    return stage==STAGE_CONVERSATION
+
+def is_not_init_stage():
+    return stage!=STAGE_INIT
+
 
 with gr.Blocks() as childrend_page:
     refresh_roles_btn = gr.Button("刷新角色")
     roles_dropdown = gr.Dropdown(
-        choices=database.get_saved_roles(), label="选择角色", info="选择对应的角色就可以跟TA开始对话了", interactive=True
-    ),
+        choices=database.get_saved_roles(), label="选择角色", info="选择对应的角色就可以跟TA开始对话了", interactive=True,
+        value=ROLE_INIT
+    )
 
     introduction_msg = gr.Textbox(label="介绍", value="小朋友，我是你的幼儿园老师，有什么要问我的吗？可以按【按住说话】按钮开始说话")
 
@@ -57,9 +71,17 @@ with gr.Blocks() as childrend_page:
 
 
     def refresh_roles_ropdown():
-        return gr.Dropdown(choices=database.get_saved_roles())
+        return gr.Dropdown(choices=database.get_saved_roles(), interactive=True)
     
     refresh_roles_btn.click(refresh_roles_ropdown, outputs=roles_dropdown)
+        # then(lambda: gr.update(visible=True), outputs=roles_dropdown)
+
+    def change_role(dropdown):
+        global role
+        role = dropdown
+        print("当前选择角色：" + role)
+
+    roles_dropdown.change(change_role, inputs=roles_dropdown)
 
     def user(user_message, history):
         return "", history + [[user_message, None]]
