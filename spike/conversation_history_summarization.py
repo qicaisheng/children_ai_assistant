@@ -1,4 +1,4 @@
-from spike.llm_client import doubao_client
+import llm_client
 import os
 
 
@@ -31,8 +31,8 @@ def generate_new_summary(current_summary: str, new_conversation_history: list, c
         new_liens += "User: " + human + "\n"
         new_liens += "Assistant: " + assistant + "\n"
     content = _DEFAULT_SUMMARIZER_TEMPLATE.format(summary=current_summary, new_lines=new_liens, role=current_role)
-    completion = doubao_client.chat.completions.create(
-        model=os.environ.get("MODEL_ENDPOINT_ID"),
+    completion = llm_client.get_client().chat.completions.create(
+        model=llm_client.get_model(),
         messages=[
             {"role": "user", "content": content}
         ]    
