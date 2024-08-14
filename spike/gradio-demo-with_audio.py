@@ -92,7 +92,7 @@ with gr.Blocks() as childrend_page:
         MAX_CONVERSATION_ROUND = 3
         initial_message = {
             "role": "system", 
-            "content": KINDERGARTEN.format(summary=database.summary)
+            "content": KINDERGARTEN.format(summary=database.get_summary(role=role))
         }
         history_openai_format = []
         for human, assistant in history[-MAX_CONVERSATION_ROUND:]:
@@ -115,8 +115,8 @@ with gr.Blocks() as childrend_page:
         print(database.chat_history)
 
     def update_summary():
-        summary = generate_new_summary(database.summary, database.chat_history[-1:])
-        database.summary = summary
+        summary = generate_new_summary(database.get_summary(role=role), database.chat_history[-1:])
+        database.summary[role] = summary
 
 
     input_msg.submit(user, inputs=[input_msg, chatbot], outputs=[input_msg, chatbot], queue=False).then(
@@ -150,23 +150,6 @@ with gr.Blocks() as childrend_page:
     ).then(
         clear_audio, inputs=input_audio, outputs=input_audio
     )
-
-with gr.Blocks() as demo2:
-    refresh_btm = gr.Button("刷新")
-    
-    chatbot2 = gr.Chatbot(value=database.chat_history, label="小朋友对话记录")
-
-    summary_btm = gr.Button("查看对话总结")
-    summary_msg = gr.Textbox(label="小朋友对话总结")
-
-
-    refresh_btm.click(lambda: database.chat_history, outputs=chatbot2)
-
-    def summary():
-        return database.summary
-
-    summary_btm.click(summary, outputs=summary_msg)
-
 
 
 demo = gr.TabbedInterface([childrend_page, gradio_parents_tab.page, gradio_admin_tab.page], ["小朋友语音对话页面", "家长管理页面", "系统管理页面"])
