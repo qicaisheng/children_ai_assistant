@@ -18,7 +18,7 @@ with gr.Blocks() as page:
     summary_msg = gr.Markdown(label="小朋友对话总结")
 
 
-    # refresh_btm.click(lambda : refresh_chatbots())
+    refresh_btm.click(lambda : refresh_chatbots())
 
     def summary():
         if len(database.summary) == 0:
