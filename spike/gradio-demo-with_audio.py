@@ -5,7 +5,7 @@ import streaming_asr_demo as asr
 import tts_websocket_demo as tts
 import database
 from conversation_history_summarization import generate_new_summary
-from system_template import KINDERGARTEN
+from system_template import KINDERGARTEN, get_system_prompt
 import gradio_parents_tab
 import gradio_admin_tab
 
@@ -92,7 +92,7 @@ with gr.Blocks() as childrend_page:
         MAX_CONVERSATION_ROUND = 3
         initial_message = {
             "role": "system", 
-            "content": KINDERGARTEN.format(summary=database.get_summary(role=role))
+            "content": get_system_prompt(role)
         }
         history_openai_format = []
         for human, assistant in history[-MAX_CONVERSATION_ROUND:]:
