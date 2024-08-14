@@ -95,7 +95,7 @@ async def test_submit():
         print("\nclosing the connection...")
         return output_audio_path
 
-async def submit(text: str):
+async def submit(text: str, voice_type: str):
     submit_request_json = copy.deepcopy(request_json)
     submit_request_json["audio"]["voice_type"] = voice_type
     submit_request_json["request"]["reqid"] = str(uuid.uuid4())
@@ -190,5 +190,5 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.run_until_complete(test_submit())
 
-async def speak(text: str):
-    return await submit(text)
+async def speak(text: str, voice_type: str):
+    return await submit(text, voice_type)

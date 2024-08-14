@@ -123,12 +123,20 @@ with gr.Blocks() as page:
             with gr.Accordion("角色配音", open=False):
                 refresh_roles_btn = gr.Button("刷新角色")
                 roles_dropdown = gr.Dropdown(
-                    choices=database.get_saved_roles(), label="选择角色", info="选择对应的角色进行配音", interactive=True
+                    choices=database.get_saved_roles(), label="选择角色", info="选择对应的角色进行配音", interactive=True,
+                    value=database.get_saved_roles()[0]
                 )
                 voices_dropdown = gr.Dropdown(
-                    choices=database.get_supported_voices(), label="选择声音", info="选择对应的声音进行配音", interactive=True
+                    choices=database.get_supported_voices(), label="选择声音", info="选择对应的声音进行配音", interactive=True,
+                    value=database.get_voice_name(roles_dropdown.value)
                 )
+                roles_dropdown.change(lambda role: database.get_voice_name(role=role), inputs=roles_dropdown, outputs=voices_dropdown)
                 save_role_voice_btn = gr.Button("保存角色配音")
+
+                def save_role_voice_mapping(role, voice_type):
+                    database.role_voice_mapping[role] = voice_type
+
+                save_role_voice_btn.click(fn=save_role_voice_mapping, inputs=[roles_dropdown, voices_dropdown])
 
 
             with gr.Accordion("Prompt 信息", open=False):

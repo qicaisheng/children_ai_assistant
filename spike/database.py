@@ -63,6 +63,7 @@ introductions = {
     "default": "小朋友，我是{name}, 有什么要问我的吗？可以按【按住说话】按钮开始说话"
 }
 
+# voice_list: https://www.volcengine.com/docs/6561/97465
 supported_voices = {
     "通用女声": "BV001_streaming",
     "通用男声": "BV002_streaming",
@@ -73,8 +74,25 @@ supported_voices = {
     "温柔淑女": "BV104_streaming"
 }
 
+role_voice_mapping = {
+    "幼儿园老师": "通用女声",
+    "光头强": "纨绔青年",
+    "default": "通用女声"
+}
+
+def get_voice_type(role):
+    _voice_name = get_voice_name(role)
+    _voice_type = supported_voices.get(_voice_name)
+    print("role: " + role + " voice_name: " + _voice_name + " voice_type: " + _voice_type)
+    return _voice_type
+
 def get_supported_voices():
     return list(supported_voices.keys())
+
+def get_voice_name(role):
+    _voice_name = role_voice_mapping.get(role, role_voice_mapping.get("default"))
+    print("role: " + role + "voice_name: " + _voice_name)
+    return _voice_name
 
 def get_saved_roles():
     saved_roles = list(saved_roles_templates.keys())

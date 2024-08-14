@@ -145,7 +145,8 @@ with gr.Blocks() as childrend_page:
         print(history)
         print('-------speak start2-------')
         text = history[-1][1]
-        return await tts.speak(text)
+        _voice_type = database.get_voice_type(role=role)
+        return await tts.speak(text, _voice_type)
 
     input_audio.stop_recording(fn=asr.recognize, inputs=input_audio, outputs=input_msg).then(
         user, inputs=[input_msg, chatbot], outputs=[input_msg, chatbot], queue=False
