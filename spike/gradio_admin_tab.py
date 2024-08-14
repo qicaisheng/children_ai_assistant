@@ -1,6 +1,7 @@
 import gradio as gr
 import pandas as pd
 from database import saved_roles_templates
+import database
 
 
 person_list = []
@@ -119,6 +120,17 @@ with gr.Blocks() as page:
 
             generate_button = gr.Button("创建人物")
         with gr.Column():
+            with gr.Accordion("角色配音", open=False):
+                refresh_roles_btn = gr.Button("刷新角色")
+                roles_dropdown = gr.Dropdown(
+                    choices=database.get_saved_roles(), label="选择角色", info="选择对应的角色进行配音", interactive=True
+                )
+                voices_dropdown = gr.Dropdown(
+                    choices=database.get_supported_voices(), label="选择声音", info="选择对应的声音进行配音", interactive=True
+                )
+                save_role_voice_btn = gr.Button("保存角色配音")
+
+
             with gr.Accordion("Prompt 信息", open=False):
                 with gr.Row():
                     prompt_name = gr.Textbox(placeholder="你创建的角色名称")

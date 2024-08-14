@@ -63,6 +63,19 @@ introductions = {
     "default": "小朋友，我是{name}, 有什么要问我的吗？可以按【按住说话】按钮开始说话"
 }
 
+supported_voices = {
+    "通用女声": "BV001_streaming",
+    "通用男声": "BV002_streaming",
+    "知性姐姐": "BV034_streaming",
+    "温柔小哥": "BV033_streaming",
+    "纨绔青年": "BV159_streaming",
+    "活泼女声": "BV005_streaming",
+    "温柔淑女": "BV104_streaming"
+}
+
+def get_supported_voices():
+    return list(supported_voices.keys())
+
 def get_saved_roles():
     saved_roles = list(saved_roles_templates.keys())
     print("当前的角色:", saved_roles)
