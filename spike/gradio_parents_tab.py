@@ -9,6 +9,8 @@ with gr.Blocks() as page:
 
     @gr.render(triggers=[refresh_btn.click])
     def render_chatbots():
+        if len(database.chat_history) == 0:
+            gr.Markdown("暂时还没有对话记录")
         for _role, _history in database.chat_history.items():
             chatbots[_role] = gr.Chatbot(value=_history, label=f"小朋友和{_role}的对话记录")
 
