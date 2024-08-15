@@ -30,6 +30,9 @@ stage = STAGE_INIT
 ROLE_INIT = "幼儿园老师"
 role = ROLE_INIT
 
+
+first_audio_path = None
+
 def is_conversation_stage():
     return stage==STAGE_CONVERSATION
 
@@ -66,6 +69,7 @@ with gr.Blocks() as childrend_page:
                 elem_id='input_audio_elem'
             )
             output_audio = gr.Audio(autoplay=True, label="输出音频")
+            first_audio_play_btn = gr.Button("Play", visible=False)
 
 
     input_audio_button = gr.Button("按住说话")
@@ -118,6 +122,35 @@ with gr.Blocks() as childrend_page:
         print(database.chat_history[role])
         print("------------------------------------------")
 
+    def get_first_sentence(text):
+        print(text)
+        index_of_full_stop = text.find('。')
+        if index_of_full_stop != -1:
+            return text[:index_of_full_stop+1]
+        index_of_question_mark = text.find('?')
+        if index_of_question_mark != -1:
+            return text[:index_of_question_mark+1]
+        index_of_exclamation_mark = text.find('!')
+        if index_of_exclamation_mark != -1:
+            return text[:index_of_exclamation_mark+1]
+        return None
+
+    # async def chatbot_change(chatbot):
+    #     print("---------------chatbot_change  start---------------------------")
+    #     print(chatbot)
+    #     print("---------------chatbot_change  end---------------------------")
+    #     last_reply = chatbot[-1][1]
+    #     print("last_reply: ", last_reply)
+    #     global first_audio_path
+    #     if first_audio_path is None:
+    #         first_sentence = get_first_sentence(last_reply)
+    #         print("first_sentence: " + str(first_sentence))
+    #         if first_sentence is not None:
+    #             first_audio_path =  await get_audio_path(first_sentence)
+    #             # first_audio_play_btn.click(lambda: first_audio_path, outputs=output_audio)
+            
+    # chatbot.change(fn=chatbot_change, inputs=chatbot).\
+    #     then(lambda: first_audio_path, outputs=output_audio)
 
     def update_summary():
         summary = generate_new_summary(database.get_summary(role=role), database.chat_history.get(role, [])[-1:], current_role=role)
@@ -135,6 +168,10 @@ with gr.Blocks() as childrend_page:
     input_audio_button.click(fn=action, inputs=input_audio_button, outputs=input_audio_button).\
         then(clear_audio, inputs=input_audio, outputs=input_audio).\
         then(fn=lambda: None, js=click_js())
+
+    async def get_audio_path(text):
+        _voice_type = database.get_voice_type(role=role)
+        return await tts.speak(text, _voice_type)
 
 
     async def speak(history):
