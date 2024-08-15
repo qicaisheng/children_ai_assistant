@@ -120,6 +120,14 @@ with gr.Blocks() as page:
 
             generate_button = gr.Button("创建人物")
         with gr.Column():
+            with gr.Accordion("Prompt 信息", open=False):
+                with gr.Row():
+                    prompt_name = gr.Textbox(placeholder="你创建的角色名称")
+                    query_button = gr.Button("查询Prompt")
+                prompt_output = gr.Textbox("### propmt 详情显示区域", lines=10)
+                save_button = gr.Button("保存Prompt")
+                alert_success = gr.Markdown(visible=True)    
+                
             with gr.Accordion("角色配音", open=False):
                 refresh_roles_btn = gr.Button("刷新角色")
                 roles_dropdown = gr.Dropdown(
@@ -130,6 +138,11 @@ with gr.Blocks() as page:
                     choices=database.get_supported_voices(), label="选择声音", info="选择对应的声音进行配音", interactive=True,
                     value=database.get_voice_name(roles_dropdown.value)
                 )
+                def refresh_roles_ropdown():
+                    return gr.Dropdown(choices=database.get_saved_roles(), interactive=True)
+                
+                refresh_roles_btn.click(refresh_roles_ropdown, outputs=roles_dropdown)
+
                 roles_dropdown.change(lambda role: database.get_voice_name(role=role), inputs=roles_dropdown, outputs=voices_dropdown)
                 save_role_voice_btn = gr.Button("保存角色配音")
 
@@ -138,15 +151,7 @@ with gr.Blocks() as page:
                     database.role_voice_mapping[role] = voice_type
 
                 save_role_voice_btn.click(fn=save_role_voice_mapping, inputs=[roles_dropdown, voices_dropdown])
-
-
-            with gr.Accordion("Prompt 信息", open=False):
-                with gr.Row():
-                    prompt_name = gr.Textbox(placeholder="你创建的角色名称")
-                    query_button = gr.Button("查询Prompt")
-                prompt_output = gr.Textbox("### propmt 详情显示区域", lines=10)
-                save_button = gr.Button("保存Prompt")
-                alert_success = gr.Markdown(visible=True)            
+        
             
         generate_button.click(
             create_prompt, 
