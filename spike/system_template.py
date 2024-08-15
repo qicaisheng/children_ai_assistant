@@ -1,6 +1,6 @@
 import database
 
-SYSTEM_PROMPT_TEMPLATE_PREFIX = "要求：用100个以内的字进行回答。"
+SYSTEM_PROMPT_TEMPLATE_PREFIX = "要求：用150字内，用第一人称适合口语表达风格的话回答。"
 
 SYSTEM_PROMPT_TEMPLATE_SUFFIX = """基于之前总结的聊天总结和前几次的聊天记录进行回答
 
