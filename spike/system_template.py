@@ -1,6 +1,6 @@
 import database
 
-SYSTEM_PROMPT_TEMPLATE_SUFFIX = """基于之前总结的聊天总结和前几次的聊天记录进行回答
+SYSTEM_PROMPT_TEMPLATE_SUFFIX = """基于之前总结的聊天总结和前几次的聊天记录进行回答，回答在250字以内
 
 当前聊天总结:
 {summary}
