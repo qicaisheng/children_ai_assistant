@@ -14,6 +14,8 @@ SYSTEM_PROMPT_TEMPLATE_SUFFIX = """
 
 当前聊天总结:
 {summary}
+
+要求：用150字内，用第一人称适合口语表达风格的话回答。已经说过的话不用多次说
 """
 
 def get_system_prompt(role):
