@@ -1,6 +1,7 @@
 from openai import OpenAI
 import gradio as gr
 import os
+from user import User
 import streaming_asr_demo as asr
 import tts_websocket_demo as tts
 import database
@@ -41,6 +42,21 @@ def is_not_init_stage():
 
 
 with gr.Blocks() as childrend_page:
+    gr.Markdown("#### 用户身份")
+    with gr.Accordion("设置用户身份", open=False) as user_config:
+        user_name = gr.Textbox(label="姓名", value="")
+        user_nickname = gr.Textbox(label="小名", value="")
+        user_gender=gr.Radio(label="性别", choices=["男", "女"])
+        user_age = gr.Number(label="年龄", value=3, interactive=True)
+        user_description = gr.Textbox(label="描述", value="")
+        user_save_btn = gr.Button("保存")
+
+        def save_user(user_name, user_nickname, user_gender, user_age, user_description):
+            database.user = User(name=user_name, nickname=user_nickname, gender=user_gender, age=user_age, description=user_description)
+            print(database.user)
+        user_save_btn.click(fn=save_user, inputs=[user_name, user_nickname, user_gender, user_age, user_description]).\
+            then(lambda: gr.update(open=False), outputs=user_config)
+
     refresh_roles_btn = gr.Button("刷新角色")
     roles_dropdown = gr.Dropdown(
         choices=database.get_saved_roles(), label="选择角色", info="选择对应的角色就可以跟TA开始对话了", interactive=True,
@@ -196,4 +212,4 @@ with gr.Blocks() as childrend_page:
 
 
 demo = gr.TabbedInterface([childrend_page, gradio_parents_tab.page, gradio_admin_tab.page], ["小朋友语音对话页面", "家长管理页面", "系统管理页面"])
-demo.launch(share=True)
+demo.launch(share=False)

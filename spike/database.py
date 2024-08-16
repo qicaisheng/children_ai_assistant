@@ -1,3 +1,7 @@
+from user import User
+
+
+user: User
 chat_history = {} # {["user input", "assistant reply"]}
 summary = {} # {"role1": "sumary of role1"}
 saved_roles_templates = {
