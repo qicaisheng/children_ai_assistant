@@ -102,14 +102,16 @@ supported_voices = {
     "温柔小哥": "BV033_streaming",
     "纨绔青年": "BV159_streaming",
     "活泼女声": "BV005_streaming",
-    "温柔淑女": "BV104_streaming"
+    "温柔淑女": "BV104_streaming",
+    "活力解说男": "BV410_streaming",
+    "天才童声": "BV061_streaming",
 }
 
 role_voice_mapping = {
     "幼儿园老师": "通用女声",
     "光头强": "纨绔青年",
     "汪汪队天天": "活泼女声",
-    "汪汪队队长莱德": "温柔小哥",
+    "汪汪队队长莱德": "天才童声",
     "default": "通用女声"
 }
 
