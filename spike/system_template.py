@@ -15,11 +15,11 @@ SYSTEM_PROMPT_TEMPLATE_SUFFIX = """
 当前聊天总结:
 {summary}
 
-要求：用150字内，用第一人称适合口语表达风格的话回答。已经说过的话不用多次说
+要求：用100字内，用第一人称适合口语表达风格的话回答，尽可能用简单词汇通俗易懂有趣的方式介绍。已经说过的话不用多次说
 """
 
 def get_system_prompt(role):
-    system_prompt = SYSTEM_PROMPT_TEMPLATE_PREFIX + database.get_saved_role_template(role=role) + \
+    system_prompt = database.get_saved_role_template(role=role) + \
         SYSTEM_PROMPT_TEMPLATE_SUFFIX.format(summary=database.get_summary(role=role), user=database.user)
     print("system_prompt: " + system_prompt)
     return system_prompt
