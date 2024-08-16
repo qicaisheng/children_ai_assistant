@@ -87,12 +87,6 @@ with gr.Blocks() as page:
             character_description = gr.Textbox(label="性格描述", value="")
             opening_line = gr.Textbox(label="开场白", value="")
 
-            gr.Markdown("#### 用户身份")
-            user_name = gr.Textbox(label="姓名", value="")
-            user_nickname = gr.Textbox(label="昵称", value="")
-            user_description = gr.Textbox(label="描述", value="")
-            user_attitude = gr.Number(label="态度", value="")
-
             gr.Markdown("#### 社会关系")
             with gr.Accordion("添加关联人", open=False):
                 with gr.Column():
