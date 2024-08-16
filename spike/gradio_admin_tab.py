@@ -39,12 +39,6 @@ def create_prompt(
     经历: {char_experience}
     性格描述: {char_description}
     开场白: {char_opening_line}
-    注意和你进行对话的用户，他的身份是，你要根据他的身份，选择适合的对话风格和内容
-    #### 用户身份
-    姓名: {user_name}
-    昵称: {user_nickname}
-    描述: {user_description}
-    态度: {user_attitude}
     """
     relation_prompt = "以下人物是你的社会关系，是你熟知的人。注意当谈及其他人物要考虑人物所处的时代。"
     for person in person_list:
@@ -153,7 +147,6 @@ with gr.Blocks() as page:
                 name, gender, species, birthday, job, residence,
                 nickname, zodiac, constellation, hobbies, dislikes,
                 speech_style, self_proclaim, experience, character_description, opening_line,
-                user_name, user_nickname, user_description, user_attitude,
             ], 
             outputs=[prompt_name, prompt_output]
         )
