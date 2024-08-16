@@ -1,7 +1,7 @@
 from user import User
 
 
-user: User
+user: User = User(name="小朋友", nickname="小朋友")
 chat_history = {} # {["user input", "assistant reply"]}
 summary = {} # {"role1": "sumary of role1"}
 saved_roles_templates = {
