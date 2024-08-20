@@ -5,40 +5,28 @@ from contextlib import asynccontextmanager
 import paho.mqtt.client as mqtt
 import conversation
 import html_page
+from mqtt.manager import mqtt_manager
 
-
-def on_connect(client, userdata, flags, rc):
-    print(f"Connected with result code {rc}")
-    client.subscribe("test/topic")
-
-def on_message(client, userdata, msg):
-    print(f"Received message: {msg.payload.decode()} on topic {msg.topic}")
-
-mqtt_client = mqtt.Client()
-mqtt_client.on_connect = on_connect
-mqtt_client.on_message = on_message
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
         print(f"Try to connect and start MQTT client")
-        mqtt_client.connect("127.0.0.1", 1883, 60)
-        mqtt_client.loop_start()
+        mqtt_manager.connect()
         print(f"Succeed to connect and start MQTT client")
         yield
     except Exception as e:
         print(f"Failed to connect or start MQTT client: {e}")
     finally:
         print(f"Try to disconnect and stop MQTT client")
-        mqtt_client.loop_stop()
-        mqtt_client.disconnect()
+        mqtt_manager.disconnect()
         print(f"Succeed to disconnect and stop MQTT client")
 
 app = FastAPI(lifespan=lifespan)
 
 @app.post("/publish/")
 async def publish_message(topic: str, message: str):
-    result = mqtt_client.publish(topic, message)
+    result = mqtt_manager.publish(topic, message)
     if result.rc == 0:
         return {"status": "Message published successfully"}
     else:
