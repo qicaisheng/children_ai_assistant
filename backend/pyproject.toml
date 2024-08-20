@@ -10,6 +10,7 @@ python = "^3.12"
 fastapi = "^0.111.1"
 openai = "^1.37.1"
 gradio = "^4.39.0"
+paho-mqtt = "^2.1.0"
 
 
 [build-system]
