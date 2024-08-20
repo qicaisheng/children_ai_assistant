@@ -15,3 +15,6 @@ I am used doubao LLM API, volcengine ASR and TTS, Gradio for conversation UI.
 And now I have implemented the audio to audio conversation via Gradio.
 
 Besides, I use the python API framework fastapi to build a simple API server which provide a simple conversation page and can send and reply message via websocket.
+
+## Gradio voice to voice demo recording
+[![bilibili recording](spike/output/demo.jpg)](https://www.bilibili.com/video/BV1TTeGe4EBh)
