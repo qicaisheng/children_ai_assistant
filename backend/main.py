@@ -6,6 +6,8 @@ import paho.mqtt.client as mqtt
 import conversation
 import html_page
 from mqtt.manager import mqtt_manager
+import asyncio
+from udp.server import start_udp_server, udp_server_running
 
 
 @asynccontextmanager
@@ -14,6 +16,11 @@ async def lifespan(app: FastAPI):
         print(f"Try to connect and start MQTT client")
         mqtt_manager.connect()
         print(f"Succeed to connect and start MQTT client")
+
+        print(f"Try to start udp server")
+        asyncio.create_task(start_udp_server())
+        print(f"Succeed to start udp server")
+
         yield
     except Exception as e:
         print(f"Failed to connect or start MQTT client: {e}")
@@ -21,6 +28,10 @@ async def lifespan(app: FastAPI):
         print(f"Try to disconnect and stop MQTT client")
         mqtt_manager.disconnect()
         print(f"Succeed to disconnect and stop MQTT client")
+
+        global udp_server_running
+        udp_server_running = False
+        print("Shutting down UDP server...")
 
 app = FastAPI(lifespan=lifespan)
 
