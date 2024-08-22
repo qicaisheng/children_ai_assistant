@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from mqtt.manager import mqtt_manager
+from mqtt.client import publish as mqtt_publish
 import mqtt.event as mqtt_event
 import json
 
@@ -30,18 +30,18 @@ def next_msg_id():
 
 def update_token(data: UpdateTokenData):
     event = mqtt_event.PublishedEvent(msgId=next_msg_id(), identifier=mqtt_event.PublishedIdentifier.UPDATE_TOKEN.value, inputParams=dict(data))
-    mqtt_manager.publish(COMMAND_CALL_TOPIC, json.dump(event))
+    mqtt_publish(COMMAND_CALL_TOPIC, json.dump(event))
 
 def update_config(data: UpdateConfigData):
     event = mqtt_event.PublishedEvent(msgId=next_msg_id(), identifier=mqtt_event.PublishedIdentifier.UPDATE_CONFIG.value, inputParams=dict(data))
-    mqtt_manager.publish(COMMAND_CALL_TOPIC, json.dump(event))
+    mqtt_publish(COMMAND_CALL_TOPIC, json.dump(event))
 
 def update_start_voice(data: UpdateStartVoiceData):
     event = mqtt_event.PublishedEvent(msgId=next_msg_id(), identifier=mqtt_event.PublishedIdentifier.UPDATE_START_VOICE.value, inputParams=dict(data))
-    mqtt_manager.publish(COMMAND_CALL_TOPIC, json.dump(event))
+    mqtt_publish(COMMAND_CALL_TOPIC, json.dump(event))
 
 def audio_play(data: AudioPlay):
     event = mqtt_event.PublishedEvent(msgId=next_msg_id(), identifier=mqtt_event.PublishedIdentifier.AUDIO_PLAY.value, inputParams=dict(data))
-    mqtt_manager.publish(COMMAND_CALL_TOPIC, json.dump(event))
+    mqtt_publish(COMMAND_CALL_TOPIC, json.dump(event))
 
 
