@@ -18,6 +18,7 @@ def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
         event = mqtt_event.ReceivedEvent.model_validate_json(msg.payload.decode())
     except ValueError as e:
         print(f"Validation error: {e}")
+        return
     if mqtt_event.ReceivedIdentifier.LOGIN.value == event.identifier:
         data = mqtt_publisher.UpdateTokenData(token=get_uuid4_no_hyphen())
         mqtt_publisher.update_token(data=data)
