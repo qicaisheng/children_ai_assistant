@@ -12,11 +12,15 @@ def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
     print(client)
     print(userdata)
     print(msg)
-    event = mqtt_event.ReceivedEvent.model_validate(msg)
-    if mqtt_event.ReceivedIdentifier.LOGIN == event.identifier:
+    print(f"Received on {msg.topic}: {msg.payload.decode()}")
+    event: mqtt_event.ReceivedEvent
+    try:
+        event = mqtt_event.ReceivedEvent.model_validate_json(msg.payload.decode())
+    except ValueError as e:
+        print(f"Validation error: {e}")
+    if mqtt_event.ReceivedIdentifier.LOGIN.value == event.identifier:
         data = mqtt_publisher.UpdateTokenData(token=get_uuid4_no_hyphen())
         mqtt_publisher.update_token(data=data)
-    print(f"Received on {msg.topic}: {msg.payload.decode()}")
 
 def processCommandAck(client, userdata, msg: mqtt.MQTTMessage):
     print(msg)
