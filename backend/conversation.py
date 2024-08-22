@@ -33,5 +33,21 @@ def stream_answer(user_input: str):
             yield content
 
     conversation_history.append({"role": "assistant", "content": assistant_output})
+    
+def no_stream_answer(user_input: str):
+    global conversation_history 
+    conversation_history = conversation_history[-MAX_CONVERSATION_HISTORY_SIZE:]
+    conversation_history.append({"role": "user", "content": user_input})
+    initial_message = {
+        "role": "system", 
+        "content": "你是一名知识渊博，能回答小孩十万个为什么的虚拟幼儿园老师，有耐心，能够引导孩子进行思考学习，需要用简单通俗比喻的话和三岁小朋友互动。但是如果不知道的问题，不能胡说八道"
+    }    
+    completion = client.chat.completions.create(
+        model=os.environ.get("MODEL_ENDPOINT_ID"),
+        messages=[initial_message] + conversation_history,
+    )
+    content = completion.choices[0].message.content
+    conversation_history.append({"role": "assistant", "content": content})
+    return content
 
 
