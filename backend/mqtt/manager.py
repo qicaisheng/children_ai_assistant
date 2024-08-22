@@ -1,9 +1,10 @@
 import paho.mqtt.client as mqtt
 from mqtt.subscription import subscriptions
+from mqtt.client import client as mqtt_client
 
 class MQTTManager:
     def __init__(self, broker_host: str, broker_port: int, subscriptions: dict):
-        self.client = mqtt.Client()
+        self.client = mqtt_client
         self.broker_host = broker_host
         self.broker_port = broker_port
         self.subscriptions = subscriptions
@@ -31,10 +32,7 @@ class MQTTManager:
         self.subscriptions[topic] = callback
         self.client.subscribe(topic)
         self.client.message_callback_add(topic, callback)
-
-    def publish(self, topic: str, message: str):
-        return self.client.publish(topic, message)
-
+        
 
 mqtt_manager = MQTTManager(
     broker_host="localhost",
