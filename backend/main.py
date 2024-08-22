@@ -6,6 +6,7 @@ import paho.mqtt.client as mqtt
 import conversation
 import html_page
 from mqtt.manager import mqtt_manager
+from mqtt.client import publish as mqtt_publish
 import asyncio
 from udp.server import start_udp_server, udp_server_running
 
@@ -37,7 +38,7 @@ app = FastAPI(lifespan=lifespan)
 
 @app.post("/publish/")
 async def publish_message(topic: str, message: str):
-    result = mqtt_manager.publish(topic, message)
+    result = mqtt_publish(topic, message)
     if result.rc == 0:
         return {"status": "Message published successfully"}
     else:
