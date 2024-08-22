@@ -32,16 +32,13 @@ def update_token(data: UpdateTokenData):
     _publish_command(mqtt_event.PublishedIdentifier.UPDATE_TOKEN.value, data=dict(data))
 
 def update_config(data: UpdateConfigData):
-    event = mqtt_event.PublishedEvent(msgId=next_msg_id(), identifier=mqtt_event.PublishedIdentifier.UPDATE_CONFIG.value, inputParams=dict(data))
-    mqtt_publish(COMMAND_CALL_TOPIC, dict(event))
+    _publish_command(mqtt_event.PublishedIdentifier.UPDATE_CONFIG.value, data=dict(data))
 
 def update_start_voice(data: UpdateStartVoiceData):
-    event = mqtt_event.PublishedEvent(msgId=next_msg_id(), identifier=mqtt_event.PublishedIdentifier.UPDATE_START_VOICE.value, inputParams=dict(data))
-    mqtt_publish(COMMAND_CALL_TOPIC, json.dumps(event))
+    _publish_command(mqtt_event.PublishedIdentifier.UPDATE_START_VOICE.value, data=dict(data))
 
 def audio_play(data: AudioPlay):
-    event = mqtt_event.PublishedEvent(msgId=next_msg_id(), identifier=mqtt_event.PublishedIdentifier.AUDIO_PLAY.value, inputParams=dict(data))
-    mqtt_publish(COMMAND_CALL_TOPIC, json.dumps(event))
+    _publish_command(mqtt_event.PublishedIdentifier.AUDIO_PLAY.value, data=dict(data))
 
 def _publish_command(identifier: str, data: dict):
     event = mqtt_event.PublishedEvent(msgId=next_msg_id(), identifier=identifier, inputParams=dict(data))
