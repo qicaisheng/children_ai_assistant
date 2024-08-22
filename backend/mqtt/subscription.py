@@ -5,13 +5,9 @@ from utils.uuid_util import get_uuid4_no_hyphen
 
 
 def processTopic1(client, userdata, msg: mqtt.MQTTMessage):
-    print(msg)
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
 
 def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
-    print(client)
-    print(userdata)
-    print(msg)
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
     event: mqtt_event.ReceivedEvent
     try:
@@ -24,11 +20,9 @@ def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
         mqtt_publisher.update_token(data=data)
 
 def processCommandAck(client, userdata, msg: mqtt.MQTTMessage):
-    print(msg)
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
 
 def processDataPost(client, userdata, msg: mqtt.MQTTMessage):
-    print(msg)
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
 
 
