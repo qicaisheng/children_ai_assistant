@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-
+from subscription import subscriptions
 
 class MQTTManager:
     def __init__(self, broker_host: str, broker_port: int, subscriptions: dict):
@@ -36,15 +36,8 @@ class MQTTManager:
         return self.client.publish(topic, message)
 
 
-def processTopic1(client, userdata, msg: mqtt.MQTTMessage):
-    print(msg)
-    print(f"Received on {msg.topic}: {msg.payload.decode()}")
-
-
 mqtt_manager = MQTTManager(
     broker_host="localhost",
     broker_port=1883,
-    subscriptions={
-        "test/topic1": processTopic1,
-    }
+    subscriptions=subscriptions
 )
