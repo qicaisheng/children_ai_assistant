@@ -11,7 +11,7 @@ conversation_history = []
 MAX_CONVERSATION_ROUND = 2
 MAX_CONVERSATION_HISTORY_SIZE = 2 * MAX_CONVERSATION_ROUND
 
-def answer(user_input: str):   
+def stream_answer(user_input: str):   
     global conversation_history 
     conversation_history = conversation_history[-MAX_CONVERSATION_HISTORY_SIZE:]
     conversation_history.append({"role": "user", "content": user_input})

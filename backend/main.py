@@ -58,7 +58,7 @@ async def websocket_endpoint(websocket: WebSocket):
         user_input = json.loads(request)['input']
         print(f"""User: {user_input}""")
             
-        stream_response = conversation.answer(user_input)
+        stream_response = conversation.stream_answer(user_input)
         
         print("Assistant: ", end="")
         for output_text in stream_response:
