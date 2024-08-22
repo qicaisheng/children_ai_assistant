@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-from subscription import subscriptions
+from mqtt.subscription import subscriptions
 
 class MQTTManager:
     def __init__(self, broker_host: str, broker_port: int, subscriptions: dict):
