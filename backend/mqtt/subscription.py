@@ -1,4 +1,6 @@
 import paho.mqtt.client as mqtt
+import json
+import mqtt.event as mqtt_event
 
 
 def processTopic1(client, userdata, msg: mqtt.MQTTMessage):
@@ -7,6 +9,10 @@ def processTopic1(client, userdata, msg: mqtt.MQTTMessage):
 
 def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
     print(msg)
+    event = mqtt_event.ReceivedEvent.model_validate(msg)
+    if mqtt_event.ReceivedIdentifier.LOGIN == event.identifier:
+        
+        print()
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
 
 def processCommandAck(client, userdata, msg: mqtt.MQTTMessage):
