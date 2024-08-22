@@ -8,7 +8,7 @@ def send_audio_file(filename, server_ip, server_port):
     recording_id = (9).to_bytes(2, 'big')  # 示例 RecordingId，2 字节
 
     # 发送开始帧
-    start_frame = b'\x02' + token + recording_id
+    start_frame = token + recording_id + b'\x02'
     sock.sendto(start_frame, (server_ip, server_port))
     print(f"Sent start frame: {start_frame}")
 
@@ -18,13 +18,13 @@ def send_audio_file(filename, server_ip, server_port):
             chunk = f.read(1024)
             if not chunk:
                 break
-            data_frame = b'\x01' + token + recording_id + chunk
+            data_frame = token + recording_id + b'\x01' + chunk
             sock.sendto(data_frame, (server_ip, server_port))
 
     print(f"Sent {filename}")
 
     # 发送结束帧
-    end_frame = b'\x02' + token + recording_id
+    end_frame = token + recording_id + b'\x02'
     sock.sendto(end_frame, (server_ip, server_port))
     print(f"Sent end frame: {end_frame}")
 
