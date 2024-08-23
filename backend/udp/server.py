@@ -5,6 +5,7 @@ import os
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
 from service.audio_service import response_to_uploaded_audio
+import config
 
 udp_server_running = True
 
@@ -35,7 +36,7 @@ async def start_udp_server(host='0.0.0.0', port=8086):
                 print(f"Unexpected payload in end frame from {addr}")
             if current_recording:
                 file_id = str(uuid.uuid4())
-                directory = "../audio"
+                directory = config.audio_file_direction
                 file_name = f"{directory}/recording-{file_id}.wav"
                 
                 if not os.path.exists(directory):
