@@ -9,7 +9,7 @@ import config
 
 udp_server_running = True
 
-async def start_udp_server(host='0.0.0.0', port=8086):
+async def start_udp_server(host='0.0.0.0', port=config.udp_port):
     global udp_server_running
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((host, port))
