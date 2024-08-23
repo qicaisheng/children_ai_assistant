@@ -31,4 +31,4 @@ def send_audio_file(filename, server_ip, server_port):
     sock.close()
 
 # 示例用法
-send_audio_file('audio/test_submit.mp3', 'localhost', 8086)
+send_audio_file('../audio/recording-52b2a7c51ba9423aaee80ba1282ad70d.wav', 'localhost', 8086)

@@ -43,7 +43,7 @@ async def start_udp_server(host='0.0.0.0', port=8086):
                     os.makedirs(directory)
                 save_audio_with_pydub(file_path, current_recording)
                 print(f"Recording saved as {file_path}")
-                response_to_uploaded_audio(file_path, recording_id_int)
+                await response_to_uploaded_audio(file_path, recording_id_int)
                 current_recording = b''
             else:
                 print(f"Start receiving from {addr}")

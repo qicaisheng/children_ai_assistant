@@ -9,6 +9,7 @@ pip install websockets
 
 import asyncio
 import base64
+from concurrent.futures import ThreadPoolExecutor
 import gzip
 import hmac
 import json
@@ -28,7 +29,7 @@ import ssl
 appid = os.environ.get("HUOSHAN_APP_ID")
 token = os.environ.get("HUOSHAN_TOKEN")
 cluster = "volcengine_streaming_common"  # 请求的集群
-audio_path = "spike/output/test_submit.mp3"  # 本地音频路径
+audio_path = "../audio/test_submit.mp3"  # 本地音频路径
 audio_format = "mp3"   # wav 或者 mp3，根据实际音频格式设置
 
 PROTOCOL_VERSION = 0b0001
@@ -320,7 +321,8 @@ class AsrWsClient:
         return await self.segment_data_processor(audio_data, segment_size)
 
 
-def execute_one(audio_item, cluster, **kwargs):
+async def execute_one(audio_item, cluster, **kwargs):
+
     """
 
     :param audio_item: {"id": xxx, "path": "xxx"}
@@ -338,11 +340,14 @@ def execute_one(audio_item, cluster, **kwargs):
         audio_type=audio_type,
         **kwargs
     )
-    result = asyncio.run(asr_http_client.execute())
+
+    result = await asr_http_client.execute()
     return {"id": audio_id, "path": audio_path, "result": result}
 
 def test_one():
-    result = execute_one(
+    loop = asyncio.get_event_loop()
+    
+    result = loop.run_until_complete(execute_one(
         {
             'id': 1,
             'path': audio_path
@@ -351,15 +356,15 @@ def test_one():
         appid=appid,
         token=token,
         format=audio_format,
-    )
+    ))
     print(result)
 
-def recognize(audio_path: str):
+async def recognize(audio_path: str):
     print('----------')
     print(audio_path)
     print('----------')
 
-    result = execute_one(
+    result = await execute_one(
     {
         'id': str(uuid.uuid4()),
         'path': audio_path
@@ -377,5 +382,12 @@ def recognize(audio_path: str):
     return result['result']['payload_msg']['result'][0]['text']
 
 
+# if __name__ == '__main__':
+#     test_one()
+
 if __name__ == '__main__':
-    test_one()
+    loop = asyncio.get_event_loop()
+    # loop.run_until_complete(recognize("../audio/recording-c4a93b5b-012b-4367-9c96-f3e126e6869e.wav"))
+    loop.run_until_complete(recognize("../audio/recording-52b2a7c51ba9423aaee80ba1282ad70d.wav"))
+    # loop.run_until_complete(recognize("../audio/test_submit.wav"))
+    
