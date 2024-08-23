@@ -6,9 +6,11 @@ import paho.mqtt.client as mqtt
 import conversation
 import html_page
 from mqtt.manager import mqtt_manager
+from mqtt.publisher import update_config as mqtt_update_config, UpdateConfigData
 from mqtt.client import publish as mqtt_publish
 import asyncio
 from udp.server import start_udp_server, udp_server_running
+import config
 
 
 @asynccontextmanager
@@ -39,6 +41,14 @@ app = FastAPI(lifespan=lifespan)
 @app.post("/publish/")
 async def publish_message(topic: str, message: str):
     result = mqtt_publish(topic, message)
+    if result.rc == 0:
+        return {"status": "Message published successfully"}
+    else:
+        return {"status": f"Failed to publish message, return code {result.rc}"}
+    
+@app.post("/publish-update-config/")
+async def publish_message():
+    result = mqtt_update_config(UpdateConfigData(speechUdpServerHost=config.udp_host, speechUdpServerPort=config.udp_port))
     if result.rc == 0:
         return {"status": "Message published successfully"}
     else:
