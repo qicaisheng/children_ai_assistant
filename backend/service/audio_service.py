@@ -16,7 +16,9 @@ async def response_to_uploaded_audio(audio_path: str, recording_id: int):
     output_audio_path = await speak(text=output_text)
     print(f"TTS succeed, output_audio_path: {output_audio_path}")
 
+    mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
     mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=get_audio_url(output_audio_path)))
+
 
 def get_audio_url(path: str):
     file_name = path.split('/')[-1]

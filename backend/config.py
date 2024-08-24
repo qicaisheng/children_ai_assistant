@@ -1,4 +1,4 @@
-host = "localhost"
+host = "10.10.30.164"
 audio_base_url = f"http://{host}:8082/"
 audio_file_direction = "../audio"
 udp_host = host

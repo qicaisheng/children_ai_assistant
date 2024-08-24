@@ -22,6 +22,10 @@ class AudioPlay(BaseModel):
     order: int
     url: str
 
+class AudioPlayCMD(BaseModel):
+    recordingId: int
+    total: int
+
 msg_id = 0
 def next_msg_id():
     global msg_id
@@ -40,10 +44,13 @@ def update_start_voice(data: UpdateStartVoiceData):
 def audio_play(data: AudioPlay):
     _publish_command(mqtt_event.PublishedIdentifier.AUDIO_PLAY.value, data=dict(data))
 
+def audio_play_cmd(data: AudioPlayCMD):
+    _publish_command(mqtt_event.PublishedIdentifier.AUDIO_PLAY_CMD.value, data=dict(data))
+
 def _publish_command(identifier: str, data: dict):
     event = mqtt_event.PublishedEvent(msgId=next_msg_id(), identifier=identifier, inputParams=dict(data))
     event_str = json.dumps(dict(event))
-    return mqtt_publish(COMMAND_CALL_TOPIC, event_str)
     print(f"Public topic: {COMMAND_CALL_TOPIC}, msg: {event_str}")
+    return mqtt_publish(COMMAND_CALL_TOPIC, event_str)
 
 
