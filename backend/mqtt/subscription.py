@@ -18,6 +18,12 @@ def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
     if mqtt_event.ReceivedIdentifier.LOGIN.value == event.identifier:
         data = mqtt_publisher.UpdateTokenData(token=get_uuid4_no_hyphen())
         mqtt_publisher.update_token(data=data)
+    elif mqtt_event.ReceivedIdentifier.PRESS_SMALL_BTN.value == event.identifier:
+        role_code = event.outParams.get('keyCode')
+        role_changed = event.outParams.get('changed') == 1
+        if role_changed:
+            data = mqtt_publisher.UpdateStartVoiceData(url= "", keyCode=role_code, etag="")
+            mqtt_publisher.update_start_voice(data=data)
 
 def processCommandAck(client, userdata, msg: mqtt.MQTTMessage):
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
