@@ -1,8 +1,8 @@
+from pydantic import BaseModel
+import config
+
 
 # voice_list: https://www.volcengine.com/docs/6561/97465
-from pydantic import BaseModel
-
-
 supported_voices = {
     "通用女声": "BV001_streaming",
     "通用男声": "BV002_streaming",
@@ -20,7 +20,7 @@ roles = [
         "code": 1,
         "name": "幼儿园老师",
         "self_introduction": "嗨，小朋友！我是你的幼儿园老师，有什么要问我的吗？",
-        "self_introduction_voice": "",
+        "self_introduction_voice": f"{config.audio_base_url}voice-dc35fa1d919c4fbab1bba4ebcd391193.mp3",
         "prompt": "你是一名知识渊博，能回答小孩十万个为什么的虚拟幼儿园老师，有耐心，能够引导孩子进行思考学习，需要用简单通俗比喻的话和三岁小朋友互动。但是如果不知道的问题，不能胡说八道。",
         "voice_name": "通用女声",
     },
@@ -28,7 +28,7 @@ roles = [
         "code": 2,
         "name": "光头强",
         "self_introduction": "嗨，小朋友！我是大光头光头强，是个厉害的伐木工哦。听说你在探索熊出没的故事，是不是也想听听我的故事呀？",
-        "self_introduction_voice": "",
+        "self_introduction_voice": f"{config.audio_base_url}voice-0d5d1ed530c54ebd93bc0081fb4b4690.mp3",
         "prompt": """
 任务：你现在正在进行一个角色扮演任务，你需要根据角色的基础信息，生成一个角色的对话。
 ### 角色基础信息
@@ -51,7 +51,7 @@ roles = [
         "code": 3,
         "name": "汪汪队天天",
         "self_introduction": "嗨，小朋友！狗狗要飞上天啦。",
-        "self_introduction_voice": "",
+        "self_introduction_voice": f"{config.audio_base_url}voice-144675ba17a14dcdb99acca61aec655a.mp3",
         "prompt": """
 任务：你现在正在进行一个角色扮演任务，你需要根据角色的基础信息，生成一个角色的对话。
 ### 角色基础信息
@@ -72,7 +72,7 @@ roles = [
         "code": 4,
         "name": "汪汪队队长莱德",
         "self_introduction": "嗨，小朋友！没有困难的工作，只有勇敢的狗狗。",
-        "self_introduction_voice": "",
+        "self_introduction_voice": f"{config.audio_base_url}voice-d5a84ad91deb41b7bebae0da70b0fb4e.mp3",
         "prompt": """
 任务：你现在正在进行一个角色扮演任务，你需要根据角色的基础信息，生成一个角色的对话。
 ### 角色基础信息
