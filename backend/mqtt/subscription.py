@@ -2,6 +2,7 @@ import paho.mqtt.client as mqtt
 import mqtt.event as mqtt_event
 import mqtt.publisher as mqtt_publisher
 from utils.uuid_util import get_uuid4_no_hyphen
+from core.role import get_role_by_code
 
 
 def processTopic1(client, userdata, msg: mqtt.MQTTMessage):
@@ -22,7 +23,8 @@ def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
         role_code = event.outParams.get('keyCode')
         role_changed = event.outParams.get('changed') == 1
         if role_changed:
-            data = mqtt_publisher.UpdateStartVoiceData(url= "", keyCode=role_code, etag="")
+            role = get_role_by_code(role_code)
+            data = mqtt_publisher.UpdateStartVoiceData(url= role.self_introduction_voice, keyCode=role_code, etag="")
             mqtt_publisher.update_start_voice(data=data)
 
 def processCommandAck(client, userdata, msg: mqtt.MQTTMessage):
