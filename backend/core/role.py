@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 import config
 
+current_role_code: int
 
 # voice_list: https://www.volcengine.com/docs/6561/97465
 supported_voices = {
@@ -138,3 +139,13 @@ def get_role_by_code(code: int) -> Role:
             #     voice_type=role["voice_type"],
             # )
     raise Exception(f"no role found with {code}")
+
+
+def set_current_role_code(role_code: int):
+    global current_role_code
+    current_role_code = role_code
+
+def get_current_role() -> Role:
+    if current_role_code is None:
+        raise Exception("current role code is none")
+    return get_role_by_code(current_role_code)
