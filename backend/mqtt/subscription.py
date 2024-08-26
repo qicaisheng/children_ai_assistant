@@ -21,6 +21,7 @@ def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
         set_current_role_code(role_code)
         data = mqtt_publisher.UpdateTokenData(token=get_uuid4_no_hyphen())
         mqtt_publisher.update_token(data=data)
+        role = get_role_by_code(role_code)
         data = mqtt_publisher.UpdateStartVoiceData(url= role.self_introduction_voice, keyCode=role_code, etag="")
         mqtt_publisher.update_start_voice(data=data)
     elif mqtt_event.ReceivedIdentifier.PRESS_SMALL_BTN.value == event.identifier:

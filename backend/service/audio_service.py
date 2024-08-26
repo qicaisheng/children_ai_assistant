@@ -1,4 +1,5 @@
 import asyncio
+import time
 from service.streaming_asr_demo import recognize
 from service.tts_websocket_demo import speak
 import mqtt.publisher as mqtt_publisher
@@ -11,7 +12,10 @@ async def response_to_uploaded_audio(audio_path: str, recording_id: int):
     role = get_current_role()
 
     print(f"response_to_uploaded_audio: {audio_path}")
+    asr_start_time = time.time()
     input_text = await recognize(audio_path)
+    asr_end_time = time.time()
+    print(f"ASR time cost: {asr_end_time-asr_start_time}, asr_start_time={asr_start_time}, asr_end_time={asr_end_time}")
 
     if input_text == "":
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
@@ -20,11 +24,17 @@ async def response_to_uploaded_audio(audio_path: str, recording_id: int):
 
     print(f"ASR succeed, input_text: {input_text}")
 
+    llm_start_time = time.time()
     output_text = no_stream_answer(input_text, role.code)
+    llm_end_time = time.time()
     print(f"LLM succeed, output_text: {output_text}")
+    print(f"LLM time cost: {llm_end_time-llm_start_time}, llm_start_time={llm_start_time}, llm_end_time={llm_end_time}")
 
+    tts_start_time = time.time()
     output_audio_path = await speak(text=output_text, voice_type=role.voice_type)
+    tts_end_time = time.time()
     print(f"TTS succeed, output_audio_path: {output_audio_path}")
+    print(f"TTS time cost: {tts_end_time-tts_start_time}, tts_start_time={tts_start_time}, tts_end_time={tts_end_time}")
 
     mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
     mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=get_audio_url(output_audio_path)))
