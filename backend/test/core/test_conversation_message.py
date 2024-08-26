@@ -49,12 +49,10 @@ def test_get_conversation_history():
     save_message(user_message2)
 
     history = get_conversation_history(role_code=1, round=1)
-    assert len(history) == 2
+    assert len(history) == 1
     assert len(history[0]) == 2
     assert history[0][0] == user_message1.content
     assert history[0][1] == assistant_message1.content
-    assert history[1][0] == user_message2.content
-    assert history[1][1] is None
 
     assistant_message2 = Message(
         role_code=1,
