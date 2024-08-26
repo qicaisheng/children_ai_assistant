@@ -375,7 +375,11 @@ async def recognize(audio_path: str):
     format='wav',
     )
     print(result)
-    if result['result']['payload_msg']['code'] != 1000:
+    result_code = result['result']['payload_msg']['code']
+    # https://www.volcengine.com/docs/6561/80818
+    if result_code != 1000:
+        if result_code == 1013:
+            return ""
         raise Exception('ASR Error')
 
     print(result['result']['payload_msg']['result'][0]['text'])
