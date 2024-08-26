@@ -24,6 +24,9 @@ def test_save_message():
     assert messages[0]["id"] == saved_message.id
 
 def test_get_conversation_history():
+    history = get_conversation_history(role_code=1, round=1)
+    assert len(history) == 0
+
     user_message1 = Message(
         role_code=1,
         content="Hello, this is a user message 1",

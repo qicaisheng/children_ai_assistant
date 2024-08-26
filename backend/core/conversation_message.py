@@ -35,7 +35,7 @@ def get_conversation_history(role_code: int, round: int) -> List[List[Optional[s
             if conversation_history and conversation_history[-1][1] is None:
                 conversation_history[-1][1] = message["content"]
 
-    if conversation_history[-1][1] is None:
+    if conversation_history and conversation_history[-1][1] is None:
         return conversation_history[-(round+1):-1]
     else:
         return conversation_history[-round:]
