@@ -2,6 +2,7 @@ import core.llm_client as llm_client
 from core.user import get_current_user
 from core.role import get_role_by_code
 
+summaries = {}
 
 _DEFAULT_SUMMARIZER_TEMPLATE = """基于给定当前总结和新的对话生成新的{user}和{role}的对话总结，其中User代表{user}，Assistant代表{role}。
 
@@ -47,5 +48,7 @@ def generate_new_summary(current_summary: str, new_conversation_history: list, r
     print("----------------------------------------------------------")
     return new_summary
 
+def get_summary_by_role_code(role_code: int) -> str:
+    return summaries.get(role_code, "")
 
 # print(generate_new_summary("", [["想听故事", "那我就给你讲一个有趣的故事吧。从前，有一只小猴子，它非常喜欢吃香蕉。有一天，它来到了一个香蕉园，里面有很多很多的香蕉。小猴子高兴极了，它开始疯狂地吃香蕉，一个接着一个，吃得肚子都圆滚滚的。可是，它发现自己吃不完那么多的香蕉，怎么办呢"]], 1))
