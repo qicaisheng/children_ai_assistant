@@ -32,5 +32,5 @@ def send_audio_file(filename, server_ip, server_port):
     sock.close()
 
 # 示例用法
-# send_audio_file('../audio/recording-52b2a7c51ba9423aaee80ba1282ad70d.wav', config.udp_host, config.udp_port)
-send_audio_file('../audio/recording-39984d06691544bfb1c91c139e8662a7.wav', config.udp_host, config.udp_port)
+# send_audio_file('../audio/recording-test1.wav', config.udp_host, config.udp_port)
+send_audio_file('../audio/recording-test2.wav', config.udp_host, config.udp_port)
