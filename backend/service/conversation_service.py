@@ -1,18 +1,19 @@
 import core.llm_client as llm_client
 from core.system_prompt import get_system_prompt_by_role_code
 from core.conversation_message import get_conversation_history
+from core.text_segmenter import split_text
 
 MAX_CONVERSATION_ROUND = 0
 MAX_CONVERSATION_HISTORY_SIZE = 2 * MAX_CONVERSATION_ROUND
 
 
-def no_stream_answer(user_input: str, role_code: int):
+def no_stream_answer(user_input: str, role_code: int) -> list[str]:
     completion = llm_client.get_client().chat.completions.create(
         model = llm_client.get_model(),
         messages = build_llm_request_message(user_input, role_code),
     )
     content = completion.choices[0].message.content
-    return content
+    return split_text(content)
 
 def build_llm_request_message(user_input: str, role_code: int) -> list[dict]:
     initial_message = {
