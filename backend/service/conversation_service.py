@@ -23,11 +23,9 @@ def stream_answer(user_input: str, role_code: int) -> Generator[str, None, None]
         stream=True
     )
 
-    output = ""
     for chunk in response:
         if chunk.choices[0].delta.content:
-            output += chunk.choices[0].delta.content
-            yield output
+            yield chunk.choices[0].delta.content
 
 
 def build_llm_request_message(user_input: str, role_code: int) -> list[dict]:

@@ -4,7 +4,7 @@ import asyncio
 import os
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
-from service.audio_service import response_to_uploaded_audio
+from service.audio_service import response_to_uploaded_audio, split_response_to_uploaded_audio
 import config
 
 udp_server_running = True
@@ -43,7 +43,7 @@ async def start_udp_server(host='0.0.0.0', port=config.udp_port):
                     os.makedirs(directory)
                 save_audio_with_pydub(file_path, current_recording)
                 print(f"Recording saved as {file_path}")
-                await response_to_uploaded_audio(file_path, recording_id_int)
+                await split_response_to_uploaded_audio(file_path, recording_id_int)
                 current_recording = b''
             else:
                 print(f"Start receiving from {addr}")
