@@ -3,6 +3,7 @@ import mqtt.event as mqtt_event
 import mqtt.publisher as mqtt_publisher
 from utils.uuid_util import get_uuid4_no_hyphen
 from core.role import get_role_by_code, set_current_role_code
+import config
 
 
 def processTopic1(client, userdata, msg: mqtt.MQTTMessage):
@@ -21,6 +22,8 @@ def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
         set_current_role_code(role_code)
         data = mqtt_publisher.UpdateTokenData(token=get_uuid4_no_hyphen())
         mqtt_publisher.update_token(data=data)
+        data = mqtt_publisher.UpdateConfigData(speechUdpServerHost=config.udp_host, speechUdpServerPort=config.udp_port)
+        mqtt_publisher.update_config(data=data)
         role = get_role_by_code(role_code)
         data = mqtt_publisher.UpdateStartVoiceData(url= role.self_introduction_voice, keyCode=role_code, etag="")
         mqtt_publisher.update_start_voice(data=data)
