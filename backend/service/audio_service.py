@@ -43,7 +43,7 @@ async def response_to_uploaded_audio(audio_path: str, recording_id: int):
         mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=get_audio_url(output_audio_path)))
 
     user_message = save_message(Message(role_code=role.code, message_type=MessageType.USER_MESSAGE, content=input_text, audio_id=get_audio_file_name(audio_path)))    
-    assistant_mesage = save_message(Message(role_code=role.code, message_type=MessageType.ASSISTANT_MESSAGE, content=output_text, audio_id=get_audio_file_name(output_audio_path)))    
+    assistant_mesage = save_message(Message(role_code=role.code, message_type=MessageType.ASSISTANT_MESSAGE, content="".join(output_texts), audio_id=get_audio_file_name(output_audio_path)))    
     print(f"Save messages succeed, user_message: {user_message}, assistant_mesage: {assistant_mesage}")
 
 
