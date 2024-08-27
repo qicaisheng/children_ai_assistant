@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 import config
 
-current_role_code: int
+current_role_code: int = 1
 
 # voice_list: https://www.volcengine.com/docs/6561/97465
 supported_voices = {
