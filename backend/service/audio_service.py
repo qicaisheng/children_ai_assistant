@@ -9,7 +9,7 @@ from service.conversation_service import no_stream_answer, stream_answer
 import config
 from core.role import Role, get_current_role
 from core.conversation_message import save_message, Message, MessageType
-from core.text_segmenter import split_text
+from core.text_segmenter import split_text, segment_text
 
 async def response_to_uploaded_audio(audio_path: str, recording_id: int):
     role = get_current_role()
@@ -116,20 +116,45 @@ async def check_file_url(url: str):
 
 async def split_llm_response_and_tts(input_text: str, role: Role):
     stream_response = stream_answer(input_text, role_code=role.code)
+
+        # 调用分段函数
+    segments = segment_text(stream_response, segment_size=2)
+    
     output_texts = ""
     _order = 0
-    for text in stream_response:
-        output_texts += text
-        split_texts = split_text(output_texts)
-        for output_text in split_texts[_order:-1]:
-            tts_start_time = time.time()
-            output_audio_path = await speak(text=output_text, voice_type=role.voice_type)
-            tts_end_time = time.time()
-            print(f"TTS succeed, output_audio_path: {output_audio_path}")
-            print(f"TTS time cost: {tts_end_time-tts_start_time}, tts_start_time={tts_start_time}, tts_end_time={tts_end_time}")
-            _order += 1
-            result = {"url": get_audio_url(output_audio_path), "order": _order, "output_text": output_text, "path": output_audio_path}
-            yield result
+
+    for segment in segments:
+        output_texts += segment
+        print(f"output_texts: {output_texts}")
+        print(f"order: {_order}, tts_text: {segment}")
+
+        tts_start_time = time.time()
+        output_audio_path = await speak(segment, role.voice_type)
+        tts_end_time = time.time()
+        print(f"TTS succeed, output_audio_path: {output_audio_path}")
+        print(f"TTS time cost: {tts_end_time-tts_start_time}, tts_start_time={tts_start_time}, tts_end_time={tts_end_time}")
+        _order += 1
+        result = {"url": get_audio_url(output_audio_path), "order": _order, "output_text": segment, "path": output_audio_path}
+        yield result
+
+
+    # output_texts = ""
+    # _order = 0
+    # for text in stream_response:
+    #     output_texts += text
+    #     print(f"output_texts: {output_texts}")
+    #     split_texts = split_text(output_texts)
+    #     print(f"split_texts: {split_texts}")
+    #     for output_text in split_texts[_order:]:
+    #         print(f"order: {_order}, tts_text: {output_text}")
+    #         tts_start_time = time.time()
+    #         output_audio_path = await speak(text=output_text, voice_type=role.voice_type)
+    #         tts_end_time = time.time()
+    #         print(f"TTS succeed, output_audio_path: {output_audio_path}")
+    #         print(f"TTS time cost: {tts_end_time-tts_start_time}, tts_start_time={tts_start_time}, tts_end_time={tts_end_time}")
+    #         _order += 1
+    #         result = {"url": get_audio_url(output_audio_path), "order": _order, "output_text": output_text, "path": output_audio_path}
+    #         yield result
 
 
 def get_audio_url(path: str):
