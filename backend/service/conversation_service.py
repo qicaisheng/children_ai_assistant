@@ -4,7 +4,7 @@ from core.system_prompt import get_system_prompt_by_role_code
 from core.conversation_message import get_conversation_history
 from core.text_segmenter import split_text
 
-MAX_CONVERSATION_ROUND = 0
+MAX_CONVERSATION_ROUND = 3
 MAX_CONVERSATION_HISTORY_SIZE = 2 * MAX_CONVERSATION_ROUND
 
 
