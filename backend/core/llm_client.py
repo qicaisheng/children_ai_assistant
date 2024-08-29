@@ -28,7 +28,7 @@ _mapping = {
     str(LLM_MODEL.DEEPSEEK): {"client": deepseek_client, "model": "deepseek-chat"},
 }
 
-selected_llm = LLM_MODEL.DEEPSEEK
+selected_llm = LLM_MODEL.ZHIPU
 
 def get_client() -> OpenAI:
     _client = _mapping.get(str(selected_llm)).get('client')
