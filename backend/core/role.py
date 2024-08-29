@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 import config
+import core.wangwangdui
 
 current_role_code: int = 1
 
@@ -14,9 +15,15 @@ supported_voices = {
     "温柔淑女": "BV104_streaming",
     "活力解说男": "BV410_streaming",
     "天才童声": "BV061_streaming",
+    "小萝莉": "BV064_24k_streaming",
+    "动漫海星": "BV417_streaming",
+    "动漫小新": "BV050_streaming",
+    "动漫海绵": "BV063_streaming",
+    "懒小羊": "BV426_streaming",
 }
 
-roles = [
+roles = core.wangwangdui.roles
+roles_old = [
     # {
     #     "code": 5,
     #     "name": "",
@@ -62,7 +69,7 @@ roles = [
     {
         "code": 3,
         "name": "汪汪队天天",
-        "self_introduction": "嗨，小朋友！狗狗要飞上天啦。",
+        "self_introduction": "嗨，小朋友！我是汪汪队天天，狗狗要飞上天啦。",
         "self_introduction_voice": f"{config.audio_base_url}role3-voice.mp3",
         "retry_voice": f"{config.audio_base_url}role3-retryvoice.mp3",
         "prompt": """
@@ -84,7 +91,7 @@ roles = [
     {
         "code": 4,
         "name": "汪汪队队长莱德",
-        "self_introduction": "嗨，小朋友！没有困难的工作，只有勇敢的狗狗。",
+        "self_introduction": "嗨，小朋友！我是汪汪队队长莱德，没有困难的工作，只有勇敢的狗狗。",
         "self_introduction_voice": f"{config.audio_base_url}role4-voice.mp3",
         "retry_voice": f"{config.audio_base_url}role4-retryvoice.mp3",
         "prompt": """
