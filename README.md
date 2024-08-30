@@ -18,3 +18,6 @@ Besides, I use the python API framework fastapi to build a simple API server whi
 
 ## Gradio voice to voice demo recording
 [![bilibili recording](spike/output/demo.jpg)](https://www.bilibili.com/video/BV1TTeGe4EBh)
+
+## AI Voice Conversations with a Three-Year-Old: A User's Experience
+[![hardware demo](https://i0.hdslb.com/bfs/archive/0e15f42afd37f247cd323ea662828378b54b6ff6.jpg@308w_174h)](https://www.bilibili.com/video/BV1C6H5etEpP/)
