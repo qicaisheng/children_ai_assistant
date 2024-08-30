@@ -4,7 +4,7 @@ import asyncio
 import os
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
-from service.audio_service import response_to_uploaded_audio, split_response_to_uploaded_audio
+from service.audio_service import split_response_to_uploaded_audio
 import config
 
 udp_server_running = True
