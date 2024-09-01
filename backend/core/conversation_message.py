@@ -3,6 +3,7 @@ from enum import Enum
 from typing import List, Optional
 import uuid
 from pydantic import BaseModel, Field
+from core.role import get_current_role
 
 messages = []
 
@@ -39,3 +40,11 @@ def get_conversation_history(role_code: int, round: int) -> List[List[Optional[s
         return conversation_history[-(round+1):-1]
     else:
         return conversation_history[-round:]
+    
+def get_current_role_messages() -> List[Message]:
+    current_role = get_current_role()
+
+    filtered_messages = [msg for msg in messages if msg["role_code"] == current_role.code]
+
+    return filtered_messages
+    
