@@ -4,6 +4,7 @@ from enum import Enum
 
 class UserIntent(Enum):
     MAYBE_PLAY_STORY = "MAYBE_PLAY_STORY",
+    PLAY_STORY = "PLAY_STORY",
     CONVERSATION = "CONVERSATION",
 
 PLAY_STORY_KEYWORDS = ["听", "放", "故事", "绘本", "书", "讲"]
