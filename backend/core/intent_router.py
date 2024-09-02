@@ -1,7 +1,7 @@
 import json
 
 from pydantic import BaseModel
-from core.story import Story, play
+from core.story import Story
 from core.user_intent import UserIntent, enable_maybe_play_story, disable_maybe_play_story, maybe_play_story
 from core.llm_client import get_client, get_model
 from core.conversation_message import Message, MessageType, get_current_role_messages
@@ -10,7 +10,12 @@ from core.conversation_message import Message, MessageType, get_current_role_mes
 PLAY_STORY_KEYWORDS = ["听", "放", "故事", "绘本", "书", "讲"]
 SYSTEM_PROMPT = "你能够判断用户的意图，如果判断用户是想听故事，就提取用户想听的故事名称，如果不确定就引导用户想听的故事名称，用户是一个三岁小朋友，可能存在表达不清晰的地方"
 
-def route(input: str):
+class SemanticRouteResult(BaseModel):
+    user_intent: UserIntent
+    arguments: dict = {}
+    
+
+def route(input: str) -> SemanticRouteResult:
     if maybe_play_story == True:
         histroy_messages = get_current_role_messages()[-4:]
         return semantic_route(input, histroy_messages)
@@ -67,12 +72,8 @@ tools = [
     }
 ]
 
-class SemanticRouteResult(BaseModel):
-    user_intent: UserIntent
-    arguments: dict = {}
-    
 
-def semantic_route(input: str, history: list[Message] = []):
+def semantic_route(input: str, history: list[Message] = []) -> SemanticRouteResult:
     history_messages = []
     for message in history:
         if message.message_type == MessageType.USER_MESSAGE:
@@ -103,3 +104,4 @@ def semantic_route(input: str, history: list[Message] = []):
         print(f"may be play story, output_text: {output_text}")
         enable_maybe_play_story()
         return SemanticRouteResult(user_intent=UserIntent.MAYBE_PLAY_STORY, arguments={"output_text": output_text})
+    return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
