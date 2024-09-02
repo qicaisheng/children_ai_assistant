@@ -30,6 +30,9 @@ async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
     semanticRouteResult = route(input_text)
     if semanticRouteResult.user_intent == UserIntent.MAYBE_PLAY_STORY:
         _output_text = semanticRouteResult.arguments["output_text"]
+        _url = await tts(text=_output_text, voice_type=role.voice_type)
+        mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
+        mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
     elif semanticRouteResult.user_intent == UserIntent.PLAY_STORY:
         print("play story")
     else:
@@ -64,14 +67,19 @@ async def split_llm_response_and_tts(input_text: str, role: Role):
         print(f"output_texts: {output_texts}")
         print(f"order: {_order}, tts_text: {segment}")
 
-        tts_start_time = time.time()
-        output_audio_path = await speak(segment, role.voice_type)
-        tts_end_time = time.time()
-        print(f"TTS succeed, output_audio_path: {output_audio_path}")
-        print(f"TTS time cost: {tts_end_time-tts_start_time}, tts_start_time={tts_start_time}, tts_end_time={tts_end_time}")
+        url = await tts(text=segment, voice_type=role.voice_type)
         _order += 1
-        result = {"url": get_audio_url(output_audio_path), "order": _order, "output_text": segment}
+        result = {"url": url, "order": _order, "output_text": segment}
         yield result
+
+async def tts(text, voice_type) -> str:
+    tts_start_time = time.time()
+    output_audio_path = await speak(text, voice_type)
+    tts_end_time = time.time()
+    print(f"TTS succeed, output_audio_path: {output_audio_path}")
+    print(f"TTS time cost: {tts_end_time-tts_start_time}, tts_start_time={tts_start_time}, tts_end_time={tts_end_time}")
+
+    return get_audio_url(output_audio_path)
 
 
 def get_audio_url(path: str):
