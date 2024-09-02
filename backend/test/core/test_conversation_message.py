@@ -116,5 +116,9 @@ def test_get_current_role_messages(monkeypatch):
 
     assert len(messages) == 2
 
+    messages = get_current_role_messages(last_message_num=1)
+
+    assert len(messages) == 1
+
     
 

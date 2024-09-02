@@ -46,5 +46,8 @@ def get_current_role_messages(last_message_num: Optional[int] = None) -> List[Me
     
     filtered_messages = [msg for msg in messages if msg["role_code"] == current_role.code]
 
-    return filtered_messages
+    if last_message_num:
+        return filtered_messages[-last_message_num:]
+    else:
+        return filtered_messages
     
