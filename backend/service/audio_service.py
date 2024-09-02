@@ -7,6 +7,8 @@ import config
 from core.role import Role, get_current_role
 from core.conversation_message import save_message, Message, MessageType
 from core.text_segmenter import segment_text
+from core.intent_router import route, SemanticRouteResult
+from core.user_intent import UserIntent
 
 
 async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
@@ -25,18 +27,24 @@ async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
 
     print(f"ASR succeed, input_text: {input_text}")
 
-    stream_response = split_llm_response_and_tts(input_text=input_text, role=role)
-    _order = 0
-    _output_text = ""
-    async for result in stream_response:
-        print(result)
-        _order = result["order"]
-        _output_text = result["output_text"]
-        _url = result["url"]
+    semanticRouteResult = route(input_text)
+    if semanticRouteResult.user_intent == UserIntent.MAYBE_PLAY_STORY:
+        _output_text = semanticRouteResult.arguments["output_text"]
+    elif semanticRouteResult.user_intent == UserIntent.PLAY_STORY:
+        print("play story")
+    else:
+        stream_response = split_llm_response_and_tts(input_text=input_text, role=role)
+        _order = 0
+        _output_text = ""
+        async for result in stream_response:
+            print(result)
+            _order = result["order"]
+            _output_text = result["output_text"]
+            _url = result["url"]
 
-        mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
+            mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
 
-    mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
+        mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
 
     user_message = save_message(Message(role_code=role.code, message_type=MessageType.USER_MESSAGE, content=input_text, audio_id=get_audio_file_name(audio_path)))    
     assistant_mesage = save_message(Message(role_code=role.code, message_type=MessageType.ASSISTANT_MESSAGE, content=_output_text, audio_id=None))    
