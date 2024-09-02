@@ -16,13 +16,13 @@ class SemanticRouteResult(BaseModel):
     
 
 def route(input: str) -> SemanticRouteResult:
-    if maybe_play_story == True:
-        histroy_messages = get_current_role_messages()[-4:]
+    if maybe_play_story():
+        histroy_messages = get_current_role_messages(-4)
         return semantic_route(input, histroy_messages)
 
     if keywords_check_intent(input) == UserIntent.CONVERSATION:
         disable_maybe_play_story()
-        return SemanticRouteResult(UserIntent.CONVERSATION)
+        return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
     
     return semantic_route(input)
 

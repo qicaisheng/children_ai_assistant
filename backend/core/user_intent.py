@@ -2,7 +2,7 @@
 from enum import Enum
 
 
-maybe_play_story: bool = False
+_maybe_play_story: bool = False
 
 class UserIntent(Enum):
     MAYBE_PLAY_STORY = "MAYBE_PLAY_STORY",
@@ -10,9 +10,12 @@ class UserIntent(Enum):
     CONVERSATION = "CONVERSATION",
 
 def enable_maybe_play_story():
-    global maybe_play_story
-    maybe_play_story = True
+    global _maybe_play_story
+    _maybe_play_story = True
 
 def disable_maybe_play_story():
-    global maybe_play_story
-    maybe_play_story = False
+    global _maybe_play_story
+    _maybe_play_story = False
+
+def maybe_play_story() -> bool:
+    return _maybe_play_story
