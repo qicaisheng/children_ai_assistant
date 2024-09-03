@@ -11,4 +11,4 @@ def test_get_audio_url(monkeypatch):
 
 
 loop = asyncio.get_event_loop()
-loop.run_until_complete(audio_service.process_user_input_text(audio_path="../audio/input-voice.wav", recording_id=1, role=get_current_role(), input_text="听小野雁的故事"))
+loop.run_until_complete(audio_service.process_user_input_text(audio_path="../audio/input-voice.wav", recording_id=1, role=get_current_role(), input_text="听小白兔的故事"))

@@ -41,15 +41,20 @@ async def process_user_input_text(audio_path, recording_id, role, input_text):
         story = semanticRouteResult.arguments["story"]
         assert isinstance(story, Story)
 
-        _order = 1
-        _output_text = f"好的，现在播放{story.name}"
-        _url = await tts(text=_output_text, voice_type=role.voice_type)
-        mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
-
-        for _url in story.get_audio_urls():
-            _order +=1
+        if story.get_audio_urls():
+            _order = 1
+            _output_text = f"好的，现在播放{story.name}"
+            _url = await tts(text=_output_text, voice_type=role.voice_type)
             mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
-        mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
+
+            for _url in story.get_audio_urls():
+                _order +=1
+                mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
+            mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
+        else:
+            _output_text = f"不好意思，很想给你播放{story.name}，但是暂时还没有找到这个音频内容。如果你想听的话，我可以给你讲讲大概的故事"
+            _url = await tts(text=_output_text, voice_type=role.voice_type)
+            mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
     else:
         stream_response = split_llm_response_and_tts(input_text=input_text, role=role)
         _order = 0

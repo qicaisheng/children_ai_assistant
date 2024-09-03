@@ -67,6 +67,13 @@ def test_route_given_input_not_related_story_name_when_maybe_play_story(monkeypa
     assert result.user_intent == UserIntent.CONVERSATION
     assert maybe_play_story() is False
 
+def test_route_given_input_not_related_story_name():
+    result = route("听小白兔的故事")
+
+    assert result.user_intent == UserIntent.CONVERSATION
+    assert maybe_play_story() is False
+
+
 def test_route_given_input_play_story_keywords_but_not_mean_want_to_play_again_and_previous_history_with_story(monkeypatch):
     history_messages = [
         Message(role_code=1, content="想听大灰狼故事", message_type=MessageType.USER_MESSAGE, audio_id=None),

@@ -10,7 +10,7 @@ from core.user import get_current_user
 
 
 PLAY_STORY_KEYWORDS = ["听", "放", "故事", "绘本", "书", "讲"]
-SYSTEM_PROMPT = f"你是{get_current_role().name},你能够判断用户的意图，如果判断用户是想听故事，就提取用户想听的故事名称，如果不确定就引导用户想听的故事名称，用户是一个{get_current_user().age}岁小朋友{get_current_user().nickname}，可能存在表达不清晰的地方"
+SYSTEM_PROMPT = "你能够判断用户的意图，然后基于用户的意图调用不同的tools。如果判断用户是想听故事，并且也有对应的故事，就调用play tool；如果没有对应的故事，或者判断就是对话，就调用conversation tool；如果判断用户想听故事，但是没有说出对应的故事名称，引导用户回复想听的故事名称。"
 
 class SemanticRouteResult(BaseModel):
     user_intent: UserIntent
@@ -37,7 +37,7 @@ def keywords_check_intent(input: str):
 
 play_function_call_parameters = {
     "name": "play",
-    "description": "播放对应故事音频。只有当知道用户想听的故事，并且故事名语义跟列出的故事名相近，才调用该方法。否则不调用",
+    "description": "只有当知道用户想听的故事，并且故事名称在enum list中，才调用该方法。否则不调用",
     "strict": True,
     "parameters": {
         "type": "object",
@@ -45,7 +45,7 @@ play_function_call_parameters = {
             "story": {
                 "type": "string",
                 "enum": story_names(),
-                "description": "需要播放的故事名称，提取到的故事名称必须跟enum里面的故事名语义相似",
+                "description": "需要播放的故事名称，提取到的故事名称必须跟enum里面的故事名语义高度相近",
             },
         },
         "required": ["story"],
