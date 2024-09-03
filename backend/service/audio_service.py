@@ -110,5 +110,3 @@ def get_audio_file_name(path: str):
 
 def get_audio_url_from_id(id: str):
     return config.audio_base_url + id
-
-
