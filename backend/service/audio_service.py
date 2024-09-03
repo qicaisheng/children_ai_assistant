@@ -1,4 +1,5 @@
 import time
+from core.story import Story
 from service.streaming_asr_demo import recognize
 from service.tts_websocket_demo import speak
 import mqtt.publisher as mqtt_publisher
@@ -34,8 +35,18 @@ async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
         mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
     elif semanticRouteResult.user_intent == UserIntent.PLAY_STORY:
-        semanticRouteResult.arguments["stroy"]
-        print("play story")
+        story = semanticRouteResult.arguments["stroy"]
+        assert isinstance(story, Story)
+
+        _order = 1
+        _output_text = f"好的，现在播放{story.name}"
+        _url = await tts(text=_output_text, voice_type=role.voice_type)
+        mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
+
+        for _url in story.get_audio_urls:
+            _order +=1
+            mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
+        mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
     else:
         stream_response = split_llm_response_and_tts(input_text=input_text, role=role)
         _order = 0
