@@ -114,9 +114,9 @@ def semantic_route(input: str, history: list[Message] = []) -> SemanticRouteResu
 # print(route("想听故事"))
 # print(route("好听"))
 
-history_messages = [
-    Message(role_code=1, content="想听大灰狼故事", message_type=MessageType.USER_MESSAGE, audio_id=None),
-    Message(role_code=1, content="从前大灰狼肚子空空的，导出找好吃的，最后找到羊阿姨，羊阿姨做了很多好吃的，大灰狼舍不得吃羊阿姨，最后跟羊阿姨做了好朋友。这个故事好不好听啊", message_type=MessageType.ASSISTANT_MESSAGE, audio_id=None),
-]
+# history_messages = [
+#     Message(role_code=1, content="想听大灰狼故事", message_type=MessageType.USER_MESSAGE, audio_id=None),
+#     Message(role_code=1, content="从前大灰狼肚子空空的，导出找好吃的，最后找到羊阿姨，羊阿姨做了很多好吃的，大灰狼舍不得吃羊阿姨，最后跟羊阿姨做了好朋友。这个故事好不好听啊", message_type=MessageType.ASSISTANT_MESSAGE, audio_id=None),
+# ]
 
-print(semantic_route("好听", history_messages))
+# print(semantic_route("好听", history_messages))

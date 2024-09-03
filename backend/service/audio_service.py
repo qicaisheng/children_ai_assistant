@@ -34,6 +34,7 @@ async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
         mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
     elif semanticRouteResult.user_intent == UserIntent.PLAY_STORY:
+        semanticRouteResult.arguments["stroy"]
         print("play story")
     else:
         stream_response = split_llm_response_and_tts(input_text=input_text, role=role)
@@ -92,5 +93,8 @@ def get_audio_url(path: str):
 def get_audio_file_name(path: str):
     file_name = path.split('/')[-1]
     return file_name
+
+def get_audio_url_from_id(id: str):
+    return config.audio_base_url + id
 
 
