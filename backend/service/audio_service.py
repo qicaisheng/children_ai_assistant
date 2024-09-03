@@ -28,6 +28,9 @@ async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
 
     print(f"ASR succeed, input_text: {input_text}")
 
+    await process_user_input_text(audio_path, recording_id, role, input_text)
+
+async def process_user_input_text(audio_path, recording_id, role, input_text):
     semanticRouteResult = route(input_text)
     if semanticRouteResult.user_intent == UserIntent.MAYBE_PLAY_STORY:
         _output_text = semanticRouteResult.arguments["output_text"]
