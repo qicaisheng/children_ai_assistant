@@ -5,10 +5,12 @@ from core.story import story_names, get_story_by_name
 from core.user_intent import UserIntent, enable_maybe_play_story, disable_maybe_play_story, maybe_play_story
 from core.llm_client import get_client, get_model
 from core.conversation_message import Message, MessageType, get_current_role_messages
+from core.role import get_current_role
+from core.user import get_current_user
 
 
 PLAY_STORY_KEYWORDS = ["听", "放", "故事", "绘本", "书", "讲"]
-SYSTEM_PROMPT = "你能够判断用户的意图，如果判断用户是想听故事，就提取用户想听的故事名称，如果不确定就引导用户想听的故事名称，用户是一个三岁小朋友，可能存在表达不清晰的地方"
+SYSTEM_PROMPT = f"你是{get_current_role().name},你能够判断用户的意图，如果判断用户是想听故事，就提取用户想听的故事名称，如果不确定就引导用户想听的故事名称，用户是一个{get_current_user().age}岁小朋友{get_current_user().nickname}，可能存在表达不清晰的地方"
 
 class SemanticRouteResult(BaseModel):
     user_intent: UserIntent
