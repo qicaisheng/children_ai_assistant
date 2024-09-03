@@ -38,7 +38,7 @@ async def process_user_input_text(audio_path, recording_id, role, input_text):
         mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
     elif semanticRouteResult.user_intent == UserIntent.PLAY_STORY:
-        story = semanticRouteResult.arguments["stroy"]
+        story = semanticRouteResult.arguments["story"]
         assert isinstance(story, Story)
 
         _order = 1
@@ -46,7 +46,7 @@ async def process_user_input_text(audio_path, recording_id, role, input_text):
         _url = await tts(text=_output_text, voice_type=role.voice_type)
         mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
 
-        for _url in story.get_audio_urls:
+        for _url in story.get_audio_urls():
             _order +=1
             mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
