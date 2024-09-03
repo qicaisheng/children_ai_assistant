@@ -1,7 +1,7 @@
 import json
 
 from pydantic import BaseModel
-from core.story import story_names
+from core.story import story_names, get_story_by_name
 from core.user_intent import UserIntent, enable_maybe_play_story, disable_maybe_play_story, maybe_play_story
 from core.llm_client import get_client, get_model
 from core.conversation_message import Message, MessageType, get_current_role_messages
@@ -97,7 +97,7 @@ def semantic_route(input: str, history: list[Message] = []) -> SemanticRouteResu
                 story = arguments['story']
                 if story in story_names():
                     print(f"play story: {story}")
-                    return SemanticRouteResult(user_intent=UserIntent.PLAY_STORY, arguments={"story": story}) 
+                    return SemanticRouteResult(user_intent=UserIntent.PLAY_STORY, arguments={"story": get_story_by_name(story)}) 
                 else:
                     return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
             if tool_call.function.name == "conversation":

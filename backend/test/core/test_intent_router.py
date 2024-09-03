@@ -1,3 +1,4 @@
+from core.story import Story
 from core.user_intent import UserIntent, maybe_play_story
 from core.intent_router import SemanticRouteResult, route
 from core.conversation_message import Message, MessageType
@@ -24,7 +25,8 @@ def test_route_given_input_with_play_story_keywords_and_story_name():
     assert result.user_intent == UserIntent.PLAY_STORY
     assert result.arguments is not None
     assert 'story' in result.arguments
-    assert result.arguments["story"] == "走失的小野雁"
+    assert isinstance(result.arguments["story"], Story)
+    assert result.arguments["story"].name == "走失的小野雁"
     assert maybe_play_story() is False
 
 def test_route_given_story_name_but_without_play_story_keywords():
@@ -47,7 +49,8 @@ def test_route_given_input_story_name_when_maybe_play_story(monkeypatch):
     assert result.user_intent == UserIntent.PLAY_STORY
     assert result.arguments is not None
     assert 'story' in result.arguments
-    assert result.arguments["story"] == "走失的小野雁"
+    assert isinstance(result.arguments["story"], Story)
+    assert result.arguments["story"].name == "走失的小野雁"
     assert maybe_play_story() is False
 
 def test_route_given_input_not_related_story_name_when_maybe_play_story(monkeypatch):
