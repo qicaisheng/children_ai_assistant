@@ -1,7 +1,7 @@
 import json
 
 from pydantic import BaseModel
-from core.story import Story
+from core.story import story_names
 from core.user_intent import UserIntent, enable_maybe_play_story, disable_maybe_play_story, maybe_play_story
 from core.llm_client import get_client, get_model
 from core.conversation_message import Message, MessageType, get_current_role_messages
@@ -41,7 +41,7 @@ play_function_call_parameters = {
         "properties": {
             "story": {
                 "type": "string",
-                "enum": Story.list(),
+                "enum": story_names(),
                 "description": "需要播放的故事名称",
             },
         },
