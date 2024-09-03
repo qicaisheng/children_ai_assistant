@@ -24,7 +24,8 @@ def route(input: str) -> SemanticRouteResult:
         disable_maybe_play_story()
         return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
     
-    return semantic_route(input)
+    histroy_messages = get_current_role_messages(-4)
+    return semantic_route(input, histroy_messages)
 
 def keywords_check_intent(input: str):
     for keyword in PLAY_STORY_KEYWORDS:
@@ -34,7 +35,7 @@ def keywords_check_intent(input: str):
 
 play_function_call_parameters = {
     "name": "play",
-    "description": "播放对应故事音频。只有当知道用户想听的故事时，才调用该方法。",
+    "description": "播放对应故事音频。只有当知道用户想听的故事，并且故事名语义跟列出的故事名相近，才调用该方法。否则不调用",
     "strict": True,
     "parameters": {
         "type": "object",
@@ -42,7 +43,7 @@ play_function_call_parameters = {
             "story": {
                 "type": "string",
                 "enum": story_names(),
-                "description": "需要播放的故事名称",
+                "description": "需要播放的故事名称，提取到的故事名称必须跟enum里面的故事名语义相似",
             },
         },
         "required": ["story"],
@@ -94,8 +95,11 @@ def semantic_route(input: str, history: list[Message] = []) -> SemanticRouteResu
             arguments = json.loads(tool_call.function.arguments)
             if tool_call.function.name == "play":
                 story = arguments['story']
-                print(f"play story: {story}")
-                return SemanticRouteResult(user_intent=UserIntent.PLAY_STORY, arguments={"story": story}) 
+                if story in story_names():
+                    print(f"play story: {story}")
+                    return SemanticRouteResult(user_intent=UserIntent.PLAY_STORY, arguments={"story": story}) 
+                else:
+                    return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
             if tool_call.function.name == "conversation":
                 print("-----------conversation-----------")
                 return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
@@ -105,3 +109,14 @@ def semantic_route(input: str, history: list[Message] = []) -> SemanticRouteResu
         enable_maybe_play_story()
         return SemanticRouteResult(user_intent=UserIntent.MAYBE_PLAY_STORY, arguments={"output_text": output_text})
     return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
+
+
+# print(route("想听故事"))
+# print(route("好听"))
+
+history_messages = [
+    Message(role_code=1, content="想听大灰狼故事", message_type=MessageType.USER_MESSAGE, audio_id=None),
+    Message(role_code=1, content="从前大灰狼肚子空空的，导出找好吃的，最后找到羊阿姨，羊阿姨做了很多好吃的，大灰狼舍不得吃羊阿姨，最后跟羊阿姨做了好朋友。这个故事好不好听啊", message_type=MessageType.ASSISTANT_MESSAGE, audio_id=None),
+]
+
+print(semantic_route("好听", history_messages))
