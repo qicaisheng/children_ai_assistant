@@ -44,7 +44,7 @@ def get_conversation_history(role_code: int, round: int) -> List[List[Optional[s
 def get_current_role_messages(last_message_num: Optional[int] = None) -> List[Message]:
     current_role = get_current_role()
     
-    filtered_messages = [msg for msg in messages if msg["role_code"] == current_role.code]
+    filtered_messages = [Message(**msg) for msg in messages if msg["role_code"] == current_role.code]
 
     if last_message_num:
         return filtered_messages[-last_message_num:]

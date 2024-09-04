@@ -115,6 +115,7 @@ def test_get_current_role_messages(monkeypatch):
     messages = get_current_role_messages()
 
     assert len(messages) == 2
+    assert isinstance(messages[0], Message)
 
     messages = get_current_role_messages(last_message_num=1)
 
