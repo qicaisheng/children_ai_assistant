@@ -19,6 +19,14 @@ def test_route_given_input_with_play_story_keywords():
     assert 'output_text' in result.arguments
     assert maybe_play_story() is True
 
+def test_route_given_input_with_play_story_keywords_and_want_to_play_story():
+    result = route("想听故事")
+    print(result)
+    assert result.user_intent == UserIntent.MAYBE_PLAY_STORY
+    assert result.arguments is not None
+    assert 'output_text' in result.arguments
+    assert maybe_play_story() is True
+
 def test_route_given_input_with_play_story_keywords_and_story_name():
     result = route("听小野雁")
     print(result)
