@@ -1,7 +1,7 @@
 import time
 from core.story import Story
-from backend.service.asr.streaming_asr_demo import recognize
-from service.tts_websocket_demo import speak
+from service.asr.streaming_asr_demo import recognize
+from service.tts.tts_websocket_demo import speak
 import mqtt.publisher as mqtt_publisher
 from service.conversation_service import stream_answer
 import config
