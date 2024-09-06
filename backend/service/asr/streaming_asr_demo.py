@@ -13,6 +13,7 @@ import gzip
 import hmac
 import json
 import os
+from typing import Generator
 import uuid
 import wave
 from enum import Enum
@@ -154,7 +155,7 @@ def parse_response(res):
     return result
 
 
-def read_wav_info(data: bytes = None) -> (int, int, int, int, int):
+def read_wav_info(data: bytes = None) -> tuple[int, int, int, int, int]:
     with BytesIO(data) as _f:
         wave_fp = wave.open(_f, 'rb')
         nchannels, sampwidth, framerate, nframes = wave_fp.getparams()[:4]
@@ -224,7 +225,7 @@ class AsrWsClient:
         return req
 
     @staticmethod
-    def slice_data(data: bytes, chunk_size: int) -> (list, bool):
+    def slice_data(data: bytes, chunk_size: int) -> Generator[tuple[list, bool], None, None]:
         """
         slice data
         :param data: wav data
@@ -369,7 +370,5 @@ async def recognize(audio_path: str):
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
-    # loop.run_until_complete(recognize("../audio/recording-c4a93b5b-012b-4367-9c96-f3e126e6869e.wav"))
-    loop.run_until_complete(recognize("../audio/recording-52b2a7c51ba9423aaee80ba1282ad70d.wav"))
-    # loop.run_until_complete(recognize("../audio/test_submit.wav"))
+    loop.run_until_complete(recognize("../audio/recording-2ddcd8b7238340c18a0c708082481c89.wav"))
     
