@@ -9,20 +9,16 @@ pip install websockets
 
 import asyncio
 import base64
-from concurrent.futures import ThreadPoolExecutor
 import gzip
 import hmac
 import json
-import logging
 import os
 import uuid
 import wave
 from enum import Enum
 from hashlib import sha256
 from io import BytesIO
-from typing import List
 from urllib.parse import urlparse
-import time
 import websockets
 import ssl
 
@@ -344,21 +340,6 @@ async def execute_one(audio_item, cluster, **kwargs):
     result = await asr_http_client.execute()
     return {"id": audio_id, "path": audio_path, "result": result}
 
-def test_one():
-    loop = asyncio.get_event_loop()
-    
-    result = loop.run_until_complete(execute_one(
-        {
-            'id': 1,
-            'path': audio_path
-        },
-        cluster=cluster,
-        appid=appid,
-        token=token,
-        format=audio_format,
-    ))
-    print(result)
-
 async def recognize(audio_path: str):
     print('----------')
     print(audio_path)
@@ -385,9 +366,6 @@ async def recognize(audio_path: str):
     print(result['result']['payload_msg']['result'][0]['text'])
     return result['result']['payload_msg']['result'][0]['text']
 
-
-# if __name__ == '__main__':
-#     test_one()
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
