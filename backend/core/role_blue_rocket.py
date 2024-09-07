@@ -8,8 +8,8 @@ roles = [
         "code": 1,
         "name": "AstroBoo, the Blue Rocket",
         "self_introduction": "Hi, little one! I'm the little blue rocket, AstroBoo. Every hug is a new adventure blast-off!",
-        "self_introduction_voice": f"{config.audio_base_url}laide-introvoice.mp3",
-        "retry_voice": f"{config.audio_base_url}laide-retryvoice.mp3",
+        "self_introduction_voice": f"{config.audio_base_url}en_blue_rocket_introvoice.mp3",
+        "retry_voice": f"{config.audio_base_url}en_blue_rocket_retryvoice.mp3",
         "prompt": """
 Task: You are currently engaged in a role-playing task. Based on the character's basic information, you need to generate a dialogue for the character.
 ### Character Basic Infomation
@@ -29,8 +29,8 @@ Catchphrase: Every hug is a new adventure blast-off!
         "code": 2,
         "name": "AstroBoo, el Cohete Azul",
         "self_introduction": "¡Hola, pequeño! Soy el pequeño cohete azul, AstroBoo. ¡Cada abrazo es un nuevo despegue de aventura!",
-        "self_introduction_voice": f"{config.audio_base_url}laide-introvoice.mp3",
-        "retry_voice": f"{config.audio_base_url}laide-retryvoice.mp3",
+        "self_introduction_voice": f"{config.audio_base_url}es_blue_rocket_introvoice.mp3",
+        "retry_voice": f"{config.audio_base_url}es_blue_rocket_retryvoice.mp3",
         "prompt": """
 Tarea: Estás realizando una tarea de juego de rol. Con base en la información básica del personaje, necesitas generar un diálogo para el personaje.
 ### Información básica del personaje
@@ -50,7 +50,7 @@ Eslogan: ¡Cada abrazo es un nuevo despegue de aventura!
         "code": 3,
         "name": "小蓝火箭 AstroBoo",
         "self_introduction": "嗨，小朋友！我是小蓝火箭 AstroBoo。每一次拥抱，都是一次新的冒险起航！",
-        "self_introduction_voice": f"{config.audio_base_url}laide-introvoice.mp3",
+        "self_introduction_voice": f"{config.audio_base_url}cn_blue_rocket_introvoice.mp3",
         "retry_voice": f"{config.audio_base_url}laide-retryvoice.mp3",
         "prompt": """
 任务：你现在正在进行一个角色扮演任务，你需要根据角色的基础信息，生成一个角色的对话。
