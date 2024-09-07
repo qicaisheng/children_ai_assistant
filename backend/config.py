@@ -1,5 +1,6 @@
 from service.tts.tts import TTS
 from service.asr.asr import ASR
+from core.llm_model import LLM_MODEL
 
 # host = "10.10.30.164"
 host = "localhost"
@@ -10,5 +11,6 @@ udp_port = 8085
 mqtt_host = host
 mqtt_port = 1883
 
-tts = TTS.VOLCENGINE
-asr = ASR.VOLCENGINE
+tts = TTS.OPENAI
+asr = ASR.OPENAI
+llm = LLM_MODEL.OPENAI
