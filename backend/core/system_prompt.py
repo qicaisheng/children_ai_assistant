@@ -19,6 +19,38 @@ SYSTEM_PROMPT_TEMPLATE_SUFFIX = """
 要求：用100字内，用第一人称适合口语表达风格的话回答，尽可能用简单词汇通俗易懂有趣的方式介绍。已经说过的话不用多次说
 """
 
+EN_SYSTEM_PROMPT_TEMPLATE_SUFFIX = """
+The current user's information is as follows:
+Name: {user.name}
+Nickname: {user.nickname}
+Gender: {user.gender}
+Age: {user.age}
+Description: {user.description}
+
+Respond based on the previous chat summary and earlier conversations. Note: If you're unsure about the user's question, ask them first, then try to answer.
+
+Current chat summary:
+{summary}
+
+Requirement: Answer in less than 100 words using a first-person, conversational style. Keep it simple, easy to understand, and engaging. Avoid repeating information already discussed.
+"""
+
+ES_SYSTEM_PROMPT_TEMPLATE_SUFFIX = """
+La información del usuario con quien estás conversando es la siguiente:
+Nombre: {user.name}
+Apodo: {user.nickname}
+Género: {user.gender}
+Edad: {user.age}
+Descripción: {user.description}
+
+Responde basándote en el resumen de las conversaciones anteriores y los chats previos. Nota: Si no estás seguro de la pregunta del usuario, puedes preguntarle primero y luego intentar responder.
+
+Resumen actual del chat:
+{summary}
+
+Requisito: Responde en menos de 100 palabras, usando un estilo de conversación en primera persona. Usa palabras sencillas, de forma clara, fácil de entender y divertida. Evita repetir lo que ya se ha dicho.
+"""
+
 def get_system_prompt_by_role_code(role_code: int):
     role = get_role_by_code(role_code)
     system_prompt = role.prompt + \
