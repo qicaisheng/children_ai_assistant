@@ -1,6 +1,6 @@
 import time
 from core.story import Story
-from service.asr.volcengine_streaming_asr import recognize
+from service.asr.asr_service import recognize
 from service.tts.tts_service import to_speech
 import mqtt.publisher as mqtt_publisher
 from service.conversation_service import stream_answer
