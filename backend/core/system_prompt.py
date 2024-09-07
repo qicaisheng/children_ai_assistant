@@ -64,9 +64,9 @@ def get_system_prompt_by_role_code(role_code: int):
 def _get_system_prompt_template_suffix():
     if config.language == Language.CN:
         return SYSTEM_PROMPT_TEMPLATE_SUFFIX
-    elif config.Language == Language.EN:
+    elif config.language == Language.EN:
         return EN_SYSTEM_PROMPT_TEMPLATE_SUFFIX
-    elif config.Language == Language.ES:
+    elif config.language == Language.ES:
         return ES_SYSTEM_PROMPT_TEMPLATE_SUFFIX
     else:
         raise ValueError("Unsupported Language specified in config.")

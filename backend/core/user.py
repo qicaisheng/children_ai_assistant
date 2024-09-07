@@ -9,8 +9,8 @@ class User(BaseModel):
     description: str = None
 
 _default_user = {
-    "name": "小朋友",
-    "nickname": "小朋友",
+    "name": "benny",
+    "nickname": "benny",
     "age": 3,
 }
 
