@@ -15,8 +15,8 @@ async def to_speech(text: str, voice_type: str = None) -> str:
         output_audio_path = await volcengine_tts.speak(text=text, voice_type=voice_type)
     
     elif config.tts == TTS.OPENAI:
-        if voice_type is None:
-            voice_type = "alloy"
+        # if voice_type is None:
+        voice_type = "alloy"
         output_audio_path = openai_tts.to_speech(text=text, voice_type=voice_type)    
     else:
         raise ValueError("Unsupported TTS engine specified in config.")
