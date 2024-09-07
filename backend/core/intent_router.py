@@ -92,25 +92,32 @@ def semantic_route(input: str, history: list[Message] = []) -> SemanticRouteResu
     )
     print(completion)
     if completion.choices[0].finish_reason == "tool_calls":
-        disable_maybe_play_story()
-        for tool_call in completion.choices[0].message.tool_calls:
-            arguments = json.loads(tool_call.function.arguments)
-            if tool_call.function.name == "play":
-                story = arguments['story']
-                if story in story_names():
-                    print(f"play story: {story}")
-                    return SemanticRouteResult(user_intent=UserIntent.PLAY_STORY, arguments={"story": get_story_by_name(story)}) 
-                else:
-                    return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
-            if tool_call.function.name == "conversation":
-                print("-----------conversation-----------")
-                return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
+        process_function_call(completion)
     if completion.choices[0].finish_reason == "stop":
         output_text = completion.choices[0].message.content
-        print(f"may be play story, output_text: {output_text}")
-        enable_maybe_play_story()
-        return SemanticRouteResult(user_intent=UserIntent.MAYBE_PLAY_STORY, arguments={"output_text": output_text})
+        if output_text:
+            print(f"may be play story, output_text: {output_text}")
+            enable_maybe_play_story()
+            return SemanticRouteResult(user_intent=UserIntent.MAYBE_PLAY_STORY, arguments={"output_text": output_text})
+        else:  # fix for openai function call issue which finish_reason is stop, and content none but with call tools
+            process_function_call(completion)
     return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
+
+
+def process_function_call(completion):
+    disable_maybe_play_story()
+    for tool_call in completion.choices[0].message.tool_calls:
+        arguments = json.loads(tool_call.function.arguments)
+        if tool_call.function.name == "play":
+            story = arguments['story']
+            if story in story_names():
+                print(f"play story: {story}")
+                return SemanticRouteResult(user_intent=UserIntent.PLAY_STORY, arguments={"story": get_story_by_name(story)}) 
+            else:
+                return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
+        if tool_call.function.name == "conversation":
+            print("-----------conversation-----------")
+            return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
 
 
 # print(route("想听故事"))
