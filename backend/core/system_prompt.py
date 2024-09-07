@@ -1,6 +1,8 @@
 from core.role import get_role_by_code
 from core.user import get_current_user
 from core.summarization import get_summary_by_role_code
+from core.language import Language
+import config
 
 
 SYSTEM_PROMPT_TEMPLATE_SUFFIX = """
@@ -54,6 +56,17 @@ Requisito: Responde en menos de 100 palabras, usando un estilo de conversación 
 def get_system_prompt_by_role_code(role_code: int):
     role = get_role_by_code(role_code)
     system_prompt = role.prompt + \
-        SYSTEM_PROMPT_TEMPLATE_SUFFIX.format(summary=get_summary_by_role_code(role_code), user=get_current_user())
+        _get_system_prompt_template_suffix().format(summary=get_summary_by_role_code(role_code), user=get_current_user())
     print("system_prompt: " + system_prompt)
     return system_prompt
+
+
+def _get_system_prompt_template_suffix():
+    if config.language == Language.CN:
+        return SYSTEM_PROMPT_TEMPLATE_SUFFIX
+    elif config.Language == Language.EN:
+        return EN_SYSTEM_PROMPT_TEMPLATE_SUFFIX
+    elif config.Language == Language.ES:
+        return ES_SYSTEM_PROMPT_TEMPLATE_SUFFIX
+    else:
+        raise ValueError("Unsupported Language specified in config.")
