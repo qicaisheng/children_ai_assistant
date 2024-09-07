@@ -1,7 +1,7 @@
 import time
 from core.story import Story
 from service.asr.volcengine_streaming_asr import recognize
-from service.tts.volcengine_websocket_tts import speak
+from service.tts.tts_service import to_speech
 import mqtt.publisher as mqtt_publisher
 from service.conversation_service import stream_answer
 import config
@@ -94,7 +94,7 @@ async def split_llm_response_and_tts(input_text: str, role: Role):
 
 async def tts(text, voice_type) -> str:
     tts_start_time = time.time()
-    output_audio_path = await speak(text, voice_type)
+    output_audio_path = await to_speech(text, voice_type)
     tts_end_time = time.time()
     print(f"TTS succeed, output_audio_path: {output_audio_path}")
     print(f"TTS time cost: {tts_end_time-tts_start_time}, tts_start_time={tts_start_time}, tts_end_time={tts_end_time}")
