@@ -80,3 +80,10 @@ def test_incomplete_last_segment():
     stream = simulate_stream_response("This is the first sentence. This is the second sentence. This is the third sentence.")
     result = list(segment_text(stream, segment_size=2))
     assert result == ["This is the first sentence.", "This is the second sentence. This is the third sentence."]
+
+def test_tts_spliter_flag_false(monkeypatch):
+    monkeypatch.setattr("config.tts_spliter_flag", False)
+    
+    stream = simulate_stream_response("This is the first sentence. This is the second sentence. This is the third sentence.")
+    result = list(segment_text(stream, segment_size=2))
+    assert result == ["This is the first sentence. This is the second sentence. This is the third sentence."]

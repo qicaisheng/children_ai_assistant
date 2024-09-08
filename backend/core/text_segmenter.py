@@ -1,5 +1,6 @@
 import re
 from typing import Generator
+import config
 
 def split_text(text: str) -> list[str]:
     sentences = re.findall(r'.+?[。？！.?!]', text)
@@ -25,19 +26,23 @@ def segment_text(stream_response: Generator[str, None, None], segment_size=2) ->
     sentence_count = 0
     current_segment = ""
     
-    for part in stream_response:
-        buffer += part
-        if buffer.strip().endswith(('.', '!', '?', "。", "！", "？")):
-            sentence = buffer.strip()
-            buffer = ""
+    if config.tts_spliter_flag:
+        for part in stream_response:
+            buffer += part
+            if buffer.strip().endswith(('.', '!', '?', "。", "！", "？")):
+                sentence = buffer.strip()
+                buffer = ""
 
-            current_segment += " " + sentence if current_segment else sentence
-            
-            if sentence_count % segment_size == 0 or sentence_count == 0:
-                yield current_segment
-                current_segment = ""
-            sentence_count += 1
+                current_segment += " " + sentence if current_segment else sentence
+                
+                if sentence_count % segment_size == 0 or sentence_count == 0:
+                    yield current_segment
+                    current_segment = ""
+                sentence_count += 1
 
-    if current_segment:
-        yield current_segment
-
+        if current_segment:
+            yield current_segment
+    else:
+        for part in stream_response:
+            buffer += part
+        yield buffer

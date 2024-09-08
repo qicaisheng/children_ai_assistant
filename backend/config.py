@@ -17,3 +17,5 @@ asr = ASR.OPENAI
 llm = LLM_MODEL.OPENAI
 
 language = Language.EN
+
+tts_spliter_flag = True
