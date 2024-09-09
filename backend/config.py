@@ -12,10 +12,10 @@ udp_port = 8085
 mqtt_host = host
 mqtt_port = 1883
 
-tts = TTS.OPENAI
-asr = ASR.OPENAI
-llm = LLM_MODEL.OPENAI
+tts = TTS.VOLCENGINE
+asr = ASR.VOLCENGINE
+llm = LLM_MODEL.ZHIPU
 
-language = Language.EN
+language = Language.CN
 
 tts_spliter_flag = True

@@ -23,7 +23,7 @@ supported_voices = {
     "懒小羊": "BV426_streaming",
 }
 
-roles = core.role_blue_rocket.roles
+roles = core.role_wangwangdui.roles
 roles_old = [
     # {
     #     "code": 5,
