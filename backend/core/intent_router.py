@@ -7,10 +7,13 @@ from core.llm_client import get_client, get_model
 from core.conversation_message import Message, MessageType, get_current_role_messages
 from core.role import get_current_role
 from core.user import get_current_user
+import core.story as core_story
 
 
 PLAY_STORY_KEYWORDS = ["听", "放", "故事", "绘本", "书", "讲"]
 SYSTEM_PROMPT = "你能够判断用户的意图，然后基于用户的意图调用不同的tools。如果判断用户是想听故事，并且也有对应的故事，就调用play tool；如果没有对应的故事，或者判断就是对话，就调用conversation tool；如果判断用户想听故事，但是没有说出对应的故事名称，引导用户回复想听的故事名称。"
+
+RAG_QA_STORY_KEYWORDS = ["什么", "怎么", "如何", "哪", "？"]
 
 class SemanticRouteResult(BaseModel):
     user_intent: UserIntent
@@ -18,6 +21,10 @@ class SemanticRouteResult(BaseModel):
     
 
 def route(input: str) -> SemanticRouteResult:
+    if core_story.get_current_story():
+        for keyword in RAG_QA_STORY_KEYWORDS:
+            if keyword in input:
+                return UserIntent.RAG_QA_STORY
     if maybe_play_story():
         histroy_messages = get_current_role_messages(-4)
         return semantic_route(input, histroy_messages)

@@ -303,6 +303,8 @@ stories = [
     },
 ]
 
+current_story: str = None
+
 class Story(BaseModel):
     name: str
     audio_ids: list[str]
@@ -327,6 +329,17 @@ def get_story_by_name(name: str) -> Story:
         if name == story["name"]:
             return Story(**story)
     return None
+
+def set_current_story(story: str):
+    global current_story
+    current_story = story
+
+def get_current_story() -> str:
+    return current_story
+
+def clear_current_story():
+    global current_story
+    current_story = None
     
 
 

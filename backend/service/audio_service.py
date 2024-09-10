@@ -10,6 +10,8 @@ from core.conversation_message import save_message, Message, MessageType
 from core.text_segmenter import segment_text
 from core.intent_router import route, SemanticRouteResult
 from core.user_intent import UserIntent
+import service.rag.rag_story_wangwangdui as rag_story_wangwangdui
+import core.story as core_story
 
 
 async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
@@ -32,7 +34,13 @@ async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
 
 async def process_user_input_text(audio_path, recording_id, role, input_text):
     semanticRouteResult = route(input_text)
-    if semanticRouteResult.user_intent == UserIntent.MAYBE_PLAY_STORY:
+    if semanticRouteResult.user_intent == UserIntent.RAG_QA_STORY:
+        story = core_story.get_current_story()
+        _output_text = rag_story_wangwangdui.answer(story=story, question=input_text)
+        _url = await tts(text=_output_text, voice_type=role.voice_type)
+        mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
+        mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
+    elif semanticRouteResult.user_intent == UserIntent.MAYBE_PLAY_STORY:
         _output_text = semanticRouteResult.arguments["output_text"]
         _url = await tts(text=_output_text, voice_type=role.voice_type)
         mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
@@ -40,7 +48,7 @@ async def process_user_input_text(audio_path, recording_id, role, input_text):
     elif semanticRouteResult.user_intent == UserIntent.PLAY_STORY:
         story = semanticRouteResult.arguments["story"]
         assert isinstance(story, Story)
-
+        core_story.set_current_story(story=story.name)
         if story.get_audio_urls():
             _order = 1
             _output_text = f"好的，现在播放{story.name}"
@@ -56,6 +64,7 @@ async def process_user_input_text(audio_path, recording_id, role, input_text):
             _url = await tts(text=_output_text, voice_type=role.voice_type)
             mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
     else:
+        core_story.clear_current_story()
         stream_response = split_llm_response_and_tts(input_text=input_text, role=role)
         _order = 0
         _output_text = ""

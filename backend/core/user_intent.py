@@ -8,6 +8,7 @@ class UserIntent(Enum):
     MAYBE_PLAY_STORY = "MAYBE_PLAY_STORY",
     PLAY_STORY = "PLAY_STORY",
     CONVERSATION = "CONVERSATION",
+    RAG_QA_STORY = "RAG_QA_STORY",
 
 def enable_maybe_play_story():
     global _maybe_play_story
