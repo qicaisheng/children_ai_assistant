@@ -40,3 +40,10 @@ def get_client() -> OpenAI:
 
 def get_model():
     return _mapping.get(str(selected_llm)).get('model');
+
+def get_embedding_client() -> OpenAI:
+    return zhipu_client;
+
+def get_embedding_model():
+    zhipu_embedding_model = "embedding-3"
+    return zhipu_embedding_model
