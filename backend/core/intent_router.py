@@ -24,7 +24,7 @@ def route(input: str) -> SemanticRouteResult:
     if core_story.get_current_story():
         for keyword in RAG_QA_STORY_KEYWORDS:
             if keyword in input:
-                return UserIntent.RAG_QA_STORY
+                return SemanticRouteResult(user_intent=UserIntent.RAG_QA_STORY)
     if maybe_play_story():
         histroy_messages = get_current_role_messages(-4)
         return semantic_route(input, histroy_messages)

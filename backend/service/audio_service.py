@@ -71,7 +71,7 @@ async def process_user_input_text(audio_path, recording_id, role, input_text):
         async for result in stream_response:
             print(result)
             _order = result["order"]
-            _output_text = result["output_text"]
+            _output_text += result["output_text"]
             _url = result["url"]
 
             mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
