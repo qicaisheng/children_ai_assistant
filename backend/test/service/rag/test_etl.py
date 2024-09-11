@@ -11,7 +11,6 @@ def test_build_index():
     count = collection.count()
     assert count == 4
 
-    collection
     result = collection.get()
     print(f"result: {result}")
     """
