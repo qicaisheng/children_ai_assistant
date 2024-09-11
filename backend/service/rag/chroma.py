@@ -3,7 +3,7 @@ import chromadb.utils.embedding_functions as embedding_functions
 import os
 
 
-def get_collection():
+def get_collection() -> chromadb.Collection:
     _openai_ef = embedding_functions.OpenAIEmbeddingFunction(
                 api_key=os.environ.get("ZHIPU_API_KEY"),
                 api_base="https://open.bigmodel.cn/api/paas/v4/",
