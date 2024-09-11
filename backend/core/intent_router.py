@@ -99,7 +99,7 @@ def semantic_route(input: str, history: list[Message] = []) -> SemanticRouteResu
     )
     print(completion)
     if completion.choices[0].finish_reason == "tool_calls":
-        process_function_call(completion)
+        return process_function_call(completion)
     if completion.choices[0].finish_reason == "stop":
         output_text = completion.choices[0].message.content
         if output_text:
@@ -107,11 +107,11 @@ def semantic_route(input: str, history: list[Message] = []) -> SemanticRouteResu
             enable_maybe_play_story()
             return SemanticRouteResult(user_intent=UserIntent.MAYBE_PLAY_STORY, arguments={"output_text": output_text})
         else:  # fix for openai function call issue which finish_reason is stop, and content none but with call tools
-            process_function_call(completion)
+            return process_function_call(completion)
     return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
 
 
-def process_function_call(completion):
+def process_function_call(completion) -> SemanticRouteResult:
     disable_maybe_play_story()
     for tool_call in completion.choices[0].message.tool_calls:
         arguments = json.loads(tool_call.function.arguments)

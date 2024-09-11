@@ -47,8 +47,8 @@ def test_route_given_input_story_name_when_maybe_play_story(monkeypatch):
     monkeypatch.setattr("core.intent_router.maybe_play_story", lambda: True)
 
     history_messages = [
-        Message(role_code=1, content="想听故事", message_type=MessageType.USER_MESSAGE, audio_id=None),
-        Message(role_code=1, content="想听什么故事啊", message_type=MessageType.ASSISTANT_MESSAGE, audio_id=None),
+        Message(role_code=1, content="想听故事", message_type=MessageType.USER_MESSAGE),
+        Message(role_code=1, content="想听什么故事啊", message_type=MessageType.ASSISTANT_MESSAGE),
     ]
     monkeypatch.setattr("core.intent_router.get_current_role_messages", lambda last_message_num: history_messages)
 
@@ -65,8 +65,8 @@ def test_route_given_input_not_related_story_name_when_maybe_play_story(monkeypa
     monkeypatch.setattr("core.intent_router.maybe_play_story", lambda: True)
 
     history_messages = [
-        Message(role_code=1, content="想听故事", message_type=MessageType.USER_MESSAGE, audio_id=None),
-        Message(role_code=1, content="想听什么故事啊", message_type=MessageType.ASSISTANT_MESSAGE, audio_id=None),
+        Message(role_code=1, content="想听故事", message_type=MessageType.USER_MESSAGE),
+        Message(role_code=1, content="想听什么故事啊", message_type=MessageType.ASSISTANT_MESSAGE),
     ]
     monkeypatch.setattr("core.intent_router.get_current_role_messages", lambda last_message_num: history_messages)
 
@@ -84,8 +84,8 @@ def test_route_given_input_not_related_story_name():
 
 def test_route_given_input_play_story_keywords_but_not_mean_want_to_play_again_and_previous_history_with_story(monkeypatch):
     history_messages = [
-        Message(role_code=1, content="想听大灰狼故事", message_type=MessageType.USER_MESSAGE, audio_id=None),
-        Message(role_code=1, content="从前大灰狼肚子空空的，导出找好吃的，最后找到羊阿姨，羊阿姨做了很多好吃的，大灰狼舍不得吃羊阿姨，最后跟羊阿姨做了好朋友。这个故事好不好听啊", message_type=MessageType.ASSISTANT_MESSAGE, audio_id=None),
+        Message(role_code=1, content="想听大灰狼故事", message_type=MessageType.USER_MESSAGE),
+        Message(role_code=1, content="从前大灰狼肚子空空的，导出找好吃的，最后找到羊阿姨，羊阿姨做了很多好吃的，大灰狼舍不得吃羊阿姨，最后跟羊阿姨做了好朋友。这个故事好不好听啊", message_type=MessageType.ASSISTANT_MESSAGE),
     ]   
     monkeypatch.setattr("core.intent_router.get_current_role_messages", lambda last_message_num: history_messages)
 
