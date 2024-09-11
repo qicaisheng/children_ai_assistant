@@ -15,7 +15,7 @@ class Message(BaseModel):
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
     role_code: int
     content: str
-    audio_id: Optional[str]
+    audio_id: list[str] = []
     message_type: MessageType
     parent_id: Optional[uuid.UUID] = None
     created_time: datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc))

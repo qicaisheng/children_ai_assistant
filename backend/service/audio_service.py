@@ -34,15 +34,18 @@ async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
 
 async def process_user_input_text(audio_path, recording_id, role, input_text):
     semanticRouteResult = route(input_text)
+    _output_audio_url = []
     if semanticRouteResult.user_intent == UserIntent.RAG_QA_STORY:
         story = core_story.get_current_story()
         _output_text = rag_story_wangwangdui.answer(story=story, question=input_text)
         _url = await tts(text=_output_text, voice_type=role.voice_type)
+        _output_audio_url.append(_url)
         mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
     elif semanticRouteResult.user_intent == UserIntent.MAYBE_PLAY_STORY:
         _output_text = semanticRouteResult.arguments["output_text"]
         _url = await tts(text=_output_text, voice_type=role.voice_type)
+        _output_audio_url.append(_url)
         mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
     elif semanticRouteResult.user_intent == UserIntent.PLAY_STORY:
@@ -57,11 +60,13 @@ async def process_user_input_text(audio_path, recording_id, role, input_text):
 
             for _url in story.get_audio_urls():
                 _order +=1
+                _output_audio_url.append(_url)
                 mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
             mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
         else:
             _output_text = f"不好意思，很想给你播放{story.name}，但是暂时还没有找到这个音频内容。如果你想听的话，我可以给你讲讲大概的故事"
             _url = await tts(text=_output_text, voice_type=role.voice_type)
+            _output_audio_url.append(_url)
             mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
     else:
         core_story.clear_current_story()
@@ -73,13 +78,13 @@ async def process_user_input_text(audio_path, recording_id, role, input_text):
             _order = result["order"]
             _output_text += result["output_text"]
             _url = result["url"]
-
+            _output_audio_url.append(_url)
             mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
 
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
 
-    user_message = save_message(Message(role_code=role.code, message_type=MessageType.USER_MESSAGE, content=input_text, audio_id=get_audio_file_name(audio_path)))    
-    assistant_mesage = save_message(Message(role_code=role.code, message_type=MessageType.ASSISTANT_MESSAGE, content=_output_text, audio_id=None))    
+    user_message = save_message(Message(role_code=role.code, message_type=MessageType.USER_MESSAGE, content=input_text, audio_id=[get_audio_file_name(audio_path)]))    
+    assistant_mesage = save_message(Message(role_code=role.code, message_type=MessageType.ASSISTANT_MESSAGE, content=_output_text, audio_id=[get_audio_file_name(url) for url in _output_audio_url]))    
     print(f"Save messages succeed, user_message: {user_message}, assistant_mesage: {assistant_mesage}")
 
 

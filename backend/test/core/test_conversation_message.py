@@ -14,7 +14,6 @@ def test_save_message():
     test_message = Message(
         role_code=1,
         content="Hello, this is a test message.",
-        audio_id=None,
         message_type=MessageType.USER_MESSAGE,
     )
 
@@ -37,22 +36,19 @@ def test_get_conversation_history():
     user_message1 = Message(
         role_code=1,
         content="Hello, this is a user message 1",
-        audio_id=None,
         message_type=MessageType.USER_MESSAGE,
     )
     assistant_message1 = Message(
         role_code=1,
         content="Hello, this is a assistant message 1",
-        audio_id=None,
         message_type=MessageType.ASSISTANT_MESSAGE,
         parent_id=user_message1.id
     )
     user_message2 = Message(
         role_code=1,
         content="Hello, this is a user message 2",
-        audio_id=None,
         message_type=MessageType.USER_MESSAGE,
-        parent_id=assistant_message1.audio_id
+        parent_id=assistant_message1.id
     )
     save_message(user_message1)
     save_message(assistant_message1)
@@ -67,7 +63,6 @@ def test_get_conversation_history():
     assistant_message2 = Message(
         role_code=1,
         content="Hello, this is a assistant message 2",
-        audio_id=None,
         message_type=MessageType.ASSISTANT_MESSAGE,
         parent_id=user_message2.id
     )
@@ -96,22 +91,22 @@ def test_get_current_role_messages(monkeypatch):
     user_message1 = Message(
         role_code=1,
         content="Hello, this is a user message 1",
-        audio_id=None,
+        audio_id=["user_audio1"],
         message_type=MessageType.USER_MESSAGE,
     )
     assistant_message1 = Message(
         role_code=1,
         content="Hello, this is a assistant message 1",
-        audio_id=None,
+        audio_id=["assistant_audio1", "assistant_audio2"],
         message_type=MessageType.ASSISTANT_MESSAGE,
         parent_id=user_message1.id
     )
     user_message2_role2 = Message(
         role_code=2,
         content="Hello, this is a user message 2",
-        audio_id=None,
+        audio_id=["user_audio2"],
         message_type=MessageType.USER_MESSAGE,
-        parent_id=assistant_message1.audio_id
+        parent_id=assistant_message1.id
     )
     save_message(user_message1)
     save_message(assistant_message1)
@@ -126,6 +121,8 @@ def test_get_current_role_messages(monkeypatch):
     messages = get_current_role_messages(last_message_num=1)
 
     assert len(messages) == 1
+    assert messages[0].content == assistant_message1.content
+    assert messages[0].audio_id == assistant_message1.audio_id
 
     
 
