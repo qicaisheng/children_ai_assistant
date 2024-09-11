@@ -2,6 +2,7 @@
 .idea/*
 .venv/*
 flagged/*
+chroma/*
 .DS_Store
 backend/__pycache__/
 */__pycache__
