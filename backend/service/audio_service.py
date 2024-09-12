@@ -12,7 +12,7 @@ from core.intent_router import route, SemanticRouteResult
 from core.user_intent import UserIntent
 import service.rag.rag_story_wangwangdui as rag_story_wangwangdui
 import core.story as core_story
-
+from core.user import get_current_user
 
 async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
     role = get_current_role()
@@ -83,8 +83,9 @@ async def process_user_input_text(audio_path, recording_id, role, input_text):
 
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
 
-    user_message = save_message(Message(role_code=role.code, message_type=MessageType.USER_MESSAGE, content=input_text, audio_id=[get_audio_file_name(audio_path)]))    
-    assistant_mesage = save_message(Message(role_code=role.code, message_type=MessageType.ASSISTANT_MESSAGE, content=_output_text, audio_id=[get_audio_file_name(url) for url in _output_audio_url]))    
+    user = get_current_user()
+    user_message = save_message(Message(user_id=user.id, role_code=role.code, message_type=MessageType.USER_MESSAGE, content=input_text, audio_id=[get_audio_file_name(audio_path)]))    
+    assistant_mesage = save_message(Message(user_id=user.id, role_code=role.code, message_type=MessageType.ASSISTANT_MESSAGE, content=_output_text, audio_id=[get_audio_file_name(url) for url in _output_audio_url]))    
     print(f"Save messages succeed, user_message: {user_message}, assistant_mesage: {assistant_mesage}")
 
 

@@ -13,6 +13,7 @@ class MessageType(Enum):
 
 class Message(BaseModel):
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    user_id: uuid.UUID
     role_code: int
     content: str
     audio_id: list[str] = []

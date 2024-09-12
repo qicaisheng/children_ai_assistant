@@ -6,6 +6,7 @@ from repository.message import InMemoryMessageRepository, LatestMessagesFilter
 
 def test_InMemoryMessageRepository_get_by_id():
     test_message = Message(
+        user_id=uuid.uuid4(),
         role_code=1,
         content="Hello, this is a test message.",
         message_type=MessageType.USER_MESSAGE,
@@ -23,13 +24,16 @@ def test_InMemoryMessageRepository_get_by_id():
     assert saved_message.message_type == MessageType.USER_MESSAGE
 
 def test_InMemoryMessageRepository_get_latest_by():    
+    user_id = uuid.uuid4()
     user_message1 = Message(
+        user_id=user_id,
         role_code=1,
         content="Hello, this is a user message 1",
         audio_id=["user_audio1"],
         message_type=MessageType.USER_MESSAGE,
     )
     assistant_message1 = Message(
+        user_id=user_id,
         role_code=1,
         content="Hello, this is a assistant message 1",
         audio_id=["assistant_audio1", "assistant_audio2"],
@@ -37,6 +41,7 @@ def test_InMemoryMessageRepository_get_latest_by():
         parent_id=user_message1.id
     )
     user_message2_role2 = Message(
+        user_id=user_id,
         role_code=2,
         content="Hello, this is a user message 2",
         audio_id=["user_audio2"],

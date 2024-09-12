@@ -11,7 +11,9 @@ def clear_messages():
     messages.clear()
 
 def test_save_message():
+    user_id = uuid.uuid4()
     test_message = Message(
+        user_id=user_id,
         role_code=1,
         content="Hello, this is a test message.",
         message_type=MessageType.USER_MESSAGE,
@@ -22,6 +24,7 @@ def test_save_message():
     assert type(saved_message) is Message
     assert saved_message.id is not None
     assert type(saved_message.id) is uuid.UUID
+    assert saved_message.user_id == user_id
     assert saved_message.created_time is not None
     assert type(saved_message.created_time) is datetime.datetime
     assert saved_message.content == "Hello, this is a test message."
@@ -33,18 +36,22 @@ def test_get_conversation_history():
     history = get_conversation_history(role_code=1, round=1)
     assert len(history) == 0
 
+    user_id1 = uuid.uuid4()
     user_message1 = Message(
+        user_id=user_id1,
         role_code=1,
         content="Hello, this is a user message 1",
         message_type=MessageType.USER_MESSAGE,
     )
     assistant_message1 = Message(
+        user_id=user_id1,
         role_code=1,
         content="Hello, this is a assistant message 1",
         message_type=MessageType.ASSISTANT_MESSAGE,
         parent_id=user_message1.id
     )
     user_message2 = Message(
+        user_id=user_id1,
         role_code=1,
         content="Hello, this is a user message 2",
         message_type=MessageType.USER_MESSAGE,
@@ -61,6 +68,7 @@ def test_get_conversation_history():
     assert history[0][1] == assistant_message1.content
 
     assistant_message2 = Message(
+        user_id=user_id1,
         role_code=1,
         content="Hello, this is a assistant message 2",
         message_type=MessageType.ASSISTANT_MESSAGE,
@@ -88,13 +96,16 @@ def test_get_current_role_messages(monkeypatch):
     }
     monkeypatch.setattr('core.conversation_message.get_current_role', lambda: Role(**mock_role))
     
+    user_id1 = uuid.uuid4()
     user_message1 = Message(
+        user_id=user_id1,
         role_code=1,
         content="Hello, this is a user message 1",
         audio_id=["user_audio1"],
         message_type=MessageType.USER_MESSAGE,
     )
     assistant_message1 = Message(
+        user_id=user_id1,
         role_code=1,
         content="Hello, this is a assistant message 1",
         audio_id=["assistant_audio1", "assistant_audio2"],
@@ -102,6 +113,7 @@ def test_get_current_role_messages(monkeypatch):
         parent_id=user_message1.id
     )
     user_message2_role2 = Message(
+        user_id=user_id1,
         role_code=2,
         content="Hello, this is a user message 2",
         audio_id=["user_audio2"],

@@ -12,6 +12,7 @@ class User(BaseModel):
     description: str = None
 
 _default_user = {
+    "id": uuid.UUID(int=0x12345678123456781234567812345678),
     "device_sn": "48ca439bbfdc",
     "name": "benny",
     "nickname": "benny",
