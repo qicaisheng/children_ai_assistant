@@ -21,6 +21,7 @@ def test_get_system_prompt_by_role_code(monkeypatch):
 
     # Mock get_current_user
     mock_user = {
+        "device_sn": "Device SN",
         "name": "Test User",
         "nickname": "Tester",
         "gender": "Male",

@@ -1,7 +1,10 @@
-from pydantic import BaseModel
+import uuid
+from pydantic import BaseModel, Field
 
 
 class User(BaseModel):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    device_sn: str
     name: str
     nickname: str
     gender: str = None
@@ -9,6 +12,7 @@ class User(BaseModel):
     description: str = None
 
 _default_user = {
+    "device_sn": "48ca439bbfdc",
     "name": "benny",
     "nickname": "benny",
     "age": 3,
