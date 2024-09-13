@@ -1,8 +1,27 @@
+import datetime
 from typing import Optional
+import uuid
 
 from pydantic import BaseModel
+from sqlalchemy import ARRAY, Column, DateTime, Integer, String, desc
+from sqlalchemy.dialects.postgresql import UUID
 from core.conversation_message import Message, MessageType
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import Session
 
+Base = declarative_base()
+
+class MessageInDB(Base):
+    __tablename__ = 'messages'
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
+    user_id = Column(UUID(as_uuid=True), nullable=False)
+    role_code = Column(Integer, nullable=False)
+    content = Column(String, nullable=False)
+    audio_id = Column(ARRAY(String), nullable=True, default=[])
+    message_type = Column(String, nullable=False)
+    parent_id = Column(UUID(as_uuid=True), nullable=True)
+    created_time = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(datetime.timezone.utc))
 
 class LatestMessagesFilter(BaseModel):
     role_code: int
@@ -43,3 +62,59 @@ class InMemoryMessageRepository(MessageRepository):
         filtered_messages = [msg for msg in self.data if msg.role_code == messages_filter.role_code]
 
         return filtered_messages[-messages_filter.number:]
+
+class PgMessageRepository(MessageRepository):
+    def __init__(self, session: Session):
+        self.session = session
+
+    def save(self, message: Message) -> Message:
+        message_in_db = MessageInDB(
+            id=message.id,
+            user_id=message.user_id,
+            role_code=message.role_code,
+            content=message.content,
+            audio_id=message.audio_id,
+            message_type=message.message_type.value,  # Assuming MessageType is an Enum
+            parent_id=message.parent_id,
+            created_time=message.created_time,
+        )
+        self.session.add(message_in_db)
+        self.session.commit()
+        return message
+
+    def get_by_id(self, id: str) -> Optional[Message]:
+        message_in_db = self.session.query(MessageInDB).filter_by(id=id).first()
+        if message_in_db:
+            return Message(
+                id=message_in_db.id,
+                user_id=message_in_db.user_id,
+                role_code=message_in_db.role_code,
+                content=message_in_db.content,
+                audio_id=message_in_db.audio_id,
+                message_type=MessageType(message_in_db.message_type),  # Enum conversion
+                parent_id=message_in_db.parent_id,
+                created_time=message_in_db.created_time,
+            )
+        return None
+
+    def get_latest_by(self, messages_filter: LatestMessagesFilter) -> list[Message]:
+        query = (
+            self.session.query(MessageInDB)
+            .filter_by(role_code=messages_filter.role_code)
+            .order_by(desc(MessageInDB.created_time))
+            .limit(messages_filter.number)
+        )
+        messages_in_db = query.all()
+        return [
+            Message(
+                id=message_in_db.id,
+                user_id=message_in_db.user_id,
+                role_code=message_in_db.role_code,
+                content=message_in_db.content,
+                audio_id=message_in_db.audio_id,
+                message_type=MessageType(message_in_db.message_type),
+                parent_id=message_in_db.parent_id,
+                created_time=message_in_db.created_time,
+            )
+            for message_in_db in messages_in_db
+        ]
