@@ -1,1 +1,24 @@
 Generic single-database configuration.
+
+## init
+Go to the Terminal, exec script bellow
+```shell
+alembic init alembic
+```
+
+
+## generate migration version
+Go to the Terminal, exec script bellow
+```shell
+alembic revision --autogenerate -m "Create messages table"
+```
+Then there will be one XXXXXXXXX_create_messages_table.py file generated
+
+## modify migration script
+modify the generated python file, modify `def upgrade():` and `def downgrade():` method
+
+## run migration
+Go to the Terminal, exec script bellow
+```shell
+alembic upgrade head
+```
