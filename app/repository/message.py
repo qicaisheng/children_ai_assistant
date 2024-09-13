@@ -116,5 +116,5 @@ class PgMessageRepository(MessageRepository):
                 parent_id=message_in_db.parent_id,
                 created_time=message_in_db.created_time,
             )
-            for message_in_db in messages_in_db
+            for message_in_db in sorted(messages_in_db, key=lambda msg: msg.created_time)
         ]
