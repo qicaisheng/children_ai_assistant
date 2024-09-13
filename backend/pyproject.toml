@@ -19,6 +19,7 @@ bs4 = "^0.0.2"
 langchain-chroma = "^0.1.3"
 zhipuai = "^2.1.5.20230904"
 llama-index = "^0.11.7"
+alembic = "^1.13.2"
 
 
 [build-system]
