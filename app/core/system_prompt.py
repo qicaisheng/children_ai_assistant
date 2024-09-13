@@ -1,8 +1,8 @@
-from core.role import get_role_by_code
-from core.user import get_current_user
-from core.summarization import get_summary_by_role_code
-from core.language import Language
-import config
+from app.core.role import get_role_by_code
+from app.core.user import get_current_user
+from app.core.summarization import get_summary_by_role_code
+from app.core.language import Language
+import app.config as config
 
 
 SYSTEM_PROMPT_TEMPLATE_SUFFIX = """

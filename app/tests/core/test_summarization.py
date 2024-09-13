@@ -1,4 +1,4 @@
-from core.summarization import save_summary, get_summary_by_role_code, Summary, summaries
+from app.core.summarization import save_summary, get_summary_by_role_code, Summary, summaries
 
 def test_save_summary():
     summary_data = Summary(role_code=1, summary="Test summary")

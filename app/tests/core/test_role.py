@@ -1,4 +1,4 @@
-from core.role import get_role_by_code, set_current_role_code, get_current_role
+from app.core.role import get_role_by_code, set_current_role_code, get_current_role
 
 def test_get_role_by_code():
     role = get_role_by_code(1)

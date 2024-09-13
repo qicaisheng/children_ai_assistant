@@ -1,6 +1,6 @@
 import re
 from typing import Generator
-import config
+import app.config as config
 
 def split_text(text: str) -> list[str]:
     sentences = re.findall(r'.+?[。？！.?!]', text)

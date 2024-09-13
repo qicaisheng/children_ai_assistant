@@ -1,14 +1,12 @@
 import json
 
 from pydantic import BaseModel
-from core.story import story_names, get_story_by_name
-from core.user_intent import UserIntent, enable_maybe_play_story, disable_maybe_play_story, maybe_play_story
-from core.llm_client import get_client, get_model
-from core.conversation_message import Message, MessageType, get_current_role_messages
-from core.role import get_current_role
-from core.user import get_current_user
-import core.story as core_story
 
+import app.core.story as core_story
+from app.core.conversation_message import Message, MessageType, get_current_role_messages
+from app.core.llm_client import get_client, get_model
+from app.core.story import story_names, get_story_by_name
+from app.core.user_intent import UserIntent, enable_maybe_play_story, disable_maybe_play_story, maybe_play_story
 
 PLAY_STORY_KEYWORDS = ["听", "放", "故事", "绘本", "书", "讲"]
 SYSTEM_PROMPT = "你能够判断用户的意图，然后基于用户的意图调用不同的tools。如果判断用户是想听故事，并且也有对应的故事，就调用play tool；如果没有对应的故事，或者判断就是对话，就调用conversation tool；如果判断用户想听故事，但是没有说出对应的故事名称，引导用户回复想听的故事名称。"

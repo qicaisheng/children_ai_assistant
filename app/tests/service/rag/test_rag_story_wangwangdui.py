@@ -1,4 +1,4 @@
-import service.rag.rag_story_wangwangdui as rag_story_wangwangdui
+import app.service.rag.rag_story_wangwangdui as rag_story_wangwangdui
 
 
 def test_answer():

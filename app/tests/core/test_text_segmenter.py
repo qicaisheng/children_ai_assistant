@@ -1,5 +1,5 @@
 from typing import Generator
-from core.text_segmenter import segment_text, split_text
+from app.core.text_segmenter import segment_text, split_text
 
 
 def test_split_text():

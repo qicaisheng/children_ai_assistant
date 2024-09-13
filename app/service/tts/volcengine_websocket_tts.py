@@ -15,8 +15,8 @@ import gzip
 import copy
 import ssl
 import os
-import utils.uuid_util as uuid_util
-import config
+import app.utils.uuid_util as uuid_util
+import app.config as config
 
 MESSAGE_TYPES = {11: "audio-only server response", 12: "frontend server response", 15: "error message from server"}
 MESSAGE_TYPE_SPECIFIC_FLAGS = {0: "no sequence number", 1: "sequence number > 0",

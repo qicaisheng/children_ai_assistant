@@ -3,7 +3,7 @@ from langchain_chroma import Chroma
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import CharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
-from service.rag.chroma import get_collection
+from app.service.rag.chroma import get_collection
 
 embedding_func = OpenAIEmbeddings(model="embedding-3", base_url="https://open.bigmodel.cn/api/paas/v4/", api_key=os.environ.get("ZHIPU_API_KEY"))
 

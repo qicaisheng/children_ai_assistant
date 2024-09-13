@@ -1,4 +1,4 @@
-from core.user_intent import check_user_intent, UserIntent
+from app.core.user_intent import check_user_intent, UserIntent
 
 
 def test_get_user_intent():

@@ -5,7 +5,7 @@ import uuid
 from pydantic import BaseModel
 from sqlalchemy import ARRAY, Column, DateTime, Integer, String, desc
 from sqlalchemy.dialects.postgresql import UUID
-from core.conversation_message import Message, MessageType
+from app.core.conversation_message import Message, MessageType
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 

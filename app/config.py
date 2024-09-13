@@ -1,7 +1,7 @@
-from service.tts.tts import TTS
-from service.asr.asr import ASR
-from core.llm_model import LLM_MODEL
-from core.language import Language
+from app.service.tts.tts import TTS
+from app.service.asr.asr import ASR
+from app.core.llm_model import LLM_MODEL
+from app.core.language import Language
 
 # host = "10.10.30.164"
 host = "localhost"

@@ -1,12 +1,12 @@
 import datetime
 import uuid
 import pytest
-from core.conversation_message import Message, MessageType
-from repository.message import InMemoryMessageRepository, LatestMessagesFilter, PgMessageRepository
+from app.core.conversation_message import Message, MessageType
+from app.repository.message import InMemoryMessageRepository, LatestMessagesFilter, PgMessageRepository
 from sqlalchemy import create_engine, Column, String, Integer, DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from repository.message import MessageInDB, Base
+from app.repository.message import MessageInDB, Base
 from testcontainers.postgres import PostgresContainer
 from alembic import command
 from alembic.config import Config

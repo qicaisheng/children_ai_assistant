@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from service.conversation_service import build_llm_request_message
+from app.service.conversation_service import build_llm_request_message
 
 @pytest.fixture
 def mock_get_system_prompt_by_role_code(monkeypatch):

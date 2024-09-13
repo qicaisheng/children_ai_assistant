@@ -1,5 +1,5 @@
-from core.role import get_current_role
-import service.audio_service as audio_service
+from app.core.role import get_current_role
+import app.service.audio_service as audio_service
 import asyncio
 
 def test_get_audio_url(monkeypatch):

@@ -1,8 +1,8 @@
 import uuid
-from core.story import Story
-from core.user_intent import UserIntent, maybe_play_story
-from core.intent_router import SemanticRouteResult, route
-from core.conversation_message import Message, MessageType
+from app.core.story import Story
+from app.core.user_intent import UserIntent, maybe_play_story
+from app.core.intent_router import SemanticRouteResult, route
+from app.core.conversation_message import Message, MessageType
 
 
 def test_route_given_conversation_input():

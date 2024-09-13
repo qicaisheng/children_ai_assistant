@@ -1,7 +1,7 @@
 from pydantic import BaseModel
-import config
-import core.role_wangwangdui
-import core.role_blue_rocket
+import app.config as config
+import app.core.role_wangwangdui
+import app.core.role_blue_rocket
 
 current_role_code: int = 1
 
@@ -23,7 +23,7 @@ supported_voices = {
     "懒小羊": "BV426_streaming",
 }
 
-roles = core.role_wangwangdui.roles
+roles = app.core.role_wangwangdui.roles
 roles_old = [
     # {
     #     "code": 5,

@@ -1,4 +1,4 @@
-from core.story import Story, get_story_by_name
+from app.core.story import Story, get_story_by_name
 
 def test_get_story_by_name(monkeypatch):
     monkeypatch.setattr("config.audio_base_url", "http://localhost:8082/")

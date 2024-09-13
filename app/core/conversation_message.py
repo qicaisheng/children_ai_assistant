@@ -3,7 +3,7 @@ from enum import Enum
 from typing import List, Optional
 import uuid
 from pydantic import BaseModel, Field
-from core.role import get_current_role
+from app.core.role import get_current_role
 
 messages = []
 

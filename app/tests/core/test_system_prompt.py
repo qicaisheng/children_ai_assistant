@@ -1,6 +1,6 @@
-from core.role import Role
-from core.system_prompt import get_system_prompt_by_role_code
-from core.user import User
+from app.core.role import Role
+from app.core.system_prompt import get_system_prompt_by_role_code
+from app.core.user import User
 
 def test_get_system_prompt_by_role_code(monkeypatch):
     # Mock get_role_by_code

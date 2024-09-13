@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-import config
+import app.config as config
 
 roles = [
     {

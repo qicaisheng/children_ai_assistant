@@ -1,5 +1,5 @@
 import socket
-import config
+import app.config as config
 import os
 
 def send_audio_file(filename, server_ip, server_port):

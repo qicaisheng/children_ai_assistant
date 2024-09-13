@@ -1,9 +1,9 @@
 import asyncio
 import time
-import config
-from service.tts.tts import TTS
-import service.tts.volcengine_websocket_tts as volcengine_tts
-import service.tts.openai_tts as openai_tts
+import app.config as config
+from app.service.tts.tts import TTS
+import app.service.tts.volcengine_websocket_tts as volcengine_tts
+import app.service.tts.openai_tts as openai_tts
 
 
 async def to_speech(text: str, voice_type: str = None) -> str:

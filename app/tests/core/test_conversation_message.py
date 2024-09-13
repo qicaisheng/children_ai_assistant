@@ -2,8 +2,8 @@ import datetime
 import uuid
 
 import pytest
-from core.role import Role
-from core.conversation_message import Message, MessageType, get_current_role_messages, save_message, messages, get_conversation_history
+from app.core.role import Role
+from app.core.conversation_message import Message, MessageType, get_current_role_messages, save_message, messages, get_conversation_history
 
 @pytest.fixture(autouse=True)
 def clear_messages():

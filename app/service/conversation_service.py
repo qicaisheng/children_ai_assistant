@@ -1,8 +1,8 @@
 from typing import Generator
-import core.llm_client as llm_client
-from core.system_prompt import get_system_prompt_by_role_code
-from core.conversation_message import get_conversation_history
-from core.text_segmenter import split_text
+import app.core.llm_client as llm_client
+from app.core.system_prompt import get_system_prompt_by_role_code
+from app.core.conversation_message import get_conversation_history
+from app.core.text_segmenter import split_text
 
 MAX_CONVERSATION_ROUND = 3
 MAX_CONVERSATION_HISTORY_SIZE = 2 * MAX_CONVERSATION_ROUND

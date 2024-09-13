@@ -1,18 +1,18 @@
 import time
-from core.story import Story
-from service.asr.asr_service import recognize
-from service.tts.tts_service import to_speech
-import mqtt.publisher as mqtt_publisher
-from service.conversation_service import stream_answer
-import config
-from core.role import Role, get_current_role
-from core.conversation_message import save_message, Message, MessageType
-from core.text_segmenter import segment_text
-from core.intent_router import route, SemanticRouteResult
-from core.user_intent import UserIntent
-import service.rag.rag_story_wangwangdui as rag_story_wangwangdui
-import core.story as core_story
-from core.user import get_current_user
+from app.core.story import Story
+from app.service.asr.asr_service import recognize
+from app.service.tts.tts_service import to_speech
+import app.mqtt.publisher as mqtt_publisher
+from app.service.conversation_service import stream_answer
+import app.config as config
+from app.core.role import Role, get_current_role
+from app.core.conversation_message import save_message, Message, MessageType
+from app.core.text_segmenter import segment_text
+from app.core.intent_router import route, SemanticRouteResult
+from app.core.user_intent import UserIntent
+import app.service.rag.rag_story_wangwangdui as rag_story_wangwangdui
+import app.core.story as core_story
+from app.core.user import get_current_user
 
 async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
     role = get_current_role()

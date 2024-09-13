@@ -1,7 +1,7 @@
 import asyncio
-from service.audio_service import get_audio_url
-from core.role import roles, Role
-from service.tts.tts_service import to_speech
+from app.service.audio_service import get_audio_url
+from app.core.role import roles, Role
+from app.service.tts.tts_service import to_speech
 
 def generate_start_voices():
     result = {}

@@ -1,8 +1,5 @@
-from core.llm_client import get_client, get_model
-import chromadb
-import chromadb.utils.embedding_functions as embedding_functions
-import os
-from service.rag.chroma import get_collection
+from app.core.llm_client import get_client, get_model
+from app.service.rag.chroma import get_collection
 
 RAG_PROMPT = """
 You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.\nQuestion: {question} \nContext: {context} \nAnswer:

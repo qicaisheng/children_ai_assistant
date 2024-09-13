@@ -1,9 +1,9 @@
 import paho.mqtt.client as mqtt
-import mqtt.event as mqtt_event
-import mqtt.publisher as mqtt_publisher
-from utils.uuid_util import get_uuid4_no_hyphen
-from core.role import get_role_by_code, set_current_role_code
-import config
+import app.mqtt.event as mqtt_event
+import app.mqtt.publisher as mqtt_publisher
+from app.utils.uuid_util import get_uuid4_no_hyphen
+from app.core.role import get_role_by_code, set_current_role_code
+import app.config as config
 
 
 def processTopic1(client, userdata, msg: mqtt.MQTTMessage):

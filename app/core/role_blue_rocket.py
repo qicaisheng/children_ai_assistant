@@ -1,4 +1,4 @@
-import config
+import app.config as config
 
 
 # https://platform.openai.com/docs/guides/text-to-speech/quickstart

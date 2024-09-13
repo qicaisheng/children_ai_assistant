@@ -1,6 +1,6 @@
 import pytest
-import service.rag.etl as rag_etl
-import service.rag.rag_story_wangwangdui as rag_story_wangwangdui
+import app.service.rag.etl as rag_etl
+import app.service.rag.rag_story_wangwangdui as rag_story_wangwangdui
 
 @pytest.mark.skip(reason="manual run test")
 def test_build_index():

@@ -1,7 +1,7 @@
 import asyncio
 import time
-import config
-from utils import uuid_util
+import app.config as config
+from app.utils import uuid_util
 from openai import OpenAI
 client = OpenAI()
 

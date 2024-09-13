@@ -1,7 +1,7 @@
 import paho.mqtt.client as mqtt
-from mqtt.subscription import subscriptions
-from mqtt.client import client as mqtt_client
-import config
+from app.mqtt.subscription import subscriptions
+from app.mqtt.client import client as mqtt_client
+import app.config as config
 
 class MQTTManager:
     def __init__(self, broker_host: str, broker_port: int, subscriptions: dict):

@@ -5,12 +5,12 @@ from contextlib import asynccontextmanager
 import paho.mqtt.client as mqtt
 import conversation
 import html_page
-from mqtt.manager import mqtt_manager
-from mqtt.publisher import update_config as mqtt_update_config, UpdateConfigData
-from mqtt.client import publish as mqtt_publish
+from app.mqtt.manager import mqtt_manager
+from app.mqtt.publisher import update_config as mqtt_update_config, UpdateConfigData
+from app.mqtt.client import publish as mqtt_publish
 import asyncio
-from udp.server import start_udp_server, udp_server_running
-import config
+from app.udp.server import start_udp_server, udp_server_running
+import app.config as config
 
 
 @asynccontextmanager

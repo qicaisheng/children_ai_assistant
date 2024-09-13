@@ -1,9 +1,9 @@
 import asyncio
 import time
-import config
-from service.asr.asr import ASR
-import service.asr.openai_asr as openai_asr
-import service.asr.volcengine_streaming_asr as volcengine_asr
+import app.config as config
+from app.service.asr.asr import ASR
+import app.service.asr.openai_asr as openai_asr
+import app.service.asr.volcengine_streaming_asr as volcengine_asr
 
 async def recognize(audio_path: str) -> str:
     output_text: str

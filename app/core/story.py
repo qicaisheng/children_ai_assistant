@@ -3,8 +3,8 @@
 from enum import Enum
 
 from pydantic import BaseModel
-from core.llm_client import get_client, get_model
-import config
+from app.core.llm_client import get_client, get_model
+import app.config as config
 
 stories = [
     {

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
-from mqtt.client import publish as mqtt_publish
-import mqtt.event as mqtt_event
+from app.mqtt.client import publish as mqtt_publish
+import app.mqtt.event as mqtt_event
 import json
 
 COMMAND_CALL_TOPIC = "/user/folotoy/48ca439bbfdc/thing/command/call"

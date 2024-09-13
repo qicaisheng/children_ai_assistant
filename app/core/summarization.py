@@ -1,7 +1,7 @@
 from pydantic import BaseModel
-import core.llm_client as llm_client
-from core.user import get_current_user
-from core.role import get_role_by_code
+import app.core.llm_client as llm_client
+from app.core.user import get_current_user
+from app.core.role import get_role_by_code
 
 summaries = {}
 

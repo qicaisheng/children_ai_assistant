@@ -1,8 +1,8 @@
 from enum import Enum
 from openai import OpenAI
 import os
-import config
-from core.llm_model import LLM_MODEL
+import app.config as config
+from app.core.llm_model import LLM_MODEL
 
 openai_client = OpenAI()
 
