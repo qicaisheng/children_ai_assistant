@@ -1,33 +1,10 @@
 import datetime
 import uuid
-import pytest
 from app.core.conversation_message import Message, MessageType
 from app.repository.message import InMemoryMessageRepository, LatestMessagesFilter, PgMessageRepository
-from sqlalchemy import create_engine, Column, String, Integer, DateTime
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from app.repository.message import MessageInDB, Base
-from testcontainers.postgres import PostgresContainer
-from alembic import command
-from alembic.config import Config
+from repository.fixture_db import db_session
 
-@pytest.fixture(scope="module")
-def db_session():
-    with PostgresContainer("postgres:latest", driver="psycopg") as postgres:
-        engine = create_engine(postgres.get_connection_url())
 
-        alembic_cfg = Config("alembic.ini")
-        alembic_cfg.set_main_option('script_location', "../../alembic")
-        alembic_cfg.set_main_option('sqlalchemy.url', postgres.get_connection_url())
-        command.upgrade(alembic_cfg, "head")
-
-        Session = sessionmaker(bind=engine)
-        session = Session()
-        yield session
-
-        session.close()
-
-# 公共测试逻辑，适用于不同的仓库类型
 def common_test_save_message(repository):
     test_message = Message(
         user_id=uuid.uuid4(),
