@@ -5,7 +5,7 @@
 flagged/*
 chroma/*
 .DS_Store
-backend/__pycache__/
+app/__pycache__/
 */__pycache__
 **/__pycache__
 audio/*
