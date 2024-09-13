@@ -1,9 +1,16 @@
 import uuid
 from app.core.story import Story
 from app.core.user_intent import UserIntent, maybe_play_story
-from app.core.intent_router import SemanticRouteResult, route
+from app.core.intent_router import SemanticRouteResult, route, keywords_check_intent
 from app.core.conversation_message import Message, MessageType
 
+
+def test_get_user_intent():
+    assert keywords_check_intent("我想听一个故事") == UserIntent.MAYBE_PLAY_STORY
+    assert keywords_check_intent("你今天做了什么？") == UserIntent.CONVERSATION
+    assert keywords_check_intent("给我放一本绘本") == UserIntent.MAYBE_PLAY_STORY
+    assert keywords_check_intent("让我们讲个笑话吧") == UserIntent.MAYBE_PLAY_STORY
+    assert keywords_check_intent("读一本书吧") == UserIntent.MAYBE_PLAY_STORY
 
 def test_route_given_conversation_input():
     result = route("你们今天为什么没有执行任务")

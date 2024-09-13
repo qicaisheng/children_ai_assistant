@@ -6,7 +6,7 @@ from app.service.conversation_service import build_llm_request_message
 def mock_get_system_prompt_by_role_code(monkeypatch):
     def mock_prompt(role_code):
         return "Mocked System Prompt"
-    monkeypatch.setattr("service.conversation_service.get_system_prompt_by_role_code", mock_prompt)
+    monkeypatch.setattr("app.service.conversation_service.get_system_prompt_by_role_code", mock_prompt)
 
 @pytest.fixture
 def mock_get_conversation_history(monkeypatch):
@@ -15,7 +15,7 @@ def mock_get_conversation_history(monkeypatch):
             ["User message 1", "Assistant message 1"],
             ["User message 2", "Assistant message 2"],
         ]
-    monkeypatch.setattr("service.conversation_service.get_conversation_history", mock_history)
+    monkeypatch.setattr("app.service.conversation_service.get_conversation_history", mock_history)
 
 def test_build_llm_request_message(mock_get_system_prompt_by_role_code, mock_get_conversation_history):
     user_input = "This is a test user input"
