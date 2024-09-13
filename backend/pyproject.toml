@@ -21,6 +21,7 @@ zhipuai = "^2.1.5.20230904"
 llama-index = "^0.11.7"
 alembic = "^1.13.2"
 psycopg = "^3.2.1"
+pydantic-settings = "^2.5.2"
 
 
 [build-system]
