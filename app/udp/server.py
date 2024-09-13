@@ -5,7 +5,7 @@ import os
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
 from app.service.audio_service import split_response_to_uploaded_audio
-import config
+import app.config as config
 
 udp_server_running = True
 

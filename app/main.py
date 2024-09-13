@@ -3,8 +3,8 @@ from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
 import paho.mqtt.client as mqtt
-import conversation
-import html_page
+import app.conversation as conversation
+import app.html_page as html_page
 from app.mqtt.manager import mqtt_manager
 from app.mqtt.publisher import update_config as mqtt_update_config, UpdateConfigData
 from app.mqtt.client import publish as mqtt_publish
