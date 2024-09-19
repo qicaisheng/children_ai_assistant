@@ -1,13 +1,14 @@
 import datetime
-from typing import Optional
+from typing import Optional, Iterator
 import uuid
-
 from pydantic import BaseModel
 from sqlalchemy import ARRAY, Column, DateTime, Integer, String, desc
 from sqlalchemy.dialects.postgresql import UUID
 from app.core.conversation_message import Message, MessageType
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
+
+from app.repository.db_egine import get_engine
 
 Base = declarative_base()
 
@@ -118,3 +119,17 @@ class PgMessageRepository(MessageRepository):
             )
             for message_in_db in sorted(messages_in_db, key=lambda msg: msg.created_time)
         ]
+
+
+def get_message_repository() -> Iterator[MessageRepository]:
+    session = sessionmaker(bind=get_engine())()
+    message_repository = PgMessageRepository(session)
+
+    try:
+        yield message_repository
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+
