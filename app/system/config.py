@@ -16,6 +16,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing_extensions import Self
 
 
+def get_db_uri():
+    return str(settings.SQLALCHEMY_DATABASE_URI)
+
+
 def get_dotenv_file() -> str:
     active_profile = os.environ.get('ACTIVE_PROFILE', 'local')
     dotenv_file: str
