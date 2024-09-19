@@ -94,7 +94,7 @@ def test_get_current_role_messages(monkeypatch):
         "self_introduction_voice": "Test Introduction Voice",
         "retry_voice": "Test Retry Voice",
     }
-    monkeypatch.setattr('core.conversation_message.get_current_role', lambda: Role(**mock_role))
+    monkeypatch.setattr('app.core.conversation_message.get_current_role', lambda: Role(**mock_role))
     
     user_id1 = uuid.uuid4()
     user_message1 = Message(

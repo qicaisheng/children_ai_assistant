@@ -14,10 +14,10 @@ def test_get_system_prompt_by_role_code(monkeypatch):
         "self_introduction_voice": "Test Introduction Voice",
         "retry_voice": "Test Retry Voice",
     }
-    monkeypatch.setattr('core.system_prompt.get_role_by_code', lambda code: Role(**mock_role))
+    monkeypatch.setattr('app.core.system_prompt.get_role_by_code', lambda code: Role(**mock_role))
 
     # Mock get_summary_by_role_code
-    monkeypatch.setattr('core.system_prompt.get_summary_by_role_code', lambda code: "Test Summary")
+    monkeypatch.setattr('app.core.system_prompt.get_summary_by_role_code', lambda code: "Test Summary")
 
     # Mock get_current_user
     mock_user = {
@@ -28,7 +28,7 @@ def test_get_system_prompt_by_role_code(monkeypatch):
         "age": 30,
         "description": "A test user for unit testing."
     }
-    monkeypatch.setattr('core.system_prompt.get_current_user', lambda: User(**mock_user))
+    monkeypatch.setattr('app.core.system_prompt.get_current_user', lambda: User(**mock_user))
 
     system_prompt = get_system_prompt_by_role_code(1)
     expected_prompt = (

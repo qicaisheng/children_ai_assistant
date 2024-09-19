@@ -1,7 +1,7 @@
 from app.core.story import Story, get_story_by_name
 
 def test_get_story_by_name(monkeypatch):
-    monkeypatch.setattr("config.audio_base_url", "http://localhost:8082/")
+    monkeypatch.setattr("app.config.audio_base_url", "http://localhost:8082/")
 
     story = get_story_by_name("走失的小野雁")
 
