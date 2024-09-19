@@ -24,7 +24,8 @@ async def split_response_to_uploaded_audio(audio_path: str, recording_id: int, m
     asr_start_time = time.time()
     input_text = await recognize(audio_path)
     asr_end_time = time.time()
-    print(f"ASR time cost: {asr_end_time-asr_start_time}, asr_start_time={asr_start_time}, asr_end_time={asr_end_time}")
+    print(
+        f"ASR time cost: {asr_end_time - asr_start_time}, asr_start_time={asr_start_time}, asr_end_time={asr_end_time}")
 
     if input_text == "":
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
@@ -34,6 +35,7 @@ async def split_response_to_uploaded_audio(audio_path: str, recording_id: int, m
     print(f"ASR succeed, input_text: {input_text}")
 
     await process_user_input_text(audio_path, recording_id, role, input_text, message_repository)
+
 
 async def process_user_input_text(audio_path, recording_id, role, input_text, message_repository):
     semantic_route_result = route(input_text)
@@ -62,7 +64,7 @@ async def process_user_input_text(audio_path, recording_id, role, input_text, me
             mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
 
             for _url in story.get_audio_urls():
-                _order +=1
+                _order += 1
                 _output_audio_url.append(_url)
                 mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=_order, url=_url))
             mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
@@ -89,11 +91,11 @@ async def process_user_input_text(audio_path, recording_id, role, input_text, me
     user = get_current_user()
     user_message = message_repository.save(
         Message(user_id=user.id, role_code=role.code, message_type=MessageType.USER_MESSAGE, content=input_text,
-                    audio_id=[get_audio_file_name(audio_path)]))
+                audio_id=[get_audio_file_name(audio_path)]))
     assistant_message = message_repository.save(
         Message(user_id=user.id, role_code=role.code, message_type=MessageType.ASSISTANT_MESSAGE,
-                    parent_id=user_message.id,
-                    content=_output_text, audio_id=[get_audio_file_name(url) for url in _output_audio_url]))
+                parent_id=user_message.id,
+                content=_output_text, audio_id=[get_audio_file_name(url) for url in _output_audio_url]))
     print(f"Save messages succeed, user_message: {user_message}, assistant_message: {assistant_message}")
 
 
@@ -101,7 +103,7 @@ async def split_llm_response_and_tts(input_text: str, role: Role):
     stream_response = stream_answer(input_text, role_code=role.code)
 
     segments = segment_text(stream_response, segment_size=2)
-    
+
     output_texts = ""
     _order = 0
 
@@ -115,26 +117,30 @@ async def split_llm_response_and_tts(input_text: str, role: Role):
         result = {"url": url, "order": _order, "output_text": segment}
         yield result
 
+
 async def tts(text, voice_type) -> str:
     tts_start_time = time.time()
     output_audio_path = await to_speech(text, voice_type)
     tts_end_time = time.time()
     print(f"TTS succeed, output_audio_path: {output_audio_path}")
-    print(f"TTS time cost: {tts_end_time-tts_start_time}, tts_start_time={tts_start_time}, tts_end_time={tts_end_time}")
+    print(
+        f"TTS time cost: {tts_end_time - tts_start_time}, tts_start_time={tts_start_time}, tts_end_time={tts_end_time}")
 
     return get_audio_url(output_audio_path)
 
 
 def get_audio_url(path: str):
     file_name = get_audio_file_name(path)
-    
+
     audio_url = config.audio_base_url + file_name
-    
+
     return audio_url
+
 
 def get_audio_file_name(path: str):
     file_name = path.split('/')[-1]
     return file_name
+
 
 def get_audio_url_from_id(id: str):
     return config.audio_base_url + id
