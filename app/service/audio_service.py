@@ -36,23 +36,23 @@ async def split_response_to_uploaded_audio(audio_path: str, recording_id: int, m
     await process_user_input_text(audio_path, recording_id, role, input_text, message_repository)
 
 async def process_user_input_text(audio_path, recording_id, role, input_text, message_repository):
-    semanticRouteResult = route(input_text)
+    semantic_route_result = route(input_text)
     _output_audio_url = []
-    if semanticRouteResult.user_intent == UserIntent.RAG_QA_STORY:
+    if semantic_route_result.user_intent == UserIntent.RAG_QA_STORY:
         story = core_story.get_current_story()
         _output_text = rag_story_wangwangdui.answer(story=story, question=input_text)
         _url = await tts(text=_output_text, voice_type=role.voice_type)
         _output_audio_url.append(_url)
         mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
-    elif semanticRouteResult.user_intent == UserIntent.MAYBE_PLAY_STORY:
-        _output_text = semanticRouteResult.arguments["output_text"]
+    elif semantic_route_result.user_intent == UserIntent.MAYBE_PLAY_STORY:
+        _output_text = semantic_route_result.arguments["output_text"]
         _url = await tts(text=_output_text, voice_type=role.voice_type)
         _output_audio_url.append(_url)
         mqtt_publisher.audio_play(mqtt_publisher.AudioPlay(recordingId=recording_id, order=1, url=_url))
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=1))
-    elif semanticRouteResult.user_intent == UserIntent.PLAY_STORY:
-        story = semanticRouteResult.arguments["story"]
+    elif semantic_route_result.user_intent == UserIntent.PLAY_STORY:
+        story = semantic_route_result.arguments["story"]
         assert isinstance(story, Story)
         core_story.set_current_story(story=story.name)
         if story.get_audio_urls():
