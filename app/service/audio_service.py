@@ -1,20 +1,23 @@
 import time
-from app.core.story import Story
-from app.service.asr.asr_service import recognize
-from app.service.tts.tts_service import to_speech
-import app.mqtt.publisher as mqtt_publisher
-from app.service.conversation_service import stream_answer
-import app.config as config
-from app.core.role import Role, get_current_role
-from app.core.conversation_message import save_message, Message, MessageType
-from app.core.text_segmenter import segment_text
-from app.core.intent_router import route, SemanticRouteResult
-from app.core.user_intent import UserIntent
-import app.service.rag.rag_story_wangwangdui as rag_story_wangwangdui
-import app.core.story as core_story
-from app.core.user import get_current_user
 
-async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
+import app.config as config
+import app.core.story as core_story
+import app.mqtt.publisher as mqtt_publisher
+import app.service.rag.rag_story_wangwangdui as rag_story_wangwangdui
+from app.core.conversation_message import Message, MessageType
+from app.core.intent_router import route
+from app.core.role import Role, get_current_role
+from app.core.story import Story
+from app.core.text_segmenter import segment_text
+from app.core.user import get_current_user
+from app.core.user_intent import UserIntent
+from app.repository.message import MessageRepository
+from app.service.asr.asr_service import recognize
+from app.service.conversation_service import stream_answer
+from app.service.tts.tts_service import to_speech
+
+
+async def split_response_to_uploaded_audio(audio_path: str, recording_id: int, message_repository: MessageRepository):
     role = get_current_role()
 
     print(f"split_response_to_uploaded_audio: {audio_path}")
@@ -30,9 +33,9 @@ async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
 
     print(f"ASR succeed, input_text: {input_text}")
 
-    await process_user_input_text(audio_path, recording_id, role, input_text)
+    await process_user_input_text(audio_path, recording_id, role, input_text, message_repository)
 
-async def process_user_input_text(audio_path, recording_id, role, input_text):
+async def process_user_input_text(audio_path, recording_id, role, input_text, message_repository):
     semanticRouteResult = route(input_text)
     _output_audio_url = []
     if semanticRouteResult.user_intent == UserIntent.RAG_QA_STORY:
@@ -84,9 +87,14 @@ async def process_user_input_text(audio_path, recording_id, role, input_text):
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
 
     user = get_current_user()
-    user_message = save_message(Message(user_id=user.id, role_code=role.code, message_type=MessageType.USER_MESSAGE, content=input_text, audio_id=[get_audio_file_name(audio_path)]))    
-    assistant_mesage = save_message(Message(user_id=user.id, role_code=role.code, message_type=MessageType.ASSISTANT_MESSAGE, content=_output_text, audio_id=[get_audio_file_name(url) for url in _output_audio_url]))    
-    print(f"Save messages succeed, user_message: {user_message}, assistant_mesage: {assistant_mesage}")
+    user_message = message_repository.save(
+        Message(user_id=user.id, role_code=role.code, message_type=MessageType.USER_MESSAGE, content=input_text,
+                    audio_id=[get_audio_file_name(audio_path)]))
+    assistant_message = message_repository.save(
+        Message(user_id=user.id, role_code=role.code, message_type=MessageType.ASSISTANT_MESSAGE,
+                    parent_id=user_message.id,
+                    content=_output_text, audio_id=[get_audio_file_name(url) for url in _output_audio_url]))
+    print(f"Save messages succeed, user_message: {user_message}, assistant_message: {assistant_message}")
 
 
 async def split_llm_response_and_tts(input_text: str, role: Role):
