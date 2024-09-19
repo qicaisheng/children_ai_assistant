@@ -21,7 +21,7 @@ class MessageInDB(Base):
     audio_id = Column(ARRAY(String), nullable=True, default=[])
     message_type = Column(String, nullable=False)
     parent_id = Column(UUID(as_uuid=True), nullable=True)
-    created_time = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(datetime.timezone.utc))
+    created_time = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.datetime.now(datetime.timezone.utc))
 
 class LatestMessagesFilter(BaseModel):
     role_code: int
