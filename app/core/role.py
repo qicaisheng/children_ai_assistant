@@ -2,8 +2,9 @@ from pydantic import BaseModel
 import app.config as config
 import app.core.role_wangwangdui
 import app.core.role_blue_rocket
+from app.core.user import get_current_user
 
-current_role_code: int = 1
+current_roles: dict = {}
 
 # voice_list: https://www.volcengine.com/docs/6561/97465
 supported_voices = {
@@ -188,30 +189,21 @@ for role in roles:
 
 
 def get_role_by_code(code: int) -> Role:
-    for role in roles:
-        if role["code"] == code:
-            return Role(**role)
-            # return Role(
-            #     code=role["code"],
-            #     name=role["name"],
-            #     self_introduction=role["self_introduction"],
-            #     self_introduction_voice=role["self_introduction_voice"],
-            #     prompt=role["prompt"],
-            #     voice_name=role["voice_name"],
-            #     voice_type=role["voice_type"],
-            # )
+    for _role in roles:
+        if _role["code"] == code:
+            return Role(**_role)
     raise Exception(f"no role found with {code}")
 
 
 def set_current_role_code(role_code: int):
-    global current_role_code
-    current_role_code = role_code
+    _user = get_current_user()
+    current_roles[_user.id] = role_code
 
 
 def get_current_role() -> Role:
-    if current_role_code is None:
-        raise Exception("current role code is none")
-    return get_role_by_code(current_role_code)
+    _user = get_current_user()
+    _current_role_code = current_roles.get(_user.id, 1)
+    return get_role_by_code(_current_role_code)
 
 # new_var = get_role_by_code(7)
 # print(dict(new_var))
