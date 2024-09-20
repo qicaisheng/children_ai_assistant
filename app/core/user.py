@@ -1,6 +1,7 @@
 import datetime
 import uuid
 from pydantic import BaseModel, Field
+from contextvars import ContextVar
 
 
 class User(BaseModel):
@@ -22,6 +23,16 @@ _default_user = {
     "age": 3,
 }
 
-
 def get_current_user() -> User:
     return User(**_default_user)
+
+
+def get_current_user_from_context() -> User:
+    return user_context.get()
+
+
+def set_current_user(user: User):
+    user_context.set(user)
+
+
+user_context: ContextVar[User] = ContextVar("user_context")
