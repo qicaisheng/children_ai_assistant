@@ -1,5 +1,3 @@
-import logging
-
 import pytest
 from alembic import command
 from alembic.config import Config
@@ -28,8 +26,7 @@ def db_session():
         inspector = inspect(engine)
         print(f"Existing tables: {inspector.get_table_names()}")
 
-        Session = sessionmaker(bind=engine)
-        session = Session()
+        session = sessionmaker(bind=engine)()
         yield session
 
         session.close()
