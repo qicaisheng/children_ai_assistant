@@ -28,7 +28,9 @@ def get_default_user() -> User:
 
 
 def get_current_user() -> User:
-    return user_context.get()
+    user = user_context.get()
+    print(f"get_current_user, user:{user}")
+    return user
 
 
 def set_current_user(user: User):
