@@ -59,7 +59,7 @@ def run_migrations_online() -> None:
 
     """
     configuration = config.get_section(config.config_ini_section, {})
-    if configuration["sqlalchemy.url"] is None:
+    if configuration.get("sqlalchemy.url") is None:
         configuration["sqlalchemy.url"] = get_db_uri()
 
     connectable = engine_from_config(
