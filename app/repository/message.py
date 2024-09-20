@@ -1,17 +1,16 @@
 import datetime
-from typing import Optional, Iterator
 import uuid
+from typing import Optional
 from pydantic import BaseModel
 from sqlalchemy import ARRAY, Column, DateTime, Integer, String, desc
 from sqlalchemy.dialects.postgresql import UUID
-from app.core.conversation_message import Message, MessageType
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session, sessionmaker
-
-from app.repository.db_egine import get_engine
+from sqlalchemy.orm import Session
+from app.core.conversation_message import Message, MessageType
 from app.system.db import get_postgresql_session
 
 Base = declarative_base()
+
 
 class MessageInDB(Base):
     __tablename__ = 'messages'
@@ -23,12 +22,14 @@ class MessageInDB(Base):
     audio_id = Column(ARRAY(String), nullable=True, default=[])
     message_type = Column(String, nullable=False)
     parent_id = Column(UUID(as_uuid=True), nullable=True)
-    created_time = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.datetime.now(datetime.timezone.utc))
+    created_time = Column(DateTime(timezone=True), nullable=False,
+                          default=lambda: datetime.datetime.now(datetime.timezone.utc))
+
 
 class LatestMessagesFilter(BaseModel):
     user_id: uuid.UUID
     role_code: int
-    number: int    
+    number: int
 
 
 class MessageRepository:  # Interface
@@ -47,6 +48,7 @@ class MessageRepository:  # Interface
     def get_latest_by(self, messages_filter: LatestMessagesFilter) -> list[Message]:
         raise NotImplementedError()
 
+
 class InMemoryMessageRepository(MessageRepository):
     def __init__(self):
         self.data: list[Message] = []
@@ -62,9 +64,11 @@ class InMemoryMessageRepository(MessageRepository):
         return None
 
     def get_latest_by(self, messages_filter: LatestMessagesFilter) -> list[Message]:
-        filtered_messages = [msg for msg in self.data if msg.role_code == messages_filter.role_code and msg.user_id == messages_filter.user_id]
+        filtered_messages = [msg for msg in self.data if
+                             msg.role_code == messages_filter.role_code and msg.user_id == messages_filter.user_id]
 
         return filtered_messages[-messages_filter.number:]
+
 
 class PgMessageRepository(MessageRepository):
     def __init__(self, session: Session):
@@ -126,4 +130,3 @@ class PgMessageRepository(MessageRepository):
 def get_message_repository() -> MessageRepository:
     session = get_postgresql_session()
     return PgMessageRepository(session)
-
