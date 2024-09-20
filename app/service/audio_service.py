@@ -5,7 +5,7 @@ import app.core.story as core_story
 import app.mqtt.publisher as mqtt_publisher
 import app.service.rag.rag_story_wangwangdui as rag_story_wangwangdui
 from app.core.conversation_message import Message, MessageType
-from app.core.intent_router import route
+from app.service.intent_router import route
 from app.core.role import Role, get_current_role
 from app.core.story import Story
 from app.core.text_segmenter import segment_text
