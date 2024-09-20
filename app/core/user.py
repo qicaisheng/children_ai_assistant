@@ -1,3 +1,4 @@
+import datetime
 import uuid
 from pydantic import BaseModel, Field
 
@@ -10,6 +11,7 @@ class User(BaseModel):
     gender: str = None
     age: int = None
     description: str = None
+    created_time: datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc))
 
 
 _default_user = {
