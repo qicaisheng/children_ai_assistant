@@ -11,7 +11,9 @@ from app.service.conversation_service import build_llm_request_message, get_conv
 def mock_get_system_prompt_by_role_code(monkeypatch):
     def mock_prompt(role_code):
         return "Mocked System Prompt"
+
     monkeypatch.setattr("app.service.conversation_service.get_system_prompt_by_role_code", mock_prompt)
+
 
 @pytest.fixture
 def mock_get_conversation_history(monkeypatch):
@@ -20,7 +22,9 @@ def mock_get_conversation_history(monkeypatch):
             ["User message 1", "Assistant message 1"],
             ["User message 2", "Assistant message 2"],
         ]
+
     monkeypatch.setattr("app.service.conversation_service.get_conversation_history", mock_history)
+
 
 def test_build_llm_request_message(mock_get_system_prompt_by_role_code, mock_get_conversation_history):
     user_input = "This is a test user input"
@@ -49,7 +53,14 @@ def mock_get_message_repository(monkeypatch):
     return mock_repo
 
 
-def test_get_conversation_history(mock_get_message_repository):
+@pytest.fixture
+def mock_get_current_user(monkeypatch):
+    mock_user = MagicMock()
+    mock_user.id = uuid.uuid4()
+    monkeypatch.setattr("app.service.conversation_service.get_current_user", lambda: mock_user)
+
+
+def test_get_conversation_history(mock_get_message_repository, mock_get_current_user):
     mock_get_message_repository.get_latest_by.return_value = []
 
     history = get_conversation_history(role_code=1, round=1)
@@ -93,7 +104,8 @@ def test_get_conversation_history(mock_get_message_repository):
     assert history[0][0] == "Hello, this is a user message 1"
     assert history[0][1] == "Hello, this is a assistant message 1"
 
-    mock_get_message_repository.get_latest_by.return_value = [user_message1, assistant_message1, user_message2, assistant_message2]
+    mock_get_message_repository.get_latest_by.return_value = [user_message1, assistant_message1, user_message2,
+                                                              assistant_message2]
 
     history = get_conversation_history(role_code=1, round=1)
     assert len(history) == 1
