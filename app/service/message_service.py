@@ -1,6 +1,6 @@
 from app.core.conversation_message import Message
 from app.core.role import get_current_role
-from app.core.user import get_default_user
+from app.core.user import get_current_user
 from app.repository.message import MessageRepository, LatestMessagesFilter, get_message_repository
 
 
@@ -16,7 +16,7 @@ class MessageService:
         return self.repository.get_latest_by(messages_filter)
 
     def get_latest_current_user_and_role_messages(self, number: int) -> list[Message]:
-        user = get_default_user()
+        user = get_current_user()
         role = get_current_role()
         messages_filter = LatestMessagesFilter(user_id=user.id, role_code=role.code, number=number)
         return self.repository.get_latest_by(messages_filter)
