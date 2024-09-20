@@ -1,5 +1,5 @@
 from app.core.role import get_role_by_code
-from app.core.user import get_current_user
+from app.core.user import get_default_user
 from app.core.summarization import get_summary_by_role_code
 from app.core.language import Language
 import app.config as config
@@ -57,7 +57,7 @@ def get_system_prompt_by_role_code(role_code: int):
     role = get_role_by_code(role_code)
     system_prompt = role.prompt + \
                     _get_system_prompt_template_suffix().format(summary=get_summary_by_role_code(role_code),
-                                                                user=get_current_user())
+                                                                user=get_default_user())
     print("system_prompt: " + system_prompt)
     return system_prompt
 

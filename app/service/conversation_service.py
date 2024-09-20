@@ -4,7 +4,7 @@ from app.core.system_prompt import get_system_prompt_by_role_code
 from app.core.conversation_message import MessageType
 from app.core.text_segmenter import split_text
 from app.repository.message import get_message_repository, LatestMessagesFilter
-from app.core.user import get_current_user
+from app.core.user import get_default_user
 
 
 MAX_CONVERSATION_ROUND = 3
@@ -48,7 +48,7 @@ def build_llm_request_message(user_input: str, role_code: int) -> list[dict]:
 
 
 def get_conversation_history(role_code: int, round: int) -> list[list[Optional[str]]]:
-    _user_id = get_current_user().id
+    _user_id = get_default_user().id
     _number = 2 * round + 1
     message_filter = LatestMessagesFilter(user_id=_user_id, role_code=role_code, number=_number)
     messages = get_message_repository().get_latest_by(message_filter)

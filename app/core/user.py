@@ -23,7 +23,7 @@ _default_user = {
     "age": 3,
 }
 
-def get_current_user() -> User:
+def get_default_user() -> User:
     return User(**_default_user)
 
 

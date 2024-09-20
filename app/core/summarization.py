@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 import app.core.llm_client as llm_client
-from app.core.user import get_current_user
+from app.core.user import get_default_user
 from app.core.role import get_role_by_code
 
 summaries = {}
@@ -41,7 +41,7 @@ def generate_new_summary(current_summary: str, new_conversation_history: list, r
         new_liens += "User: " + human + "\n"
         new_liens += "Assistant: " + assistant + "\n"
     content = _DEFAULT_SUMMARIZER_TEMPLATE.format(summary=current_summary, new_lines=new_liens, role=role.name,
-                                                  user=get_current_user().nickname)
+                                                  user=get_default_user().nickname)
     completion = llm_client.get_client().chat.completions.create(
         model=llm_client.get_model(),
         messages=[

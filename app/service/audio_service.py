@@ -9,7 +9,7 @@ from app.service.intent_router import route
 from app.core.role import Role, get_current_role
 from app.core.story import Story
 from app.core.text_segmenter import segment_text
-from app.core.user import get_current_user
+from app.core.user import get_default_user
 from app.core.user_intent import UserIntent
 from app.repository.message import get_message_repository
 from app.service.asr.asr_service import recognize
@@ -88,7 +88,7 @@ async def process_user_input_text(audio_path, recording_id, role, input_text):
 
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
 
-    user = get_current_user()
+    user = get_default_user()
 
     message_repository = get_message_repository()
     user_message = message_repository.save(
