@@ -27,7 +27,7 @@ def get_default_user() -> User:
     return User(**_default_user)
 
 
-def get_current_user_from_context() -> User:
+def get_current_user() -> User:
     return user_context.get()
 
 
