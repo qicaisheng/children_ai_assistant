@@ -16,6 +16,7 @@ def get_engine():
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=get_engine())
 Base = declarative_base()
 
+
 def yield_postgresql_session():
     session: Session = SessionLocal()
     try:
@@ -36,4 +37,3 @@ def get_postgresql_session() -> Session:
 
 def set_postgresql_session(session: Session):
     postgresql_session_context.set(session)
-
