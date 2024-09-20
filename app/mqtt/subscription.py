@@ -43,6 +43,13 @@ def processDataPost(client, userdata, msg: mqtt.MQTTMessage):
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
 
 
+def get_device_sn(topic: str) -> str:
+    try:
+        return topic.split('/')[3]
+    except IndexError:
+        raise ValueError("Invalid topic format")
+
+
 subscriptions={
     "test/topic1": processTopic1,
     "/user/folotoy/+/thing/event/post": processEventPost,
