@@ -1,6 +1,11 @@
+import uuid
+
 import pytest
-from unittest.mock import patch
-from app.service.conversation_service import build_llm_request_message
+from unittest.mock import patch, MagicMock
+
+from app.core.conversation_message import Message, MessageType
+from app.service.conversation_service import build_llm_request_message, get_conversation_history
+
 
 @pytest.fixture
 def mock_get_system_prompt_by_role_code(monkeypatch):
@@ -33,3 +38,65 @@ def test_build_llm_request_message(mock_get_system_prompt_by_role_code, mock_get
     ]
 
     assert messages == expected_messages
+
+
+@pytest.fixture
+def mock_get_message_repository(monkeypatch):
+    mock_repo = MagicMock()
+
+    monkeypatch.setattr("app.service.conversation_service.get_message_repository", lambda: mock_repo)
+
+    return mock_repo
+
+
+def test_get_conversation_history(mock_get_message_repository):
+    mock_get_message_repository.get_latest_by.return_value = []
+
+    history = get_conversation_history(role_code=1, round=1)
+    assert len(history) == 0
+
+    user_id1 = uuid.uuid4()
+
+    user_message1 = Message(
+        user_id=user_id1,
+        role_code=1,
+        content="Hello, this is a user message 1",
+        message_type=MessageType.USER_MESSAGE,
+    )
+    assistant_message1 = Message(
+        user_id=user_id1,
+        role_code=1,
+        content="Hello, this is a assistant message 1",
+        message_type=MessageType.ASSISTANT_MESSAGE,
+        parent_id=user_message1.id
+    )
+    user_message2 = Message(
+        user_id=user_id1,
+        role_code=1,
+        content="Hello, this is a user message 2",
+        message_type=MessageType.USER_MESSAGE,
+        parent_id=assistant_message1.id
+    )
+    assistant_message2 = Message(
+        user_id=user_id1,
+        role_code=1,
+        content="Hello, this is a assistant message 2",
+        message_type=MessageType.ASSISTANT_MESSAGE,
+        parent_id=user_message2.id
+    )
+
+    mock_get_message_repository.get_latest_by.return_value = [user_message1, assistant_message1, user_message2]
+
+    history = get_conversation_history(role_code=1, round=1)
+    assert len(history) == 1
+    assert len(history[0]) == 2
+    assert history[0][0] == "Hello, this is a user message 1"
+    assert history[0][1] == "Hello, this is a assistant message 1"
+
+    mock_get_message_repository.get_latest_by.return_value = [user_message1, assistant_message1, user_message2, assistant_message2]
+
+    history = get_conversation_history(role_code=1, round=1)
+    assert len(history) == 1
+    assert len(history[0]) == 2
+    assert history[0][0] == user_message2.content
+    assert history[0][1] == assistant_message2.content
