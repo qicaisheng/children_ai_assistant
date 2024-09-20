@@ -26,6 +26,7 @@ class MessageInDB(Base):
     created_time = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.datetime.now(datetime.timezone.utc))
 
 class LatestMessagesFilter(BaseModel):
+    user_id: uuid.UUID
     role_code: int
     number: int    
 
@@ -61,7 +62,7 @@ class InMemoryMessageRepository(MessageRepository):
         return None
 
     def get_latest_by(self, messages_filter: LatestMessagesFilter) -> list[Message]:
-        filtered_messages = [msg for msg in self.data if msg.role_code == messages_filter.role_code]
+        filtered_messages = [msg for msg in self.data if msg.role_code == messages_filter.role_code and msg.user_id == messages_filter.user_id]
 
         return filtered_messages[-messages_filter.number:]
 
@@ -102,7 +103,7 @@ class PgMessageRepository(MessageRepository):
     def get_latest_by(self, messages_filter: LatestMessagesFilter) -> list[Message]:
         query = (
             self.session.query(MessageInDB)
-            .filter_by(role_code=messages_filter.role_code)
+            .filter_by(user_id=messages_filter.user_id, role_code=messages_filter.role_code)
             .order_by(desc(MessageInDB.created_time))
             .limit(messages_filter.number)
         )

@@ -39,10 +39,18 @@ def common_test_get_latest_by(repository):
         message_type=MessageType.ASSISTANT_MESSAGE,
         parent_id=user_message1.id
     )
+    user2_message1 = Message(
+        user_id=uuid.uuid4(),
+        role_code=1,
+        content="Hello, this is a user2 message 1",
+        audio_id=["user2_audio1"],
+        message_type=MessageType.USER_MESSAGE,
+    )
     repository.save(user_message1)
     repository.save(assistant_message1)
+    repository.save(user2_message1)
 
-    messages = repository.get_latest_by(LatestMessagesFilter(role_code=1, number=2))
+    messages = repository.get_latest_by(LatestMessagesFilter(user_id=user_id, role_code=1, number=2))
 
     assert len(messages) == 2
     assert messages[0].content == user_message1.content
