@@ -3,7 +3,7 @@ import json
 from pydantic import BaseModel
 
 import app.core.story as core_story
-from app.core.conversation_message import Message, MessageType, get_current_role_messages
+from app.core.conversation_message import Message, MessageType
 from app.core.llm_client import get_client, get_model
 from app.core.story import story_names, get_story_by_name
 from app.core.user_intent import UserIntent, enable_maybe_play_story, disable_maybe_play_story, maybe_play_story
