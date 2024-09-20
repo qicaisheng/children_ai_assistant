@@ -7,6 +7,7 @@ from app.core.conversation_message import Message, MessageType, get_current_role
 from app.core.llm_client import get_client, get_model
 from app.core.story import story_names, get_story_by_name
 from app.core.user_intent import UserIntent, enable_maybe_play_story, disable_maybe_play_story, maybe_play_story
+from app.service.message_service import get_message_service
 
 PLAY_STORY_KEYWORDS = ["听", "放", "故事", "绘本", "书", "讲"]
 SYSTEM_PROMPT = "你能够判断用户的意图，然后基于用户的意图调用不同的tools。如果判断用户是想听故事，并且也有对应的故事，就调用play tool；如果没有对应的故事，或者判断就是对话，就调用conversation tool；如果判断用户想听故事，但是没有说出对应的故事名称，引导用户回复想听的故事名称。"
@@ -20,19 +21,20 @@ class SemanticRouteResult(BaseModel):
 
 
 def route(input_text: str) -> SemanticRouteResult:
+    message_service = get_message_service()
     if core_story.get_current_story():
         for keyword in RAG_QA_STORY_KEYWORDS:
             if keyword in input_text:
                 return SemanticRouteResult(user_intent=UserIntent.RAG_QA_STORY)
     if maybe_play_story():
-        history_messages = get_current_role_messages(-4)
+        history_messages = message_service.get_latest_current_user_and_role_messages(4)
         return semantic_route(input_text, history_messages)
 
     if keywords_check_intent(input_text) == UserIntent.CONVERSATION:
         disable_maybe_play_story()
         return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
 
-    history_messages = get_current_role_messages(-4)
+    history_messages = message_service.get_latest_current_user_and_role_messages(4)
     return semantic_route(input_text, history_messages)
 
 
