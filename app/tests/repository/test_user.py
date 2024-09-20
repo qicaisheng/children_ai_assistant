@@ -7,7 +7,6 @@ from app.repository.user import UserRepository
 def test_user_repository_save_and_get(db_session):
     repository = UserRepository(db_session)
 
-    # 创建一个User对象
     user_id = uuid.uuid4()
     user = User(
         id=user_id,
