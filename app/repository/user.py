@@ -3,7 +3,7 @@ import uuid
 from typing import Optional
 
 from sqlalchemy import Column, Integer, String, Text, DateTime
-from app.system.db import Base
+from app.system.db import Base, get_postgresql_session
 from app.core.user import User
 
 
@@ -52,3 +52,8 @@ class UserRepository:
                 description=user_in_db.description,
             )
         return None
+
+
+def get_user_repository() -> UserRepository:
+    session = get_postgresql_session()
+    return UserRepository(session)
