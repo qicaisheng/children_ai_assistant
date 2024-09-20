@@ -1,6 +1,7 @@
-from enum import Enum
-from openai import OpenAI
 import os
+
+from openai import OpenAI
+
 import app.config as config
 from app.core.llm_model import LLM_MODEL
 
@@ -21,8 +22,6 @@ deepseek_client = OpenAI(
     base_url="https://api.deepseek.com",
 )
 
-
-
 _mapping = {
     str(LLM_MODEL.DOUBAO): {"client": doubao_client, "model": os.environ.get("MODEL_ENDPOINT_ID")},
     str(LLM_MODEL.ZHIPU): {"client": zhipu_client, "model": "GLM-4-AirX"},
@@ -31,6 +30,7 @@ _mapping = {
 }
 
 selected_llm = config.llm
+
 
 def get_client() -> OpenAI:
     _client = _mapping.get(str(selected_llm)).get('client')
@@ -41,8 +41,10 @@ def get_client() -> OpenAI:
 def get_model():
     return _mapping.get(str(selected_llm)).get('model');
 
+
 def get_embedding_client() -> OpenAI:
     return zhipu_client;
+
 
 def get_embedding_model():
     zhipu_embedding_model = "embedding-3"

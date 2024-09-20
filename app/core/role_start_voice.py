@@ -3,16 +3,18 @@ from app.service.audio_service import get_audio_url
 from app.core.role import roles, Role
 from app.service.tts.tts_service import to_speech
 
+
 def generate_start_voices():
     result = {}
     for role_dict in roles:
         role = Role(**role_dict)
         loop = asyncio.get_event_loop()
         audio_path = loop.run_until_complete(to_speech(role.self_introduction, role.voice_type))
-        url=get_audio_url(audio_path)
+        url = get_audio_url(audio_path)
         result[role.code] = url
 
     print(result)
+
 
 def generate_retry_voices():
     # text = "不好意思，没听清楚，可以再说一遍吗"
@@ -23,9 +25,10 @@ def generate_retry_voices():
         role = Role(**role_dict)
         loop = asyncio.get_event_loop()
         audio_path = loop.run_until_complete(to_speech(text, role.voice_type))
-        url=get_audio_url(audio_path)
+        url = get_audio_url(audio_path)
         result[role.code] = url
     print(result)
+
 
 # generate_start_voices()
 """
@@ -42,4 +45,3 @@ generate_retry_voices()
 {1: 'http://10.10.30.164:8082/voice-cfccb70d0ef94d65814505f6f4752066.mp3', 2: 'http://10.10.30.164:8082/voice-53cb84cd16694454ac57e624b815ef84.mp3', 3: 'http://10.10.30.164:8082/voice-293f81f9ad4b4dada79e4132eae09bdf.mp3', 4: 'http://10.10.30.164:8082/voice-d32e9fe5344a4a2e875777c24123aa21.mp3', 5: 'http://10.10.30.164:8082/voice-c7383157fb684af697d0df69f1282eaf.mp3', 6: 'http://10.10.30.164:8082/voice-d30c4b8161d6422f9b529fab5e8076be.mp3', 7: 'http://10.10.30.164:8082/voice-7c1d1d305c8a47f581a4ba15a362c576.mp3'}
 
 """
-

@@ -2,12 +2,13 @@ import re
 from typing import Generator
 import app.config as config
 
+
 def split_text(text: str) -> list[str]:
     sentences = re.findall(r'.+?[。？！.?!]', text)
     if sentences:
-        paragraphs = [sentences[0]]+ ["".join(sentences[i:i+2]) for i in range(1, len(sentences), 2)]
+        paragraphs = [sentences[0]] + ["".join(sentences[i:i + 2]) for i in range(1, len(sentences), 2)]
         return paragraphs
-    
+
     return []
 
 
@@ -25,7 +26,7 @@ def segment_text(stream_response: Generator[str, None, None], segment_size=2) ->
     buffer = ""
     sentence_count = 0
     current_segment = ""
-    
+
     if config.tts_spliter_flag:
         for part in stream_response:
             buffer += part
@@ -34,7 +35,7 @@ def segment_text(stream_response: Generator[str, None, None], segment_size=2) ->
                 buffer = ""
 
                 current_segment += " " + sentence if current_segment else sentence
-                
+
                 if sentence_count % segment_size == 0 or sentence_count == 0:
                     yield current_segment
                     current_segment = ""

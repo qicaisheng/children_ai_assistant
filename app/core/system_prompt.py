@@ -4,7 +4,6 @@ from app.core.summarization import get_summary_by_role_code
 from app.core.language import Language
 import app.config as config
 
-
 SYSTEM_PROMPT_TEMPLATE_SUFFIX = """
 当前跟你对话的用户信息如下：
 姓名：{user.name} 
@@ -53,10 +52,12 @@ Resumen actual del chat:
 Requisito: Responde en menos de 100 palabras, usando un estilo de conversación en primera persona. Usa palabras sencillas, de forma clara, fácil de entender y divertida. Evita repetir lo que ya se ha dicho.
 """
 
+
 def get_system_prompt_by_role_code(role_code: int):
     role = get_role_by_code(role_code)
     system_prompt = role.prompt + \
-        _get_system_prompt_template_suffix().format(summary=get_summary_by_role_code(role_code), user=get_current_user())
+                    _get_system_prompt_template_suffix().format(summary=get_summary_by_role_code(role_code),
+                                                                user=get_current_user())
     print("system_prompt: " + system_prompt)
     return system_prompt
 

@@ -1,9 +1,8 @@
 import datetime
-from enum import Enum
-from typing import List, Optional
 import uuid
+from enum import Enum
+from typing import Optional
 from pydantic import BaseModel, Field
-from app.core.role import get_current_role
 
 
 class MessageType(Enum):

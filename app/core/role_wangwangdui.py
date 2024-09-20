@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 import app.config as config
 
 roles = [

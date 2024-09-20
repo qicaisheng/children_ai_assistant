@@ -11,6 +11,7 @@ class User(BaseModel):
     age: int = None
     description: str = None
 
+
 _default_user = {
     "id": uuid.UUID(int=0x12345678123456781234567812345678),
     "device_sn": "48ca439bbfdc",
@@ -18,6 +19,7 @@ _default_user = {
     "nickname": "benny",
     "age": 3,
 }
+
 
 def get_current_user() -> User:
     return User(**_default_user)

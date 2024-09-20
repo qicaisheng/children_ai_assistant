@@ -1,9 +1,4 @@
-
-
-from enum import Enum
-
 from pydantic import BaseModel
-from app.core.llm_client import get_client, get_model
 import app.config as config
 
 stories = [
@@ -305,6 +300,7 @@ stories = [
 
 current_story: str = None
 
+
 class Story(BaseModel):
     name: str
     audio_ids: list[str]
@@ -318,11 +314,13 @@ class Story(BaseModel):
             urls.append(url)
         return urls
 
+
 def story_names() -> list[str]:
     names = []
     for story in stories:
         names.append(story["name"])
     return names
+
 
 def get_story_by_name(name: str) -> Story:
     for story in stories:
@@ -330,16 +328,16 @@ def get_story_by_name(name: str) -> Story:
             return Story(**story)
     return None
 
+
 def set_current_story(story: str):
     global current_story
     current_story = story
 
+
 def get_current_story() -> str:
     return current_story
+
 
 def clear_current_story():
     global current_story
     current_story = None
-    
-
-
