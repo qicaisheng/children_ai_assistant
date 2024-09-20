@@ -13,32 +13,35 @@ SYSTEM_PROMPT = "你能够判断用户的意图，然后基于用户的意图调
 
 RAG_QA_STORY_KEYWORDS = ["什么", "怎么", "如何", "哪", "？"]
 
+
 class SemanticRouteResult(BaseModel):
     user_intent: UserIntent
     arguments: dict = {}
-    
 
-def route(input: str) -> SemanticRouteResult:
+
+def route(input_text: str) -> SemanticRouteResult:
     if core_story.get_current_story():
         for keyword in RAG_QA_STORY_KEYWORDS:
-            if keyword in input:
+            if keyword in input_text:
                 return SemanticRouteResult(user_intent=UserIntent.RAG_QA_STORY)
     if maybe_play_story():
-        histroy_messages = get_current_role_messages(-4)
-        return semantic_route(input, histroy_messages)
+        history_messages = get_current_role_messages(-4)
+        return semantic_route(input_text, history_messages)
 
-    if keywords_check_intent(input) == UserIntent.CONVERSATION:
+    if keywords_check_intent(input_text) == UserIntent.CONVERSATION:
         disable_maybe_play_story()
         return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
-    
-    histroy_messages = get_current_role_messages(-4)
-    return semantic_route(input, histroy_messages)
 
-def keywords_check_intent(input: str):
+    history_messages = get_current_role_messages(-4)
+    return semantic_route(input_text, history_messages)
+
+
+def keywords_check_intent(input_text: str):
     for keyword in PLAY_STORY_KEYWORDS:
-        if keyword in input:
+        if keyword in input_text:
             return UserIntent.MAYBE_PLAY_STORY
     return UserIntent.CONVERSATION
+
 
 play_function_call_parameters = {
     "name": "play",
@@ -117,13 +120,13 @@ def process_function_call(completion) -> SemanticRouteResult:
             story = arguments['story']
             if story in story_names():
                 print(f"play story: {story}")
-                return SemanticRouteResult(user_intent=UserIntent.PLAY_STORY, arguments={"story": get_story_by_name(story)}) 
+                return SemanticRouteResult(user_intent=UserIntent.PLAY_STORY,
+                                           arguments={"story": get_story_by_name(story)})
             else:
                 return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
         if tool_call.function.name == "conversation":
             print("-----------conversation-----------")
             return SemanticRouteResult(user_intent=UserIntent.CONVERSATION)
-
 
 # print(route("想听故事"))
 # print(route("好听"))
