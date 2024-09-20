@@ -4,13 +4,16 @@ import app.mqtt.publisher as mqtt_publisher
 from app.utils.uuid_util import get_uuid4_no_hyphen
 from app.core.role import get_role_by_code, set_current_role_code
 import app.config as config
-
+from app.repository.user import get_user_repository
+from app.core.token import save
 
 def processTopic1(client, userdata, msg: mqtt.MQTTMessage):
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
 
 def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
+    _device_sn = get_device_sn(msg.topic)
+    _current_user = get_user_repository().get_by_device_sn(_device_sn)
     event: mqtt_event.ReceivedEvent
     try:
         event = mqtt_event.ReceivedEvent.model_validate_json(msg.payload.decode())
@@ -20,7 +23,9 @@ def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
     if mqtt_event.ReceivedIdentifier.LOGIN.value == event.identifier:
         role_code = event.outParams.get('role')
         set_current_role_code(role_code)
-        data = mqtt_publisher.UpdateTokenData(token=get_uuid4_no_hyphen())
+        token = get_uuid4_no_hyphen()
+        save(token=token, user=_current_user)
+        data = mqtt_publisher.UpdateTokenData(token=token)
         mqtt_publisher.update_token(data=data)
         data = mqtt_publisher.UpdateConfigData(speechUdpServerHost=config.udp_host, speechUdpServerPort=config.udp_port)
         mqtt_publisher.update_config(data=data)
