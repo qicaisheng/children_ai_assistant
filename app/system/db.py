@@ -21,10 +21,13 @@ def yield_postgresql_session():
     session: Session = SessionLocal()
     try:
         yield session
+        print("commit session")
         session.commit()
     except Exception:
+        print("rollback session")
         session.rollback()
     finally:
+        print("close session")
         session.close()
 
 
