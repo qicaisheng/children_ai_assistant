@@ -7,9 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 from app.core.conversation_message import Message, MessageType
-from app.system.db import get_postgresql_session
-
-Base = declarative_base()
+from app.system.db import get_postgresql_session, Base
 
 
 class MessageInDB(Base):

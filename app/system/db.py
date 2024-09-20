@@ -1,4 +1,6 @@
 from contextvars import ContextVar
+
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
 from functools import lru_cache
 from sqlalchemy import create_engine
@@ -12,7 +14,7 @@ def get_engine():
 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=get_engine())
-
+Base = declarative_base()
 
 def yield_postgresql_session():
     session: Session = SessionLocal()
