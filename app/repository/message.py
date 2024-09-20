@@ -4,7 +4,6 @@ from typing import Optional
 from pydantic import BaseModel
 from sqlalchemy import ARRAY, Column, DateTime, Integer, String, desc
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 from app.core.conversation_message import Message, MessageType
 from app.system.db import get_postgresql_session, Base
