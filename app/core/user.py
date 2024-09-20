@@ -32,6 +32,7 @@ def get_current_user_from_context() -> User:
 
 
 def set_current_user(user: User):
+    print(f"set_current_user, user:{user}")
     user_context.set(user)
 
 
