@@ -4,9 +4,10 @@ import asyncio
 import os
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
-from app.repository.message import MessageRepository, get_message_repository
+from sqlalchemy.orm import Session
 from app.service.audio_service import split_response_to_uploaded_audio
 import app.config as config
+from app.system.db import yield_postgresql_session, postgresql_session_context
 
 udp_server_running = True
 
@@ -44,8 +45,9 @@ async def start_udp_server(host='0.0.0.0', port=config.udp_port):
                     os.makedirs(directory)
                 save_audio_with_pydub(file_path, current_recording)
                 print(f"Recording saved as {file_path}")
-                message_repository: MessageRepository = next(get_message_repository())
-                await split_response_to_uploaded_audio(file_path, recording_id_int, message_repository)
+                session: Session = next(yield_postgresql_session())
+                postgresql_session_context.set(session)
+                await split_response_to_uploaded_audio(file_path, recording_id_int)
                 current_recording = b''
             else:
                 print(f"Start receiving from {addr}")

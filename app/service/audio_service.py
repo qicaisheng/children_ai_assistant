@@ -11,13 +11,13 @@ from app.core.story import Story
 from app.core.text_segmenter import segment_text
 from app.core.user import get_current_user
 from app.core.user_intent import UserIntent
-from app.repository.message import MessageRepository
+from app.repository.message import get_message_repository
 from app.service.asr.asr_service import recognize
 from app.service.conversation_service import stream_answer
 from app.service.tts.tts_service import to_speech
 
 
-async def split_response_to_uploaded_audio(audio_path: str, recording_id: int, message_repository: MessageRepository):
+async def split_response_to_uploaded_audio(audio_path: str, recording_id: int):
     role = get_current_role()
 
     print(f"split_response_to_uploaded_audio: {audio_path}")
@@ -34,10 +34,10 @@ async def split_response_to_uploaded_audio(audio_path: str, recording_id: int, m
 
     print(f"ASR succeed, input_text: {input_text}")
 
-    await process_user_input_text(audio_path, recording_id, role, input_text, message_repository)
+    await process_user_input_text(audio_path, recording_id, role, input_text)
 
 
-async def process_user_input_text(audio_path, recording_id, role, input_text, message_repository):
+async def process_user_input_text(audio_path, recording_id, role, input_text):
     semantic_route_result = route(input_text)
     _output_audio_url = []
     if semantic_route_result.user_intent == UserIntent.RAG_QA_STORY:
@@ -89,6 +89,8 @@ async def process_user_input_text(audio_path, recording_id, role, input_text, me
         mqtt_publisher.audio_play_cmd(mqtt_publisher.AudioPlayCMD(recordingId=recording_id, total=_order))
 
     user = get_current_user()
+
+    message_repository = get_message_repository()
     user_message = message_repository.save(
         Message(user_id=user.id, role_code=role.code, message_type=MessageType.USER_MESSAGE, content=input_text,
                 audio_id=[get_audio_file_name(audio_path)]))

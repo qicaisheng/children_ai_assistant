@@ -9,6 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.repository.db_egine import get_engine
+from app.system.db import get_postgresql_session
 
 Base = declarative_base()
 
@@ -121,15 +122,7 @@ class PgMessageRepository(MessageRepository):
         ]
 
 
-def get_message_repository() -> Iterator[MessageRepository]:
-    session = sessionmaker(bind=get_engine())()
-    message_repository = PgMessageRepository(session)
-
-    try:
-        yield message_repository
-    except Exception:
-        session.rollback()
-        raise
-    finally:
-        session.close()
+def get_message_repository() -> MessageRepository:
+    session = get_postgresql_session()
+    return PgMessageRepository(session)
 
