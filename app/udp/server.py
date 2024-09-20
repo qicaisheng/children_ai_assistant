@@ -11,6 +11,7 @@ from app.system.db import yield_postgresql_session, postgresql_session_context
 
 udp_server_running = True
 
+
 async def start_udp_server(host='0.0.0.0', port=config.udp_port):
     global udp_server_running
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -23,8 +24,8 @@ async def start_udp_server(host='0.0.0.0', port=config.udp_port):
         if len(data) < 19:  # 长度不符合预期
             print(f"Received unexpected packet from {addr}")
             continue
-        
-        token = data[:16] 
+
+        token = data[:16]
         recording_id = data[16:18]
         frame_type = data[18:19]
         payload = data[19:]
@@ -40,7 +41,7 @@ async def start_udp_server(host='0.0.0.0', port=config.udp_port):
                 file_id = str(uuid.uuid4())
                 directory = config.audio_file_direction
                 file_path = f"{directory}/recording-{file_id}.wav"
-                
+
                 if not os.path.exists(directory):
                     os.makedirs(directory)
                 save_audio_with_pydub(file_path, current_recording)
@@ -58,7 +59,7 @@ async def start_udp_server(host='0.0.0.0', port=config.udp_port):
             print(f"Received {len(payload)} bytes from {addr}")
         else:
             print(f"Unknown frame type: {frame_type} from {addr}")
-    
+
     sock.close()
     print("UDP server closed")
 
@@ -79,4 +80,3 @@ def save_audio_with_pydub(file_name, audio_data):
 
     except CouldntDecodeError:
         print(f"Could not decode audio data for {file_name}")
-
