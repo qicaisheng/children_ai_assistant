@@ -1,14 +1,20 @@
 import json
-from fastapi import FastAPI, WebSocket
+from typing import Annotated
+
+from fastapi import FastAPI, WebSocket, Depends
 from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
 import app.conversation as conversation
 import app.html_page as html_page
 from app.mqtt.manager import mqtt_manager
 from app.mqtt.publisher import update_config as mqtt_update_config, UpdateConfigData
 from app.mqtt.client import publish as mqtt_publish
 import asyncio
+
+from app.system.db import yield_postgresql_session, postgresql_session_context
 from app.udp.server import start_udp_server
 import app.config as config
 import app.service.login_service as login_service
@@ -71,7 +77,9 @@ class DeviceLoginRequest(BaseModel):
 
 
 @app.post("/devices/login")
-def device_login(request: DeviceLoginRequest):
+def device_login(request: DeviceLoginRequest, session: Annotated[Session, Depends(yield_postgresql_session)]):
+    postgresql_session_context.set(session)
+
     device_sn = request.device_sn
     role_code = request.role_code
     login_service.device_login(device_sn=device_sn, role_code=role_code)
