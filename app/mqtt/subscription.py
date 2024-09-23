@@ -1,12 +1,10 @@
 import paho.mqtt.client as mqtt
-from sqlalchemy.orm import Session
-
 import app.mqtt.event as mqtt_event
 import app.mqtt.publisher as mqtt_publisher
 import app.service.login_service as login_service
 from app.core.role import get_role_by_code, set_current_role_code
 from app.repository.user import get_user_repository
-from app.system.db import yield_postgresql_session, postgresql_session_context
+from app.system.db import yield_postgresql_session
 
 
 def processTopic1(client, userdata, msg: mqtt.MQTTMessage):
@@ -17,8 +15,7 @@ def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
     _device_sn = get_device_sn(msg.topic)
 
-    session: Session = next(yield_postgresql_session())
-    postgresql_session_context.set(session)
+    next(yield_postgresql_session())
 
     _current_user = get_user_repository().get_by_device_sn(_device_sn)
     event: mqtt_event.ReceivedEvent

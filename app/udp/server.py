@@ -62,12 +62,8 @@ async def start_udp_server(host='0.0.0.0', port=config.udp_port):
                     os.makedirs(directory)
                 save_audio_with_pydub(file_path, current_recording[token_hex])
                 print(f"Recording saved as {file_path}")
-                session: Session = next(yield_postgresql_session())
-                try:
-                    postgresql_session_context.set(session)
-                    await split_response_to_uploaded_audio(file_path, recording_id_int)
-                finally:
-                    session.close()
+                next(yield_postgresql_session())
+                await split_response_to_uploaded_audio(file_path, recording_id_int)
                 del validated_tokens[token_hex]
                 del current_recording[token_hex]
             else:
