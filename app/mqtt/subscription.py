@@ -1,14 +1,15 @@
 import paho.mqtt.client as mqtt
+
 import app.mqtt.event as mqtt_event
 import app.mqtt.publisher as mqtt_publisher
-from app.utils.uuid_util import get_uuid4_no_hyphen
+import app.service.login_service as login_service
 from app.core.role import get_role_by_code, set_current_role_code
-import app.config as config
 from app.repository.user import get_user_repository
-from app.core.token import save
+
 
 def processTopic1(client, userdata, msg: mqtt.MQTTMessage):
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
+
 
 def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
@@ -22,27 +23,20 @@ def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
         return
     if mqtt_event.ReceivedIdentifier.LOGIN.value == event.identifier:
         role_code = event.outParams.get('role')
-        set_current_role_code(role_code)
-        token = get_uuid4_no_hyphen()
-        save(token=token, user=_current_user)
-        data = mqtt_publisher.UpdateTokenData(token=token)
-        mqtt_publisher.update_token(data=data)
-        data = mqtt_publisher.UpdateConfigData(speechUdpServerHost=config.udp_host, speechUdpServerPort=config.udp_port)
-        mqtt_publisher.update_config(data=data)
-        role = get_role_by_code(role_code)
-        data = mqtt_publisher.UpdateStartVoiceData(url= role.self_introduction_voice, keyCode=role_code, etag="")
-        mqtt_publisher.update_start_voice(data=data)
+        login_service.device_login(device_sn=_device_sn, role_code=role_code)
     elif mqtt_event.ReceivedIdentifier.PRESS_SMALL_BTN.value == event.identifier:
         role_code = event.outParams.get('keyCode')
         role_changed = event.outParams.get('changed') == 1
         if role_changed:
             set_current_role_code(role_code)
             role = get_role_by_code(role_code)
-            data = mqtt_publisher.UpdateStartVoiceData(url= role.self_introduction_voice, keyCode=role_code, etag="")
+            data = mqtt_publisher.UpdateStartVoiceData(url=role.self_introduction_voice, keyCode=role_code, etag="")
             mqtt_publisher.update_start_voice(data=data)
+
 
 def processCommandAck(client, userdata, msg: mqtt.MQTTMessage):
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
+
 
 def processDataPost(client, userdata, msg: mqtt.MQTTMessage):
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
@@ -55,7 +49,7 @@ def get_device_sn(topic: str) -> str:
         raise ValueError("Invalid topic format")
 
 
-subscriptions={
+subscriptions = {
     "test/topic1": processTopic1,
     "/user/folotoy/+/thing/event/post": processEventPost,
     "/user/folotoy/+/thing/command/callAck": processCommandAck,
