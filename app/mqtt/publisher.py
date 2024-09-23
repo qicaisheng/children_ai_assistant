@@ -1,9 +1,11 @@
 from pydantic import BaseModel
+
+from app.core.user import get_current_user
 from app.mqtt.client import publish as mqtt_publish
 import app.mqtt.event as mqtt_event
 import json
 
-COMMAND_CALL_TOPIC = "/user/folotoy/48ca439bbfdc/thing/command/call"
+COMMAND_CALL_TOPIC = "/user/folotoy/{device_sn}/thing/command/call"
 
 class UpdateTokenData(BaseModel):
     token: str
@@ -48,9 +50,11 @@ def audio_play_cmd(data: AudioPlayCMD):
     _publish_command(mqtt_event.PublishedIdentifier.AUDIO_PLAY_CMD.value, data=dict(data))
 
 def _publish_command(identifier: str, data: dict):
+    user = get_current_user()
+    topic = COMMAND_CALL_TOPIC.format(device_sn=user.device_sn)
     event = mqtt_event.PublishedEvent(msgId=next_msg_id(), identifier=identifier, inputParams=dict(data))
     event_str = json.dumps(dict(event))
-    print(f"Public topic: {COMMAND_CALL_TOPIC}, msg: {event_str}")
-    return mqtt_publish(COMMAND_CALL_TOPIC, event_str)
+    print(f"Public topic: {topic}, msg: {event_str}")
+    return mqtt_publish(topic, event_str)
 
 
