@@ -1,3 +1,5 @@
+import uuid
+
 from pydantic import BaseModel
 import app.config as config
 import app.core.role_wangwangdui
@@ -198,6 +200,10 @@ def get_role_by_code(code: int) -> Role:
 def set_current_role_code(role_code: int):
     _user = get_current_user()
     current_roles[_user.id] = role_code
+
+
+def set_user_role_code(user_id: uuid.UUID, role_code: int):
+    current_roles[user_id] = role_code
 
 
 def get_current_role() -> Role:
