@@ -1,5 +1,7 @@
 import datetime
 import uuid
+from typing import Optional
+
 from pydantic import BaseModel, Field
 from contextvars import ContextVar
 
@@ -11,7 +13,7 @@ class User(BaseModel):
     nickname: str
     gender: str = None
     age: int = None
-    description: str = None
+    description: Optional[str] = None
     created_time: datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc))
 
 
