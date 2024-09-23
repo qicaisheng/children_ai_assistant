@@ -19,31 +19,17 @@ Base = declarative_base()
 
 def yield_postgresql_session():
     session: Session = SessionLocal()
-    token = postgresql_session_context.set(session)
     try:
         yield session
-        try:
-            print("commit session")
-            session.commit()
-        except Exception as commit_error:
-            print(f"commit failed, exception: {commit_error}")
-            session.rollback()
-            raise
+        print("commit session")
+        session.commit()
     except Exception as e:
         print(f"rollback session, exception: {e}")
-        try:
-            session.rollback()
-        except Exception as rollback_error:
-            print(f"rollback failed, exception: {rollback_error}")
+        session.rollback()
         raise
     finally:
         print("close session")
-        try:
-            session.close()
-        except Exception as close_error:
-            print(f"session close failed, exception: {close_error}")
-        finally:
-            postgresql_session_context.reset(token)
+        session.close()
 
 
 postgresql_session_context: ContextVar[Session] = ContextVar('postgresql_session')

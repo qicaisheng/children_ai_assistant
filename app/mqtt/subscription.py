@@ -1,10 +1,12 @@
 import paho.mqtt.client as mqtt
+from sqlalchemy.orm import Session
+
 import app.mqtt.event as mqtt_event
 import app.mqtt.publisher as mqtt_publisher
 import app.service.login_service as login_service
 from app.core.role import get_role_by_code, set_current_role_code
 from app.repository.user import get_user_repository
-from app.system.db import yield_postgresql_session
+from app.system.db import yield_postgresql_session, postgresql_session_context
 
 
 def processTopic1(client, userdata, msg: mqtt.MQTTMessage):
@@ -15,27 +17,29 @@ def processEventPost(client, userdata, msg: mqtt.MQTTMessage):
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
     _device_sn = get_device_sn(msg.topic)
 
-    next(yield_postgresql_session())
-
-    _current_user = get_user_repository().get_by_device_sn(_device_sn)
-    event: mqtt_event.ReceivedEvent
+    session: Session = next(yield_postgresql_session())
+    token = postgresql_session_context.set(session)
     try:
-        event = mqtt_event.ReceivedEvent.model_validate_json(msg.payload.decode())
-    except ValueError as e:
-        print(f"Validation error: {e}")
-        return
-    if mqtt_event.ReceivedIdentifier.LOGIN.value == event.identifier:
-        role_code = event.outParams.get('role')
-        login_service.device_login(device_sn=_device_sn, role_code=role_code)
-    elif mqtt_event.ReceivedIdentifier.PRESS_SMALL_BTN.value == event.identifier:
-        role_code = event.outParams.get('keyCode')
-        role_changed = event.outParams.get('changed') == 1
-        if role_changed:
-            set_current_role_code(role_code)
-            role = get_role_by_code(role_code)
-            data = mqtt_publisher.UpdateStartVoiceData(url=role.self_introduction_voice, keyCode=role_code, etag="")
-            mqtt_publisher.update_start_voice(data=data)
-
+        _current_user = get_user_repository().get_by_device_sn(_device_sn)
+        event: mqtt_event.ReceivedEvent
+        try:
+            event = mqtt_event.ReceivedEvent.model_validate_json(msg.payload.decode())
+        except ValueError as e:
+            print(f"Validation error: {e}")
+            return
+        if mqtt_event.ReceivedIdentifier.LOGIN.value == event.identifier:
+            role_code = event.outParams.get('role')
+            login_service.device_login(device_sn=_device_sn, role_code=role_code)
+        elif mqtt_event.ReceivedIdentifier.PRESS_SMALL_BTN.value == event.identifier:
+            role_code = event.outParams.get('keyCode')
+            role_changed = event.outParams.get('changed') == 1
+            if role_changed:
+                set_current_role_code(role_code)
+                role = get_role_by_code(role_code)
+                data = mqtt_publisher.UpdateStartVoiceData(url=role.self_introduction_voice, keyCode=role_code, etag="")
+                mqtt_publisher.update_start_voice(data=data)
+    finally:
+        postgresql_session_context.reset(token)
 
 def processCommandAck(client, userdata, msg: mqtt.MQTTMessage):
     print(f"Received on {msg.topic}: {msg.payload.decode()}")
