@@ -2,15 +2,16 @@ import json
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
-import paho.mqtt.client as mqtt
+from pydantic import BaseModel
 import app.conversation as conversation
 import app.html_page as html_page
 from app.mqtt.manager import mqtt_manager
 from app.mqtt.publisher import update_config as mqtt_update_config, UpdateConfigData
 from app.mqtt.client import publish as mqtt_publish
 import asyncio
-from app.udp.server import start_udp_server, udp_server_running
+from app.udp.server import start_udp_server
 import app.config as config
+import app.service.login_service as login_service
 
 
 @asynccontextmanager
@@ -36,7 +37,9 @@ async def lifespan(app: FastAPI):
         udp_server_running = False
         print("Shutting down UDP server...")
 
+
 app = FastAPI(lifespan=lifespan)
+
 
 @app.post("/publish/")
 async def publish_message(topic: str, message: str):
@@ -45,19 +48,34 @@ async def publish_message(topic: str, message: str):
         return {"status": "Message published successfully"}
     else:
         return {"status": f"Failed to publish message, return code {result.rc}"}
-    
+
+
 @app.post("/publish-update-config/")
 async def publish_message():
-    result = mqtt_update_config(UpdateConfigData(speechUdpServerHost=config.udp_host, speechUdpServerPort=config.udp_port))
+    result = mqtt_update_config(
+        UpdateConfigData(speechUdpServerHost=config.udp_host, speechUdpServerPort=config.udp_port))
     if result.rc == 0:
         return {"status": "Message published successfully"}
     else:
         return {"status": f"Failed to publish message, return code {result.rc}"}
-    
+
 
 @app.get("/")
 async def root():
     return HTMLResponse(html_page.html)
+
+
+class DeviceLoginRequest(BaseModel):
+    device_sn: str
+    role_code: int
+
+
+@app.post("/devices/login")
+def device_login(request: DeviceLoginRequest):
+    device_sn = request.device_sn
+    role_code = request.role_code
+    login_service.device_login(device_sn=device_sn, role_code=role_code)
+
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -67,9 +85,9 @@ async def websocket_endpoint(websocket: WebSocket):
         round = json.loads(request)['round']
         user_input = json.loads(request)['input']
         print(f"""User: {user_input}""")
-            
+
         stream_response = conversation.stream_answer(user_input)
-        
+
         print("Assistant: ", end="")
         for output_text in stream_response:
             print(output_text, end="")
